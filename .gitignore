@@ -1,0 +1,8 @@
+.bundle/
+.rbx
+*.rbc
+log/*.log
+.rvmrc
+/.idea
+gemfiles/*.lock
+Gemfile.lock
