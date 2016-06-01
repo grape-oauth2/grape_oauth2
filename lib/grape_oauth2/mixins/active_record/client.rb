@@ -15,7 +15,7 @@ module GrapeOAuth2
           find_by(key: key, secret: secret)
         end
 
-        private
+        protected
 
         def generate_keys
           self.key = SecureRandom.hex(16) if key.blank?

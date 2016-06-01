@@ -4,7 +4,7 @@ module GrapeOAuth2
       extend ActiveSupport::Concern
 
       included do
-        belongs_to :client, class_name: GrapeOAuth2.config.client_class
+        belongs_to :client, class_name: GrapeOAuth2.config.client_class, foreign_key: :client_id
         belongs_to :resource_owner, class_name: GrapeOAuth2.config.resource_owner_class, foreign_key: :resource_owner_id
 
         validates :resource_owner_id, :client_id, :expires_at, presence: true
@@ -63,7 +63,7 @@ module GrapeOAuth2
         end
 
         def setup_expiration
-          self.expires_at = GrapeOAuth2.config.token_lifetime.from_now
+          self.expires_at = Time.now.utc + GrapeOAuth2.config.token_lifetime
         end
       end
     end

@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-describe 'Authentication' do
+describe 'Token Endpoint' do
   describe 'POST /oauth/token' do
     describe 'Resource Owner Password Credentials flow' do
       context 'with valid params' do
-        let(:authentication_url) { '/api/oauth/token' }
-        let(:application) { create(:application) }
-        let(:user) { create :user, username: 'test', password: '12345678' }
+        let(:authentication_url) { '/api/v1/oauth/token' }
+        let(:application) { Application.create(name: 'App1') }
+        let(:user) { User.create(username: 'test', password: '12345678') }
 
         context 'when request is invalid' do
           it 'fails with invalid Grant Type' do
@@ -17,8 +17,8 @@ describe 'Authentication' do
 
             expect(AccessToken.all).to be_empty
 
-            expect(json['error']).to eq('unsupported_grant_type')
-            expect(response).not_to be_success
+            expect(json_body[:error]).to eq('unsupported_grant_type')
+            expect(response.status).to eq 400
           end
 
           it 'fails without Client Credentials' do
@@ -29,8 +29,8 @@ describe 'Authentication' do
 
             expect(AccessToken.all).to be_empty
 
-            expect(json['error']).to eq('invalid_request')
-            expect(response).not_to be_success
+            expect(json_body[:error]).to eq('invalid_request')
+            expect(response.status).to eq 400
           end
 
           it 'fails with invalid Client Credentials' do
@@ -43,8 +43,8 @@ describe 'Authentication' do
 
             expect(AccessToken.all).to be_empty
 
-            expect(json['error']).to eq('invalid_client')
-            expect(response).not_to be_success
+            expect(json_body[:error]).to eq('invalid_client')
+            expect(response.status).to eq 401
           end
 
           it 'fails with invalid Resource Owner credentials' do
@@ -55,8 +55,8 @@ describe 'Authentication' do
                  client_id: application.key,
                  client_secret: application.secret
 
-            expect(json['error']).to eq('invalid_grant')
-            expect(json['error_description']).not_to be_blank
+            expect(json_body[:error]).to eq('invalid_grant')
+            expect(json_body[:error_description]).not_to be_blank
             expect(response.status).to eq 400
           end
         end
@@ -71,11 +71,11 @@ describe 'Authentication' do
                  client_secret: application.secret
 
             expect(AccessToken.count).to eq 1
-            expect(AccessToken.first.application_id).to eq application.id
+            expect(AccessToken.first.client_id).to eq application.id
 
-            expect(json['access_token']).to be_present
-            expect(json['token_type']).to eq 'bearer'
-            expect(json['expires_in']).to eq 7200
+            expect(json_body[:access_token]).to be_present
+            expect(json_body[:token_type]).to eq 'bearer'
+            expect(json_body[:expires_in]).to eq 7200
 
             expect(response.status).to eq 200
           end

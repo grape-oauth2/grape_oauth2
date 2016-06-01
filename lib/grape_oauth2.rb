@@ -1,13 +1,20 @@
+require 'grape'
+require 'rack/oauth2'
+
 require 'grape_oauth2/version'
+require 'grape_oauth2/configuration'
 
 # Mixins
-if defined?(ActiveRecord)
+# if defined?(ActiveRecord)
   require 'grape_oauth2/mixins/active_record/access_token'
   require 'grape_oauth2/mixins/active_record/client'
-end
+# end
 
 # Authorization Grants
 require 'grape_oauth2/strategies/password'
+
+require 'grape_oauth2/token_generator'
+require 'grape_oauth2/helpers/access_token_helpers'
 
 # Responses
 require 'grape_oauth2/responses/token_response'
