@@ -8,6 +8,23 @@ This gem adds a flexible OAuth2 server authentication to your [Grape](https://gi
 
 **Currently under development**.
 
+## Table of Contents
+
+- [Installation](#installation)
+- [Configuration](#configuration)
+  - [ActiveRecord](#activerecord)
+  - [Sequel](#sequel)
+  - [Other ORMs](#other-orms)
+    - [Client](#client)
+    - [AccessToken](#accesstoken)
+    - [ResourceOwner](#resourceowner)  
+- [Usage examples](#usage-examples)
+  - [I'm lazy, give me all out of the box!](#im-lazy-give-me-all-out-of-the-box)
+  - [Hey, I wanna control all the authentication process!](#hey-i-wanna-control-all-the-authentication-process)
+- [Example App](#example-app)
+- [Contributing](#contributing)
+- [License](#license)
+
 ## Installation
 
 If you are using bundler, first add 'grape_oauth2' to your Gemfile:
