@@ -9,6 +9,19 @@ describe 'Token Endpoint' do
         let(:user) { User.create(username: 'test', password: '12345678') }
 
         context 'when request is invalid' do
+          it 'fails without Grant Type' do
+            post authentication_url,
+                 username: user.username,
+                 password: '12345678',
+                 client_id: application.key,
+                 client_secret: application.secret
+
+            expect(AccessToken.all).to be_empty
+
+            expect(json_body[:error]).to eq('invalid_request')
+            expect(last_response.status).to eq 400
+          end
+
           it 'fails with invalid Grant Type' do
             post authentication_url,
                  grant_type: 'invalid',
@@ -47,6 +60,17 @@ describe 'Token Endpoint' do
             expect(last_response.status).to eq 401
           end
 
+          it 'fails without Resource Owner credentials' do
+            post authentication_url,
+                 grant_type: 'password',
+                 client_id: application.key,
+                 client_secret: application.secret
+
+            expect(json_body[:error]).to eq('invalid_request')
+            expect(json_body[:error_description]).not_to be_blank
+            expect(last_response.status).to eq 400
+          end
+
           it 'fails with invalid Resource Owner credentials' do
             post authentication_url,
                  grant_type: 'password',
@@ -62,7 +86,7 @@ describe 'Token Endpoint' do
         end
 
         context 'with valid data' do
-          it 'returns access token' do
+          it 'returns an Access Token' do
             post authentication_url,
                  grant_type: 'password',
                  username: user.username,

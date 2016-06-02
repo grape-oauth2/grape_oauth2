@@ -4,7 +4,7 @@ describe 'Protected Resources' do
   describe 'GET /api/v1/status' do
     context 'with valid params' do
       let(:application) { Application.create(name: 'App1') }
-      let(:user) { User.create(username: 'test', password: '12345678') }
+      let(:user) { User.create(username: 'Jack Sparrow', password: '12345678') }
       let(:access_token) { AccessToken.create_for(application, user) }
 
       context 'without Access Token' do
@@ -21,7 +21,9 @@ describe 'Protected Resources' do
           get 'api/v1/status', access_token: access_token.token
 
           expect(last_response.status).to eq 200
-          # expect(json_body[:name]).to eq('test')
+
+          expect(json_body[:value]).to eq('Nice day!')
+          expect(json_body[:current_user]).to eq('Jack Sparrow')
         end
       end
     end

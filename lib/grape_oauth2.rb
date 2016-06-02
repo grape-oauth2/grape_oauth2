@@ -5,11 +5,13 @@ require 'grape_oauth2/version'
 require 'grape_oauth2/configuration'
 
 # Mixins
-# if defined?(ActiveRecord)
+if defined?(ActiveRecord)
   require 'grape_oauth2/mixins/active_record/access_token'
   require 'grape_oauth2/mixins/active_record/client'
-# elsif defined?(Sequel)
-# end
+elsif defined?(Sequel)
+  require 'grape_oauth2/mixins/sequel/access_token'
+  require 'grape_oauth2/mixins/sequel/client'
+end
 
 # Authorization Grants
 require 'grape_oauth2/strategies/password'

@@ -6,6 +6,8 @@ Bundler.setup
 require 'rack/test'
 require 'database_cleaner'
 
+# TODO: make if configurable
+require 'active_record'
 require 'grape_oauth2'
 require File.expand_path('../dummy/app/twitter', __FILE__)
 

@@ -5,7 +5,7 @@ module Twitter
         get do
           access_token_required!
 
-          { value: 'Nice day!' } #, current_user: current_resource_owner.username }
+          { value: 'Nice day!', current_user: current_resource_owner.username }
         end
       end
     end
