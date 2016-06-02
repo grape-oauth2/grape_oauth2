@@ -4,16 +4,16 @@
 [![Code Climate](https://codeclimate.com/github/nbulaj/grape-oauth2/badges/gpa.svg)](https://codeclimate.com/github/nbulaj/grape-oauth2)
 [![License](http://img.shields.io/badge/license-MIT-brightgreen.svg)](#license)
 
-This gem adds a flexible OAuth2 server authentication to your Grape project.
+This gem adds a flexible OAuth2 server authentication to your [Grape](https://github.com/ruby-grape/grape) API project.
 
 **Currently under development**.
 
 ## Installation
 
-If using bundler, first add 'grape_oauth2' to your Gemfile:
+If you are using bundler, first add 'grape_oauth2' to your Gemfile:
 
 ```ruby
-gem "grape_oauth2"
+gem 'grape_oauth2'
 ```
 
 And run:
@@ -30,12 +30,12 @@ gem install grape_oauth2
 
 ## Configuration
 
-Main config:
+Main Grape OAuth2 configuration must be placed in `config/initializers/` (in case you are using [Rails](https://github.com/rails/rails)) or in some place, that will be processed at the application startup:
 
 ```ruby
 GrapeOAuth2.configure do |config|
-  # Access Token lifetime
-  config.token_lifetime = 2.hours
+  # Access Tokens lifetime
+  config.token_lifetime = 7200 # in seconds (2.hours for Rails)
 
   # Allowed OAuth2 Authorization Grants
   # config.allowed_grant_types = %w(password)
@@ -51,24 +51,26 @@ end
 ```
 
 `resource_owner_class` must have a `self.oauth_authenticate(client, username, password)` method, that returns an instance
-of the class if authentication successful (username and password matches for example) and `false` or `nil` in other cases.
+of the class if authentication successful (`username` and `password` matches for example) and `false` or `nil` in other cases.
 
 ```ruby
-# app/models/user/rb
+# app/models/user.rb
 class User < ApplicationRecord
   has_secure_password
 
   def self.oauth_authenticate(_client, username, password)
+    # find the user by it username
     user = find_by(username: username)
     return if user.nil?
 
+    # check the password
     user.authenticate(password)
   end
 end
 ```
 
 `client_class`, `access_token_class` and `resource_owner_class` classes must contain a specific set of API (methods),
-that are called by the gem. If your models are `ActiveRecord::Base`, then you can include Grape OAuth2 mixins to them:
+that are called by the gem. If your models are `ActiveRecord::Base`, then you can just include Grape OAuth2 mixins to them:
 
 ```ruby
 # app/models/access_token.rb
@@ -82,34 +84,37 @@ class Application < ApplicationRecord
 end
 ```
 
-In other case you can write your own classes with the next API:
+In other cases you can/must write your own classes with the next API:
 
 ### Client
 
-You must define relation with `AccessTokens` and authentication method (`self.authenticate(key, secret)`).
+You must define `has_many` relation with `AccessTokens` and authentication method (`self.authenticate(key, secret)`).
 
 ### AccessToken
 
- You must define relations with `Client` and `ResourceOwner` (`User` for example) and the next methods:
+ You must define `belongs_to` relations with `Client` and `ResourceOwner` and the next methods:
 
-* `self.create_for(client, resource_owner)`
-* `self.authenticate(token)`
-* `expired?`
-* `expires_in_seconds`
-* `revoked?`
-* `revoke!(clock = Time)`
-* `accessible?`
-* `to_bearer_token`
+* `self.create_for(client, resource_owner)` - returns an instance of the class;
+* `self.authenticate(token)` - returns an instance of the class if authenticated and `false`/`nil` in other cases;
+* `expired?` - returns `true` if record is expired;
+* `expires_in_seconds` - returns `nil` if token never expires and count of seconds in other case;
+* `revoked?` - returns `true` if record is revoked;
+* `revoke!(clock = Time)` - revoke the token;
+* `accessible?` - returns `true` if record is not expired and is not revoked;
+* `to_bearer_token` - returns an instance of `Rack::OAuth2::AccessToken::Bearer`.
 
-You can take a look at the Grape OAuth2 mixins to understand what they are doing and what they must return.
+You can take a look at the [Grape OAuth2 mixins](https://github.com/nbulaj/grape-oauth2/tree/master/lib/grape_oauth2/mixins) to understand what they are doing and what they are returning.
 
-## Usage
+## Usage examples
+### I'm lazy, give me all out of the box!
 
-First you need to configure gem as described above. 
+OK, if you need a simple common OAuth2 authentication process then you can use gem default OAuth2 endpoint.
+First you will need to configure GrapeOAuth2 as described above (create migrations, classes and authentication methods). 
 
-If you want to use gem default OAuth2 endpoint, just mount it to your Grape API module:
+After that just mount GrapeOAuth2 Token endpoint to your main API module:
 
 ```ruby
+# app/twitter.rb
 module Twitter
   class API < Grape::API
     version 'v1', using: :path
@@ -119,6 +124,7 @@ module Twitter
     helpers GrapeOAuth2::Helpers::AccessTokenHelpers
 
     # What to do if somebody will request an API with access_token
+    # Authenticate token and raise an error in case of authentication error
     use Rack::OAuth2::Server::Resource::Bearer, 'OAuth API' do |request|
       AccessToken.authenticate(request.access_token) || request.invalid_token!
     end
@@ -131,9 +137,33 @@ module Twitter
 end
 ```
 
-Also you can customize all the OAuth2 Token flow with your own API endpoint and help of Grape OAuth2 gem:
+That's all!
+
+### Hey, I wanna control all the authentication process!
+
+If you need to do some special things (check if `client_id` starts with _'MyAPI'_ word for example), then you can just override default authentication methods in models like this (only if you are using gem mixins, in other case you **MUST** write it yourself):
 
 ```ruby
+# app/models/application.rb
+class Application < ApplicationRecord
+  include GrapeOAuth2::ActiveRecord::Client
+  
+  class << self
+    def self.authenticate(key, secret)
+      # My custom condition to successfful authentication
+      return nil unless key.start_with?('MyAPI')
+
+      find_by(key: key, secret: secret)
+    end
+  end
+end
+```
+
+Besides, you can customize all the OAuth2 Token flow with your own API endpoint and do some stuffs with the help of the Grape OAuth2 gem.
+Just create a common Grape API class, set optional OAuth2 params and process the request with the `GrapeOAuth2::TokenGenerator` class:
+
+```ruby
+# api/oauth2.rb
 module MyAPI
   class OAuth2 < Grape::API
     resources :oauth do
@@ -147,25 +177,26 @@ module MyAPI
 
       post :token do
         token_response = GrapeOAuth2::TokenGenerator.generate_for(env) do |request, response|
-          application = Application.where(key: request.client_id, active: true)
+          # Customly authenticate client
+          application = Application.find_by(key: request.client_id, active: true)
           request.invalid_client! unless application
 
+          # Customly authenticate resource owner (User model)
           resource_owner = User.find_by(username: request.username)
           request.invalid_grant! if resource_owner.nil? || resource_owner.inactive?
 
+          # Create an AccessToken for the client and resource_owner
           token = AccessToken.create_for(application, resource_owner)
           response.access_token = token.to_bearer_token
         end
 
-        # Status
+        # If request is successful, then return it
         status token_response.status
 
-        # Headers
         token_response.headers.each do |key, value|
           header key, value
         end
 
-        # Body
         body token_response.access_token
       end
     end
