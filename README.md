@@ -50,8 +50,9 @@ GrapeOAuth2.configure do |config|
 end
 ```
 
-`resource_owner_class` must have a `self.oauth_authenticate(client, username, password)` method, that returns an instance
-of the class if authentication successful (`username` and `password` matches for example) and `false` or `nil` in other cases.
+As you know, OAuth2 workflow implies the existence of the next three roles: **AccessToken**, **Client** and **ResourceOwner**. So your project must include 3 classes (models) - _AccessToken_, _Application_ and _User_ for example. The gem needs to know what classes it work, so you need to create them and configure `GrapeOAuth2`.
+
+`resource_owner_class` must have a `self.oauth_authenticate(client, username, password)` method, that returns an instance of the class if authentication successful (`username` and `password` matches for example) and `false` or `nil` in other cases.
 
 ```ruby
 # app/models/user.rb
@@ -69,8 +70,9 @@ class User < ApplicationRecord
 end
 ```
 
-`client_class`, `access_token_class` and `resource_owner_class` classes must contain a specific set of API (methods),
-that are called by the gem. If your models are `ActiveRecord::Base`, then you can just include Grape OAuth2 mixins to them:
+`client_class`, `access_token_class` and `resource_owner_class` classes must contain a specific set of API (methods), that are called by the gem. Grape OAuth2 includes predefined mixins for the projects that use the `ActiveRecord` or `Sequel` ORMs, and you can just include them into your models. 
+
+### ActiveRecord
 
 ```ruby
 # app/models/access_token.rb
@@ -84,15 +86,71 @@ class Application < ApplicationRecord
 end
 ```
 
-In other cases you can/must write your own classes with the next API:
+Migration for the simplest use case of the gem looks as follows:
 
-### Client
+```ruby
+ActiveRecord::Schema.define(version: 3) do
+  create_table :users do |t|
+    t.string :name
+    t.string :username
+    t.string :password_digest
+  end
 
-You must define `has_many` relation with `AccessTokens` and authentication method (`self.authenticate(key, secret)`).
+  create_table :applications do |t|
+    t.string :name
+    t.string :key
+    t.string :secret
 
-### AccessToken
+    t.timestamps null: false
+  end
 
- You must define `belongs_to` relations with `Client` and `ResourceOwner` and the next methods:
+  add_index :applications, :key, unique: true
+
+  create_table :access_tokens do |t|
+    t.integer :resource_owner_id
+    t.integer :client_id
+
+    t.string :token, null: false
+    t.string :refresh_token
+    t.string :scopes
+
+    t.datetime :expires_at
+    t.datetime :revoked_at
+    t.datetime :created_at, null: false
+  end
+
+  add_index :access_tokens, :token, unique: true
+  add_index :access_tokens, :resource_owner_id
+  add_index :access_tokens, :client_id
+  add_index :access_tokens, :refresh_token, unique: true
+end
+```
+
+### Sequel
+
+```ruby
+# app/models/access_token.rb
+class AccessToken < Sequel::Model
+  include GrapeOAuth2::Sequel::AccessToken
+end
+
+# app/models/application.rb
+class Application < Sequel::Model
+  include GrapeOAuth2::Sequel::Client
+end
+```
+
+### Other ORMs
+
+If your project doesn't use `ActiveRecord` or `Sequel`, then you must write your own classes with the next API (names of the classes can be customized, it's only an example):
+
+#### Client
+
+For the class that represents an OAuth2 Client you must define `has_many` relation with `AccessTokens` and authentication method (`self.authenticate(key, secret)`). Dont forget to setup class name in the Grape OAuth2 config.
+
+#### AccessToken
+
+For the class that represents an OAuth2 Access Token you must define `belongs_to` relations with `Client` and `ResourceOwner` classes and the next methods:
 
 * `self.create_for(client, resource_owner)` - returns an instance of the class;
 * `self.authenticate(token)` - returns an instance of the class if authenticated and `false`/`nil` in other cases;
@@ -105,11 +163,46 @@ You must define `has_many` relation with `AccessTokens` and authentication metho
 
 You can take a look at the [Grape OAuth2 mixins](https://github.com/nbulaj/grape-oauth2/tree/master/lib/grape_oauth2/mixins) to understand what they are doing and what they are returning.
 
+#### ResourceOwner
+
+As was said before, Resource Owner class (`User` model for example) must contain only one class method (in case of Password Authorization Grant): `self.authenticate(client, username, password)`.
+
 ## Usage examples
 ### I'm lazy, give me all out of the box!
 
-OK, if you need a simple common OAuth2 authentication process then you can use gem default OAuth2 endpoint.
-First you will need to configure GrapeOAuth2 as described above (create migrations, classes and authentication methods). 
+OK, if you need a simple common OAuth2 authentication process then you can use gem default OAuth2 endpoint. First you will need to configure GrapeOAuth2 as described above (create migrations, models and authentication methods). 
+
+```ruby
+# app/models/access_token.rb
+class AccessToken < ApplicationRecord
+  include GrapeOAuth2::ActiveRecord::AccessToken
+end
+
+# app/models/application.rb
+class Application < ApplicationRecord
+  include GrapeOAuth2::ActiveRecord::Client
+end
+
+# app/models/user.rb
+class User < ApplicationRecord
+  has_secure_password
+
+  def self.oauth_authenticate(_client, username, password)
+    user = find_by(username: username)
+    return if user.nil?
+
+    user.authenticate(password)
+  end
+end
+
+# config/oauth2.rb
+GrapeOAuth2.configure do |config|
+  # Classes for OAuth2 Roles
+  config.client_class = Application
+  config.access_token_class = AccessToken
+  config.resource_owner_class = User
+end
+```
 
 After that just mount GrapeOAuth2 Token endpoint to your main API module:
 
@@ -204,11 +297,15 @@ module MyAPI
 end
 ```
 
+## Example App
+
+Take a look at the [sample application](https://github.com/nbulaj/grape-oauth2/tree/master/spec/dummy) in the "spec/dummy" project directory.
+
 ## Contributing
 
 You are very welcome to help improve grape_oauth2 if you have suggestions for features that other people can use.
 
-To contribute:
+To contribute:t represents an OAuth2 Clien
 
 1. Fork the project.
 2. Create your feature branch (`git checkout -b my-new-feature`).
