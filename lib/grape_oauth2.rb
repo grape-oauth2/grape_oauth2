@@ -16,8 +16,12 @@ end
 # Authorization Grants
 require 'grape_oauth2/strategies/password'
 
+# Generators
 require 'grape_oauth2/token_generator'
+
+# Helpers
 require 'grape_oauth2/helpers/access_token_helpers'
+require 'grape_oauth2/helpers/oauth_params'
 
 # Responses
 require 'grape_oauth2/responses/token_response'

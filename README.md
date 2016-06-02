@@ -234,7 +234,7 @@ That's all!
 
 ### Hey, I wanna control all the authentication process!
 
-If you need to do some special things (check if `client_id` starts with _'MyAPI'_ word for example), then you can just override default authentication methods in models like this (only if you are using gem mixins, in other case you **MUST** write it yourself):
+If you need to do some special things (check if `client_id` starts with _'MyAPI'_ word for example), then you can just override default authentication methods in models (only if you are using gem mixins, in other cases you **MUST** write them by yourself):
 
 ```ruby
 # app/models/application.rb
@@ -259,13 +259,11 @@ Just create a common Grape API class, set optional OAuth2 params and process the
 # api/oauth2.rb
 module MyAPI
   class OAuth2 < Grape::API
-    resources :oauth do
+    helpers GrapeOAuth2::Helpers::OAuthParams
+
+    namespace :oauth do
       params do
-        optional :grant_type, type: String, desc: 'The grant type'
-        optional :code, type: String, desc: 'The authorization code'
-        optional :client_id, type: String, desc: 'The client id'
-        optional :client_secret, type: String, desc: 'The client secret'
-        optional :refresh_token, type: String, desc: 'The refresh_token'
+        use :oauth_token_params
       end
 
       post :token do
