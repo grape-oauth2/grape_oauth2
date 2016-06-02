@@ -19,7 +19,7 @@ gem 'bcrypt'
 group :test do
   gem 'rspec-rails', '~> 3.4'
   gem 'database_cleaner'
-  gem 'airborne'
+  gem 'rack-test', require: 'rack/test'
 end
 
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]

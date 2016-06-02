@@ -4,7 +4,7 @@
 [![Code Climate](https://codeclimate.com/github/nbulaj/grape-oauth2/badges/gpa.svg)](https://codeclimate.com/github/nbulaj/grape-oauth2)
 [![License](http://img.shields.io/badge/license-MIT-brightgreen.svg)](#license)
 
-This gem adds a flexible OAuth2 authentication to your Grape project.
+This gem adds a flexible OAuth2 server authentication to your Grape project.
 
 **Currently under development**.
 
@@ -86,8 +86,12 @@ In other case you can write your own classes with the next API:
 
 ### Client
 
-You must define relation with `AccessTokens` and `ResourceOwner` (`User` for example). Also you need to define next methods:
- 
+You must define relation with `AccessTokens` and authentication method (`self.authenticate(key, secret)`).
+
+### AccessToken
+
+ You must define relations with `Client` and `ResourceOwner` (`User` for example) and the next methods:
+
 * `self.create_for(client, resource_owner)`
 * `self.authenticate(token)`
 * `expired?`
@@ -98,10 +102,6 @@ You must define relation with `AccessTokens` and `ResourceOwner` (`User` for exa
 * `to_bearer_token`
 
 You can take a look at the Grape OAuth2 mixins to understand what they are doing and what they must return.
-
-### AccessToken
-
-You must define relation with `Client` and authentication method (`self.authenticate(key, secret)`):
 
 ## Usage
 
@@ -118,7 +118,14 @@ module Twitter
 
     helpers GrapeOAuth2::Helpers::AccessTokenHelpers
 
-    mount GrapeOAuth2::Endpoint
+    # What to do if somebody will request an API with access_token
+    use Rack::OAuth2::Server::Resource::Bearer, 'OAuth API' do |request|
+      AccessToken.authenticate(request.access_token) || request.invalid_token!
+    end
+
+    # Moune default Grape OAuth2 Token endpoint
+    mount GrapeOAuth2::Endpoints::Token
+   
     # ...
   end
 end

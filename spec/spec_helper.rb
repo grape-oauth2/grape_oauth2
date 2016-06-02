@@ -3,13 +3,19 @@ ENV['RAILS_ENV'] ||= 'test'
 require 'bundler/setup'
 Bundler.setup
 
-require 'airborne'
+require 'rack/test'
 require 'database_cleaner'
 
 require 'grape_oauth2'
 require File.expand_path('../dummy/app/twitter', __FILE__)
 
+TWITTER_APP = Rack::Builder.parse_file(File.expand_path('../dummy/config.ru', __FILE__)).first
+
+require 'support/api_helper'
+
 RSpec.configure do |config|
+  config.include ApiHelper
+
   config.order = 'random'
 
   config.before(:suite) do
@@ -22,8 +28,4 @@ RSpec.configure do |config|
       example.run
     end
   end
-end
-
-Airborne.configure do |config|
-  config.rack_app = Twitter::API
 end

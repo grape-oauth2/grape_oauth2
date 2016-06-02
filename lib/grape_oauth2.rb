@@ -8,6 +8,7 @@ require 'grape_oauth2/configuration'
 # if defined?(ActiveRecord)
   require 'grape_oauth2/mixins/active_record/access_token'
   require 'grape_oauth2/mixins/active_record/client'
+# elsif defined?(Sequel)
 # end
 
 # Authorization Grants
@@ -20,7 +21,7 @@ require 'grape_oauth2/helpers/access_token_helpers'
 require 'grape_oauth2/responses/token_response'
 
 # Endpoints
-require 'grape_oauth2/endpoint'
+require 'grape_oauth2/endpoints/token'
 
 module GrapeOAuth2
   def self.config

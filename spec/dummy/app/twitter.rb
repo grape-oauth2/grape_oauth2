@@ -3,14 +3,8 @@ require 'grape'
 
 require File.expand_path('../../../../lib/grape_oauth2', __FILE__)
 
-::ActiveRecord::Base.default_timezone = :utc
-
-::ActiveRecord::Migration.verbose = false
-::ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: ':memory:')
-
-load File.expand_path('../../db/schema.rb', __FILE__)
-
-::ActiveRecord::Base.logger = Logger.new(STDOUT) unless ENV['RAILS_ENV'] == 'test'
+# Database
+load File.expand_path('../config/db.rb', __FILE__)
 
 # Models
 require_relative 'models/application_record'
@@ -18,7 +12,7 @@ require_relative 'models/access_token'
 require_relative 'models/application'
 require_relative 'models/user'
 
-# Endpoints
+# Twitter Endpoints
 require_relative 'resources/status'
 
 GrapeOAuth2.configure do |config|
@@ -33,9 +27,14 @@ module Twitter
     format :json
     prefix :api
 
+    use Rack::OAuth2::Server::Resource::Bearer, 'OAuth2 API' do |request|
+      AccessToken.authenticate(request.access_token) || request.invalid_token!
+    end
+
     helpers GrapeOAuth2::Helpers::AccessTokenHelpers
 
+    mount GrapeOAuth2::Endpoints::Token
+
     mount Twitter::Resources::Status
-    mount GrapeOAuth2::Endpoint
   end
 end

@@ -1,19 +1,36 @@
 module GrapeOAuth2
-  module ActiveRecord
+  module Sequel
     module AccessToken
       extend ActiveSupport::Concern
 
+      # TODO: make as plugin
       included do
-        belongs_to :client, class_name: GrapeOAuth2.config.client_class, foreign_key: :client_id
-        belongs_to :resource_owner, class_name: GrapeOAuth2.config.resource_owner_class, foreign_key: :resource_owner_id
+        plugin :validation_helpers
+        plugin :timestamps
 
-        validates :resource_owner_id, :client_id, :expires_at, presence: true
-        validates :token, presence: true, uniqueness: true
+        many_to_one :client, class: GrapeOAuth2.config.client_class, key: :client_id
+        many_to_one :resource_owner, class: GrapeOAuth2.config.resource_owner_class, key: :resource_owner_id
 
-        before_validation :generate_tokens, on: :create
-        before_validation :setup_expiration, on: :create
+        def before_validation
+          if new?
+            generate_tokens
+            setup_expiration
+          end
 
-        scope :active, -> { where(revoked_at: nil).where(arel_table[:expires_at].gteq(Time.now.utc)) }
+          super
+        end
+
+        def validate
+          super
+          validates_presence [:token, :resource_owner_id, :client_id, :expires_at]
+          validates_unique [:token]
+        end
+
+        dataset_module do
+          def active
+            where(revoked_at: nil).where { expires_at >= Time.now.utc }
+          end
+        end
 
         class << self
           def create_for(client, resource_owner)
@@ -22,7 +39,7 @@ module GrapeOAuth2
 
           # TODO: check scopes?
           def authenticate(token)
-            active.find_by(token: token)
+            active.find(token: token)
           end
         end
 
@@ -40,7 +57,8 @@ module GrapeOAuth2
         end
 
         def revoke!(clock = Time)
-          update_column :revoked_at, clock.now.utc
+          set(revoked_at: clock.now.utc)
+          save(columns: [:revoked_at], validate: false)
         end
 
         def accessible?

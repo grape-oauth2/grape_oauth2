@@ -3,7 +3,9 @@ module Twitter
     class Status < Grape::API
       resources :status do
         get do
-          { value: 'Nice day!' }
+          access_token_required!
+
+          { value: 'Nice day!' } #, current_user: current_resource_owner.username }
         end
       end
     end

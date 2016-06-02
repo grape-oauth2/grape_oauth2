@@ -18,7 +18,7 @@ describe 'Token Endpoint' do
             expect(AccessToken.all).to be_empty
 
             expect(json_body[:error]).to eq('unsupported_grant_type')
-            expect(response.status).to eq 400
+            expect(last_response.status).to eq 400
           end
 
           it 'fails without Client Credentials' do
@@ -30,7 +30,7 @@ describe 'Token Endpoint' do
             expect(AccessToken.all).to be_empty
 
             expect(json_body[:error]).to eq('invalid_request')
-            expect(response.status).to eq 400
+            expect(last_response.status).to eq 400
           end
 
           it 'fails with invalid Client Credentials' do
@@ -44,7 +44,7 @@ describe 'Token Endpoint' do
             expect(AccessToken.all).to be_empty
 
             expect(json_body[:error]).to eq('invalid_client')
-            expect(response.status).to eq 401
+            expect(last_response.status).to eq 401
           end
 
           it 'fails with invalid Resource Owner credentials' do
@@ -57,7 +57,7 @@ describe 'Token Endpoint' do
 
             expect(json_body[:error]).to eq('invalid_grant')
             expect(json_body[:error_description]).not_to be_blank
-            expect(response.status).to eq 400
+            expect(last_response.status).to eq 400
           end
         end
 
@@ -77,7 +77,7 @@ describe 'Token Endpoint' do
             expect(json_body[:token_type]).to eq 'bearer'
             expect(json_body[:expires_in]).to eq 7200
 
-            expect(response.status).to eq 200
+            expect(last_response.status).to eq 200
           end
         end
       end
