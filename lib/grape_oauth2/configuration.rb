@@ -4,7 +4,7 @@ module GrapeOAuth2
     DEFAULT_ACCESS_TOKEN_CLASS = '::AccessToken'.freeze
     DEFAULT_RESOURCE_OWNER_CLASS = '::User'.freeze
 
-    DEFAULT_ALLOWED_GRANT_TYPES = %w(password).freeze
+    DEFAULT_ALLOWED_GRANT_TYPES = %w(password client_credentials).freeze
     DEFAULT_REFRESH_TOKEN = false
     DEFAULT_TOKEN_LIFETIME = 7200 # in seconds
 

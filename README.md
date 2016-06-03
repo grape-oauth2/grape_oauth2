@@ -49,7 +49,7 @@ GrapeOAuth2.configure do |config|
   config.token_lifetime = 7200 # in seconds (2.hours for Rails)
 
   # Allowed OAuth2 Authorization Grants
-  # config.allowed_grant_types = %w(password)
+  # config.allowed_grant_types = %w(password client_credentials)
 
   # Issue access tokens with refresh token
   # config.refresh_token = true
@@ -123,7 +123,7 @@ ActiveRecord::Schema.define(version: 3) do
 
     t.string :token, null: false
     t.string :refresh_token
-    t.string :scopes
+    t.string :scopes, default: ''
 
     t.datetime :expires_at
     t.datetime :revoked_at
@@ -153,7 +153,7 @@ end
 
 ### Other ORMs
 
-If you want to use Grape OAuth2 default authentication endpoint or default `TokenGenerator` behaviour, but your project doesn't use `ActiveRecord` or `Sequel`, then you must create at least 3 models to cover OAuth2 roles. In other cases you can skip this step and do everything just as you want to.
+If you want to use Grape OAuth2 default authentication endpoint or default `GrapeOAuth2::Generators::Token` behaviour, but your project doesn't use `ActiveRecord` or `Sequel`, then you must create at least 3 models to cover OAuth2 roles. In other cases you can skip this step and do everything just as you want to.
 
 If you decide to use your own classes with the default gem functionality, then you need to define the next API in them (names of the classes can be customized, it's only an example):
 
@@ -266,7 +266,7 @@ end
 ```
 
 Besides, you can customize all the OAuth2 Token flow with your own API endpoint and do some stuffs with the help of the Grape OAuth2 gem.
-Just create a common Grape API class, set optional OAuth2 params and process the request with the `GrapeOAuth2::TokenGenerator` class:
+Just create a common Grape API class, set optional OAuth2 params and process the request with the `GrapeOAuth2::Generators::Token` class:
 
 ```ruby
 # api/oauth2.rb
@@ -280,7 +280,7 @@ module MyAPI
       end
 
       post :token do
-        token_response = GrapeOAuth2::TokenGenerator.generate_for(env) do |request, response|
+        token_response = GrapeOAuth2::Generators::Token.generate_for(env) do |request, response|
           # Customly authenticate client
           application = Application.find_by(key: request.client_id, active: true)
           request.invalid_client! unless application

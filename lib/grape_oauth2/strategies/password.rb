@@ -1,8 +1,10 @@
 module GrapeOAuth2
   module Strategies
-    class Password
+    class Password < Base
       class << self
-        def process(client, request, &_authenticator)
+        def process(request, &_authenticator)
+          client = authenticate_client!(request) || request.invalid_client!
+
           resource_owner = if block_given?
                              yield client, request
                            else
@@ -13,11 +15,6 @@ module GrapeOAuth2
 
           token = GrapeOAuth2.config.access_token_class.create_for(client, resource_owner)
           token.to_bearer_token
-        end
-
-        def authenticate_resource_owner!(client, request)
-          resource_owner = GrapeOAuth2.config.resource_owner_class
-          resource_owner.oauth_authenticate(client, request.username, request.password)
         end
       end
     end

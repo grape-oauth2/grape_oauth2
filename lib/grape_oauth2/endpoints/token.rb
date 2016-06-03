@@ -9,7 +9,7 @@ module GrapeOAuth2
         end
 
         post :token do
-          token_response = GrapeOAuth2::TokenGenerator.generate_for(env)
+          token_response = GrapeOAuth2::Generators::Token.generate_for(env)
 
           # Status
           status token_response.status

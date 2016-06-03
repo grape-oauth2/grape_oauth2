@@ -14,11 +14,14 @@ elsif defined?(Sequel)
   require 'grape_oauth2/mixins/sequel/client'
 end
 
-# Authorization Grants
+# Authorization Grants (Strategies)
+require 'grape_oauth2/strategies/base'
 require 'grape_oauth2/strategies/password'
+require 'grape_oauth2/strategies/client_credentials'
 
 # Generators
-require 'grape_oauth2/token_generator'
+require 'grape_oauth2/generators/base'
+require 'grape_oauth2/generators/token'
 
 # Helpers
 require 'grape_oauth2/helpers/access_token_helpers'

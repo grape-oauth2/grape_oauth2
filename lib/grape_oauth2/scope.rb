@@ -5,7 +5,7 @@ module GrapeOAuth2
         # if no any scopes required, the scopes of token is sufficient.
         return true if scopes.blank?
 
-        required_scopes = Set.new(scopes)
+        required_scopes = Set.new(Array.wrap(scopes))
         authorized_scopes = Set.new(token_scopes)
 
         authorized_scopes >= required_scopes

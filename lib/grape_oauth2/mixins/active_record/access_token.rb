@@ -7,7 +7,7 @@ module GrapeOAuth2
         belongs_to :client, class_name: GrapeOAuth2.config.client_class, foreign_key: :client_id
         belongs_to :resource_owner, class_name: GrapeOAuth2.config.resource_owner_class, foreign_key: :resource_owner_id
 
-        validates :resource_owner_id, :client_id, presence: true
+        validates :client_id, presence: true
         validates :token, presence: true, uniqueness: true
 
         before_validation :generate_tokens, on: :create
@@ -17,7 +17,7 @@ module GrapeOAuth2
 
         class << self
           def create_for(client, resource_owner)
-            create(resource_owner_id: resource_owner.id, client_id: client.id)
+            create(client_id: client.id, resource_owner_id: resource_owner && resource_owner.id)
           end
 
           # TODO: check scopes?
