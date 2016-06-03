@@ -22,7 +22,7 @@ module GrapeOAuth2
 
         def validate
           super
-          validates_presence [:token, :resource_owner_id, :client_id, :expires_at]
+          validates_presence [:token, :resource_owner_id, :client_id]
           validates_unique [:token]
         end
 
@@ -81,7 +81,7 @@ module GrapeOAuth2
         end
 
         def setup_expiration
-          self.expires_at = Time.now.utc + GrapeOAuth2.config.token_lifetime
+          self.expires_at = Time.now.utc + GrapeOAuth2.config.token_lifetime if expires_at.nil?
         end
       end
     end

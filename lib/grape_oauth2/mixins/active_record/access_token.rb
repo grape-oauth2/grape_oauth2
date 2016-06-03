@@ -7,7 +7,7 @@ module GrapeOAuth2
         belongs_to :client, class_name: GrapeOAuth2.config.client_class, foreign_key: :client_id
         belongs_to :resource_owner, class_name: GrapeOAuth2.config.resource_owner_class, foreign_key: :resource_owner_id
 
-        validates :resource_owner_id, :client_id, :expires_at, presence: true
+        validates :resource_owner_id, :client_id, presence: true
         validates :token, presence: true, uniqueness: true
 
         before_validation :generate_tokens, on: :create
@@ -50,9 +50,9 @@ module GrapeOAuth2
         def to_bearer_token
           Rack::OAuth2::AccessToken::Bearer.new(
             access_token: token,
-            expires_in: expires_in_seconds.to_i
+            expires_in: expires_in_seconds.to_i,
+            refresh_token: refresh_token
           )
-          # TODO: what about refresh token ?
         end
 
         protected
@@ -63,7 +63,7 @@ module GrapeOAuth2
         end
 
         def setup_expiration
-          self.expires_at = Time.now.utc + GrapeOAuth2.config.token_lifetime
+          self.expires_at = Time.now.utc + GrapeOAuth2.config.token_lifetime if expires_at.nil?
         end
       end
     end

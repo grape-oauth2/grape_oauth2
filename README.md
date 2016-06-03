@@ -30,19 +30,13 @@ This gem adds a flexible OAuth2 server authentication to your [Grape](https://gi
 If you are using bundler, first add 'grape_oauth2' to your Gemfile:
 
 ```ruby
-gem 'grape_oauth2'
+gem 'grape_oauth2', github: 'nbulaj/grape_oauth2'
 ```
 
 And run:
 
 ```sh
 bundle install
-```
-
-Otherwise simply install the gem:
-
-```sh
-gem install grape_oauth2
 ```
 
 ## Configuration

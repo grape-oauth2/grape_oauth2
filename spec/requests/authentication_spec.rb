@@ -100,6 +100,7 @@ describe 'Token Endpoint' do
             expect(json_body[:access_token]).to be_present
             expect(json_body[:token_type]).to eq 'bearer'
             expect(json_body[:expires_in]).to eq 7200
+            expect(json_body[:refresh_token]).to be_nil
 
             expect(last_response.status).to eq 200
           end
