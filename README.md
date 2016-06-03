@@ -153,7 +153,9 @@ end
 
 ### Other ORMs
 
-If your project doesn't use `ActiveRecord` or `Sequel`, then you must write your own classes with the next API (names of the classes can be customized, it's only an example):
+If you want to use Grape OAuth2 default authentication endpoint or default `TokenGenerator` behaviour, but your project doesn't use `ActiveRecord` or `Sequel`, then you must create at least 3 models to cover OAuth2 roles. In other cases you can skip this step and do everything just as you want to.
+
+If you decide to use your own classes with the default gem functionality, then you need to define the next API in them (names of the classes can be customized, it's only an example):
 
 #### Client
 
@@ -314,7 +316,7 @@ Take a look at the [sample application](https://github.com/nbulaj/grape-oauth2/t
 
 You are very welcome to help improve grape_oauth2 if you have suggestions for features that other people can use.
 
-To contribute:t represents an OAuth2 Clien
+To contribute:
 
 1. Fork the project.
 2. Create your feature branch (`git checkout -b my-new-feature`).
