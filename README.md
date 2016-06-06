@@ -1,7 +1,7 @@
 # Grape OAuth2
-[![Build Status](https://travis-ci.org/nbulaj/grape-oauth2.svg?branch=master)](https://travis-ci.org/nbulaj/grape-oauth2)
-[![Dependency Status](https://gemnasium.com/nbulaj/grape-oauth2.svg)](https://gemnasium.com/nbulaj/grape-oauth2)
-[![Code Climate](https://codeclimate.com/github/nbulaj/grape-oauth2/badges/gpa.svg)](https://codeclimate.com/github/nbulaj/grape-oauth2)
+[![Build Status](https://travis-ci.org/nbulaj/grape_oauth2.svg?branch=master)](https://travis-ci.org/nbulaj/grape_oauth2)
+[![Dependency Status](https://gemnasium.com/nbulaj/grape_oauth2.svg)](https://gemnasium.com/nbulaj/grape_oauth2)
+[![Code Climate](https://codeclimate.com/github/nbulaj/grape_oauth2/badges/gpa.svg)](https://codeclimate.com/github/nbulaj/grape_oauth2)
 [![License](http://img.shields.io/badge/license-MIT-brightgreen.svg)](#license)
 
 This gem adds a flexible OAuth2 server authentication to your [Grape](https://github.com/ruby-grape/grape) API project.
@@ -174,7 +174,7 @@ For the class that represents an OAuth2 Access Token you must define `belongs_to
 * `accessible?` - returns `true` if record is not expired and is not revoked;
 * `to_bearer_token` - returns an instance of `Rack::OAuth2::AccessToken::Bearer`.
 
-You can take a look at the [Grape OAuth2 mixins](https://github.com/nbulaj/grape-oauth2/tree/master/lib/grape_oauth2/mixins) to understand what they are doing and what they are returning.
+You can take a look at the [Grape OAuth2 mixins](https://github.com/nbulaj/grape_oauth2/tree/master/lib/grape_oauth2/mixins) to understand what they are doing and what they are returning.
 
 #### ResourceOwner
 
@@ -310,7 +310,7 @@ end
 
 ## Example App
 
-Take a look at the [sample application](https://github.com/nbulaj/grape-oauth2/tree/master/spec/dummy) in the "spec/dummy" project directory.
+Take a look at the [sample application](https://github.com/nbulaj/grape_oauth2/tree/master/spec/dummy) in the "spec/dummy" project directory.
 
 ## Contributing
 
