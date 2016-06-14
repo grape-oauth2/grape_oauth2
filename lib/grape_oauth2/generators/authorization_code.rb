@@ -15,29 +15,30 @@ module GrapeOAuth2
         end
 
         def authenticate_client!(request)
-          GrapeOAuth2.config.client_class.authenticate(request.client_id, request.client_secret)
+          GrapeOAuth2.config.client_class.authenticate(request.client_id, nil, false)
         end
 
         private
 
         def execute_default(request, response)
-          client = authenticate_client! || request.bad_request!
-          response.redirect_uri = request.verify_redirect_uri! client.redirect_uris
+          client = authenticate_client!(request) || request.bad_request!
+          response.redirect_uri = request.verify_redirect_uri!(client.redirect_uri) # TODO: split URIs
 
           request.invalid_request! if request.response_type != :code
 
-
           # Move to Strategy Class
-          # TODO: check scopes
+          # TODO: verify scopes if they valid
           # scopes = request.scope
-          # request.invalid_scope! "Unknown scope: #{scope}")
+          # request.invalid_scope! "Unknown scope: #{scope}"
 
           # TODO: create access grant
-          #  client: client,
-          #  redirect_uri: response.redirect_uri
-          #  scopes: scopes
+          # access_grant = AccessGrant.create(
+          #    client: client,
+          #    redirect_uri: response.redirect_uri
+          #    scopes: scopes
+          # )
 
-          # response.code = AccessGrant.token
+          # response.code = access_grant.token
           response.approve!
         end
       end

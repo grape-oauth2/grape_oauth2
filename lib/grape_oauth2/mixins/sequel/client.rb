@@ -21,15 +21,19 @@ module GrapeOAuth2
           validates_unique [:key]
         end
 
-        def self.authenticate(key, secret)
-          find(key: key, secret: secret)
+        def self.authenticate(key, secret, need_secret = true)
+          if need_secret
+            find(key: key, secret: secret)
+          else
+            find(key: key)
+          end
         end
 
         protected
 
         def generate_keys
-          self.key = SecureRandom.hex(16) if key.blank?
-          self.secret = SecureRandom.hex(16) if secret.blank?
+          self.key = SecureRandom.hex(16) if key.nil? || key.empty?
+          self.secret = SecureRandom.hex(16) if secret.nil? || secret.empty?
         end
       end
     end

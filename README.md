@@ -159,7 +159,7 @@ If you decide to use your own classes with the default gem functionality, then y
 
 #### Client
 
-For the class that represents an OAuth2 Client you must define `has_many` relation with `AccessTokens` and authentication method (`self.authenticate(key, secret)`). Dont forget to setup class name in the Grape OAuth2 config.
+For the class that represents an OAuth2 Client you must define `has_many` relation with `AccessTokens` and authentication method (`self.authenticate(key, secret, need_secret = true)`). Dont forget to setup class name in the Grape OAuth2 config.
 
 #### AccessToken
 
@@ -255,11 +255,15 @@ class Application < ApplicationRecord
   include GrapeOAuth2::ActiveRecord::Client
   
   class << self
-    def self.authenticate(key, secret)
+    def self.authenticate(key, secret, need_secret = true)
       # My custom condition to successfful authentication
       return nil unless key.start_with?('MyAPI')
 
-      find_by(key: key, secret: secret)
+      if need_secret
+        find_by(key: key, secret: secret)
+      else
+        find_by(key: key)
+      end
     end
   end
 end

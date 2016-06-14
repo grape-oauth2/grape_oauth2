@@ -1,6 +1,6 @@
 module GrapeOAuth2
   module Endpoints
-    class Authorization < ::Grape::API
+    class Authorize < ::Grape::API
       helpers GrapeOAuth2::Helpers::OAuthParams
 
       namespace :oauth do

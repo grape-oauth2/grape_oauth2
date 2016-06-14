@@ -9,6 +9,7 @@ load File.expand_path('../config/db.rb', __FILE__)
 # Models
 require_relative 'models/application_record'
 require_relative 'models/access_token'
+require_relative 'models/access_grant'
 require_relative 'models/application'
 require_relative 'models/user'
 
@@ -34,6 +35,7 @@ module Twitter
     helpers GrapeOAuth2::Helpers::AccessTokenHelpers
 
     mount GrapeOAuth2::Endpoints::Token
+    mount GrapeOAuth2::Endpoints::Authorize
 
     mount Twitter::Resources::Status
   end

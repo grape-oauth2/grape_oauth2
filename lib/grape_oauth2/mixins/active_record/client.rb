@@ -11,15 +11,19 @@ module GrapeOAuth2
 
         before_validation :generate_keys, on: :create
 
-        def self.authenticate(key, secret)
-          find_by(key: key, secret: secret)
+        def self.authenticate(key, secret, need_secret = true)
+          if need_secret
+            find_by(key: key, secret: secret)
+          else
+            find_by(key: key)
+          end
         end
 
         protected
 
         def generate_keys
-          self.key = SecureRandom.hex(16) if key.blank?
-          self.secret = SecureRandom.hex(16) if secret.blank?
+          self.key = SecureRandom.hex(16) if key.nil? || key.empty?
+          self.secret = SecureRandom.hex(16) if secret.nil? || secret.empty?
         end
       end
     end
