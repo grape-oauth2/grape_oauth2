@@ -153,7 +153,7 @@ end
 
 ### Other ORMs
 
-If you want to use Grape OAuth2 default authentication endpoint or default `GrapeOAuth2::Generators::Token` behaviour, but your project doesn't use `ActiveRecord` or `Sequel`, then you must create at least 3 models to cover OAuth2 roles. In other cases you can skip this step and do everything just as you want to.
+If you want to use Grape OAuth2 default authentication endpoint or default `GrapeOAuth2::Generators::Token` (or some other flows) behaviour, but your project doesn't use `ActiveRecord` or `Sequel`, then you must create at least 3 models (classes) to cover OAuth2 roles. In other cases you can skip this step and do everything just as you want to.
 
 If you decide to use your own classes with the default gem functionality, then you need to define the next API in them (names of the classes can be customized, it's only an example):
 
