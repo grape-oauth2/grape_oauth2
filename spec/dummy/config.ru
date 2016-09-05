@@ -2,7 +2,7 @@ $:.unshift(File.dirname(__FILE__))
 
 require 'app/twitter'
 
-use ActiveRecord::ConnectionAdapters::ConnectionManagement
+use OTR::ActiveRecord::ConnectionManagement
 
 run Twitter::API
 

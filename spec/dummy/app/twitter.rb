@@ -1,4 +1,4 @@
-require 'active_record'
+require 'otr-activerecord'
 require 'grape'
 
 require File.expand_path('../../../../lib/grape_oauth2', __FILE__)
