@@ -17,7 +17,7 @@ Gem::Specification.new do |gem|
   gem.files = `git ls-files`.split($RS)
   gem.test_files = Dir['spec/**/*']
 
-  gem.required_ruby_version = '>= 2.0.0'
+  gem.required_ruby_version = '>= 2.2.2'
 
   gem.add_runtime_dependency 'grape', '>= 0.16'
   gem.add_runtime_dependency 'rack-oauth2', '>= 1.3.0'
