@@ -101,12 +101,14 @@ Migration for the simplest use case of the gem looks as follows:
 
 ```ruby
 ActiveRecord::Schema.define(version: 3) do
+  # All the columns are custom
   create_table :users do |t|
     t.string :name
     t.string :username
     t.string :password_digest
   end
 
+  # Required columns: :key & :secret
   create_table :applications do |t|
     t.string :name
     t.string :key
@@ -117,6 +119,7 @@ ActiveRecord::Schema.define(version: 3) do
 
   add_index :applications, :key, unique: true
 
+  # Required columns: :client_id, :resource_owner_id, :token, :expires_at, :revoked_at, :refresh_token
   create_table :access_tokens do |t|
     t.integer :resource_owner_id
     t.integer :client_id
