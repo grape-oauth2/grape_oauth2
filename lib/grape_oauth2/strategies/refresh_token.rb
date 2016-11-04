@@ -7,7 +7,7 @@ module GrapeOAuth2
 
           request.invalid_client! if client.nil?
 
-          refresh_token = client.refresh_tokens.active.by_refresh_token(request.refresh_token)
+          refresh_token = GrapeOAuth2.config.access_token_class.by_refresh_token(request.refresh_token)
           request.invalid_grant! if refresh_token.nil?
 
           token = GrapeOAuth2.config.access_token_class.create_for(client, refresh_token.resource_owner)

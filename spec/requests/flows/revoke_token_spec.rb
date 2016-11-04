@@ -43,7 +43,7 @@ describe 'Token Endpoint' do
 
             it 'revokes Access Token by its refresh token' do
               refresh_token = SecureRandom.hex(16)
-              AccessToken.last.update_column(:refresh_token, refresh_token)
+              AccessToken.last.update(refresh_token: refresh_token)
 
               expect {
                 post api_url, { token: refresh_token, token_type_hint: 'refresh_token' }, headers

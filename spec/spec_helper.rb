@@ -1,4 +1,7 @@
 ENV['RAILS_ENV'] ||= 'test'
+ENV['ORM'] ||= 'active_record'
+
+puts "Configured ORM: '#{ENV['ORM']}'"
 
 require 'bundler/setup'
 Bundler.setup
@@ -6,17 +9,24 @@ Bundler.setup
 require 'rack/test'
 require 'database_cleaner'
 
-# TODO: make if configurable
-require 'active_record'
-require 'grape_oauth2'
-require File.expand_path('../dummy/app/twitter', __FILE__)
+ORM_GEMS_MAPPING = {
+  'sequel' => 'sequel',
+  'active_record' => 'active_record'
+}.freeze
 
-TWITTER_APP = Rack::Builder.parse_file(File.expand_path('../dummy/config.ru', __FILE__)).first
+require ORM_GEMS_MAPPING[ENV['ORM']]
+
+require 'grape_oauth2'
+require File.expand_path("../dummy/#{ENV['ORM']}/app/twitter", __FILE__)
+
+TWITTER_APP = Rack::Builder.parse_file(File.expand_path("../dummy/#{ENV['ORM']}/config.ru", __FILE__)).first
 
 require 'support/api_helper'
 
 RSpec.configure do |config|
   config.include ApiHelper
+
+  config.filter_run_excluding skip_if: true
 
   config.order = 'random'
 

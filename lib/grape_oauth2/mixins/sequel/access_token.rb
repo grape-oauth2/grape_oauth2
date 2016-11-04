@@ -3,7 +3,6 @@ module GrapeOAuth2
     module AccessToken
       extend ActiveSupport::Concern
 
-      # TODO: make as plugin
       included do
         plugin :validation_helpers
         plugin :timestamps
@@ -32,7 +31,7 @@ module GrapeOAuth2
           end
 
           def by_refresh_token(refresh_token)
-            find(refresh_token: refresh_token)
+            first(refresh_token: refresh_token)
           end
         end
 
@@ -43,9 +42,9 @@ module GrapeOAuth2
 
           def authenticate(token, token_type = :access_token)
             if token_type.to_sym == :access_token
-              active.find(token: token)
+              active.first(token: token)
             else
-              active.find(refresh_token: token)
+              active.first(refresh_token: token)
             end
           end
         end

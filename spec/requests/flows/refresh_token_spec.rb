@@ -80,7 +80,7 @@ describe 'Token Endpoint' do
 
           it 'returns a new Access Token even if used token is expired' do
             token = AccessToken.create_for(application, user)
-            token.update_column(:expires_at, Time.now - 604800) # - 7 days
+            token.update(expires_at: Time.now - 604800) # - 7 days
             expect(token.refresh_token).not_to be_nil
 
             post api_url,

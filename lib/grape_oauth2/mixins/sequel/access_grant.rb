@@ -3,7 +3,6 @@ module GrapeOAuth2
     module AccessGrant
       extend ActiveSupport::Concern
 
-      # TODO: make as plugin
       included do
         plugin :validation_helpers
         plugin :timestamps

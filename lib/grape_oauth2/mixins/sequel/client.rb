@@ -3,10 +3,11 @@ module GrapeOAuth2
     module Client
       extend ActiveSupport::Concern
 
-      # TODO: Make as plugin
       included do
         plugin :validation_helpers
         plugin :timestamps
+
+        set_allowed_columns :name
 
         one_to_many :access_tokens, class: GrapeOAuth2.config.access_token_class, key: :client_id
         one_to_many :refresh_tokens, class: GrapeOAuth2.config.access_token_class, key: :client_id do |set|
