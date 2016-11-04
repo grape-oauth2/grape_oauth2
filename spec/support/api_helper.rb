@@ -9,4 +9,3 @@ module ApiHelper
     JSON.parse(last_response.body, symbolize_names: true) rescue fail StandardError, 'API request returned invalid json'
   end
 end
-

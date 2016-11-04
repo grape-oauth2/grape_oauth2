@@ -34,8 +34,8 @@ module GrapeOAuth2
           revoked_at && revoked_at <= Time.now.utc
         end
 
-        def revoke!(clock = Time)
-          set(revoked_at: clock.now.utc)
+        def revoke!(revoked_at = Time.now)
+          set(revoked_at: revoked_at.utc)
           save(columns: [:revoked_at], validate: false)
         end
 

@@ -5,7 +5,7 @@ module GrapeOAuth2
       STRATEGY_CLASSES = {
         password: GrapeOAuth2::Strategies::Password,
         client_credentials: GrapeOAuth2::Strategies::ClientCredentials
-      }
+      }.freeze
 
       class << self
         def generate_for(env, &_block)

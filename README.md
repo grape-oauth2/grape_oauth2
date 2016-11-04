@@ -169,11 +169,11 @@ For the class that represents an OAuth2 Client you must define `has_many` relati
 For the class that represents an OAuth2 Access Token you must define `belongs_to` relations with `Client` and `ResourceOwner` classes and the next methods:
 
 * `self.create_for(client, resource_owner)` - returns an instance of the class;
-* `self.authenticate(token)` - returns an instance of the class if authenticated and `false`/`nil` in other cases;
+* `self.authenticate(token, token_type = :access_token)` - returns an instance of the class if authenticated and `false`/`nil` in other cases;
 * `expired?` - returns `true` if record is expired;
 * `expires_in_seconds` - returns `nil` if token never expires and count of seconds in other case;
 * `revoked?` - returns `true` if record is revoked;
-* `revoke!(clock = Time)` - revoke the token;
+* `revoke!(revoked_at = Time.now)` - revoke the token;
 * `accessible?` - returns `true` if record is not expired and is not revoked;
 * `to_bearer_token` - returns an instance of `Rack::OAuth2::AccessToken::Bearer`.
 
@@ -238,8 +238,11 @@ module Twitter
       AccessToken.authenticate(request.access_token) || request.invalid_token!
     end
 
-    # Moune default Grape OAuth2 Token endpoint
+    # Mount default Grape OAuth2 Token endpoint
     mount GrapeOAuth2::Endpoints::Token
+
+    # Mount default authorization endpoint
+    # mount GrapeOAuth2::Endpoints::Authorize
    
     # ...
   end
@@ -247,6 +250,13 @@ end
 ```
 
 That's all!
+
+Available routes:
+
+```
+POST /oauth/token
+POST /oauth/revoke
+```
 
 ### Hey, I wanna control all the authentication process!
 
@@ -259,7 +269,7 @@ class Application < ApplicationRecord
   
   class << self
     def self.authenticate(key, secret, need_secret = true)
-      # My custom condition to successfful authentication
+      # My custom condition for successful authentication
       return nil unless key.start_with?('MyAPI')
 
       if need_secret
@@ -288,16 +298,16 @@ module MyAPI
 
       post :token do
         token_response = GrapeOAuth2::Generators::Token.generate_for(env) do |request, response|
-          # Customly authenticate client
-          application = Application.find_by(key: request.client_id, active: true)
-          request.invalid_client! unless application
+          # Custom client authentication
+          client = Application.find_by(key: request.client_id, active: true)
+          request.invalid_client! unless client
 
-          # Customly authenticate resource owner (User model)
+          # Custom resource owner (User model) authentication
           resource_owner = User.find_by(username: request.username)
           request.invalid_grant! if resource_owner.nil? || resource_owner.inactive?
 
           # Create an AccessToken for the client and resource_owner
-          token = AccessToken.create_for(application, resource_owner)
+          token = AccessToken.create_for(client, resource_owner)
           response.access_token = token.to_bearer_token
         end
 

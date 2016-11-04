@@ -6,7 +6,7 @@ require 'grape_oauth2/configuration'
 require 'grape_oauth2/scope'
 
 # Mixins
-if defined?(ActiveRecord)
+if defined?(ActiveRecord::Base)
   require 'grape_oauth2/mixins/active_record/access_token'
   require 'grape_oauth2/mixins/active_record/access_grant'
   require 'grape_oauth2/mixins/active_record/client'

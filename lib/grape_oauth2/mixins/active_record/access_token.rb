@@ -13,16 +13,19 @@ module GrapeOAuth2
         before_validation :generate_tokens, on: :create
         before_validation :setup_expiration, on: :create
 
-        scope :active, -> { where(revoked_at: nil).where(arel_table[:expires_at].gteq(Time.now.utc)) }
+        scope :active, -> { where(revoked_at: nil) }
 
         class << self
           def create_for(client, resource_owner)
             create(client_id: client.id, resource_owner_id: resource_owner && resource_owner.id)
           end
 
-          # TODO: check scopes?
-          def authenticate(token)
-            active.find_by(token: token)
+          def authenticate(token, token_type = :access_token)
+            if token_type.to_sym == :access_token
+              active.find_by(token: token)
+            else
+              active.find_by(refresh_token: token)
+            end
           end
         end
 
@@ -39,8 +42,8 @@ module GrapeOAuth2
           revoked_at && revoked_at <= Time.now.utc
         end
 
-        def revoke!(clock = Time)
-          update_column :revoked_at, clock.now.utc
+        def revoke!(revoked_at = Time.now)
+          update_column :revoked_at, revoked_at.utc
         end
 
         def accessible?

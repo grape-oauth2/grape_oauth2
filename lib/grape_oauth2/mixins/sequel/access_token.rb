@@ -28,7 +28,7 @@ module GrapeOAuth2
 
         dataset_module do
           def active
-            where(revoked_at: nil).where { expires_at >= Time.now.utc }
+            where(revoked_at: nil)
           end
         end
 
@@ -38,8 +38,12 @@ module GrapeOAuth2
           end
 
           # TODO: check scopes?
-          def authenticate(token)
-            active.find(token: token)
+          def authenticate(token, token_type = :access_token)
+            if token_type.to_sym == :access_token
+              active.find_by(token: token)
+            else
+              active.find_by(refresh_token: token)
+            end
           end
         end
 
@@ -56,8 +60,8 @@ module GrapeOAuth2
           revoked_at && revoked_at <= Time.now.utc
         end
 
-        def revoke!(clock = Time)
-          set(revoked_at: clock.now.utc)
+        def revoke!(revoked_at = Time.now)
+          set(revoked_at: revoked_at.utc)
           save(columns: [:revoked_at], validate: false)
         end
 
@@ -68,9 +72,9 @@ module GrapeOAuth2
         def to_bearer_token
           Rack::OAuth2::AccessToken::Bearer.new(
             access_token: token,
-            expires_in: expires_in_seconds.to_i
+            expires_in: expires_in_seconds.to_i,
+            refresh_token: refresh_token
           )
-          # TODO: what about refresh token ?
         end
 
         protected

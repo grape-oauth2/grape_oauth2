@@ -1,0 +1,15 @@
+LineLength:
+  Max: 120
+AllCops:
+  Exclude:
+    - 'doorkeeper/**/*'
+    - 'spec/**/*'
+  DisplayCopNames: true
+Rails:
+  Enabled: true
+Documentation:
+  Enabled: false
+Style/EndOfLine:
+  Enabled: false
+Rails/TimeZone:
+  Enabled: false

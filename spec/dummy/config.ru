@@ -5,6 +5,3 @@ require 'app/twitter'
 use OTR::ActiveRecord::ConnectionManagement
 
 run Twitter::API
-
-
-

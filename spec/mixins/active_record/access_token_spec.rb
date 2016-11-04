@@ -3,9 +3,9 @@ require 'spec_helper'
 describe GrapeOAuth2::ActiveRecord::AccessToken do
   let(:application) { Application.create }
   let(:user) { User.create(username: 'test', password: '123123') }
-  let(:access_token) { AccessToken.create(client: application, resource_owner: user)}
+  let(:access_token) { AccessToken.create(client: application, resource_owner: user) }
 
-  let(:token) { SecureRandom.hex(16)  }
+  let(:token) { SecureRandom.hex(16) }
 
   describe '#to_bearer_token' do
     context 'config with refresh token' do
