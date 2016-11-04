@@ -69,8 +69,19 @@ describe 'Token Endpoint' do
             end
           end
 
-          context 'with invalid credentials' do
-            it 'does not revokes access token' do
+          context 'with invalid data' do
+            it 'does not revokes Access Token when credentials is invalid' do
+              expect {
+                post api_url, token: AccessToken.last.token
+              }.to_not change { AccessToken.active.count }
+
+              expect(json_body[:error]).to eq('invalid_client')
+            end
+
+            it 'does not revokes Access Token when token was issued to another client' do
+              another_client = Application.create(name: 'Some')
+              AccessToken.last.update(client: another_client)
+
               expect {
                 post api_url, token: AccessToken.last.token
               }.to_not change { AccessToken.active.count }

@@ -9,8 +9,11 @@ module GrapeOAuth2
 
           refresh_token = GrapeOAuth2.config.access_token_class.by_refresh_token(request.refresh_token)
           request.invalid_grant! if refresh_token.nil?
+          request.unauthorized_client! if refresh_token && refresh_token.client != client
 
           token = GrapeOAuth2.config.access_token_class.create_for(client, refresh_token.resource_owner)
+          refresh_token.revoke! if GrapeOAuth2.config.revoke_after_refresh
+
           token.to_bearer_token
         end
       end
