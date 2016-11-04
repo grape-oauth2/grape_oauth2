@@ -4,6 +4,10 @@ module GrapeOAuth2
       helpers GrapeOAuth2::Helpers::OAuthParams
 
       namespace :oauth do
+        # @see https://tools.ietf.org/html/rfc6749#section-3.2
+        #
+        desc 'OAuth 2.0 Token Endpoint'
+
         params do
           use :oauth_token_params
         end
@@ -22,6 +26,8 @@ module GrapeOAuth2
           # Body
           body token_response.access_token
         end
+
+        desc 'OAuth 2.0 Token Revocation'
 
         params do
           requires :token, type: String, desc: 'The token that the client wants to get revoked'
