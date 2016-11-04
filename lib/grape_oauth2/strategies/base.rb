@@ -2,7 +2,7 @@ module GrapeOAuth2
   module Strategies
     class Base
       class << self
-        def authenticate_client!(request)
+        def authenticate_client(request)
           if block_given?
             yield request
           else
@@ -10,7 +10,7 @@ module GrapeOAuth2
           end
         end
 
-        def authenticate_resource_owner!(client, request)
+        def authenticate_resource_owner(client, request)
           if block_given?
             yield client, request
           else

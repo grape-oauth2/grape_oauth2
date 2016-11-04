@@ -3,7 +3,7 @@ module GrapeOAuth2
     class ClientCredentials < Base
       class << self
         def process(request, &authenticator)
-          client = authenticate_client!(request, &authenticator)
+          client = authenticate_client(request, &authenticator)
 
           request.invalid_client! if client.nil?
 

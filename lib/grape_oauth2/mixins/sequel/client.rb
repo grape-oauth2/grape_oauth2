@@ -10,7 +10,7 @@ module GrapeOAuth2
 
         one_to_many :access_tokens, class: GrapeOAuth2.config.access_token_class, key: :client_id
         one_to_many :refresh_tokens, class: GrapeOAuth2.config.access_token_class, key: :client_id do |set|
-          set.where(revoked_at: nil).exclude(refresh_token: nil)
+          set.exclude(refresh_token: nil)
         end
 
         def before_validation
