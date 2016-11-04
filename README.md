@@ -162,7 +162,7 @@ If you decide to use your own classes with the default gem functionality, then y
 
 #### Client
 
-For the class that represents an OAuth2 Client you must define `has_many` relation with `AccessTokens` and authentication method (`self.authenticate(key, secret, need_secret = true)`). Dont forget to setup class name in the Grape OAuth2 config.
+For the class that represents an OAuth2 Client you must define `has_many` relation with `AccessTokens` and authentication method (`self.authenticate(key, secret = nil)`). Dont forget to setup class name in the Grape OAuth2 config.
 
 #### AccessToken
 
