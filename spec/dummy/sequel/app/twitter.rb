@@ -1,7 +1,13 @@
-require 'otr-activerecord'
 require 'grape'
 
-require File.expand_path('../../../../lib/grape_oauth2', __FILE__)
+require File.expand_path('../../../../../lib/grape_oauth2', __FILE__)
+
+# SQLite memory database
+DB = if defined?(JRUBY_VERSION)
+       Sequel.connect('jdbc:sqlite::memory:')
+     else
+       Sequel.sqlite
+     end
 
 # Database
 load File.expand_path('../config/db.rb', __FILE__)

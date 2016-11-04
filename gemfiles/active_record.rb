@@ -12,6 +12,7 @@ end
 
 gem 'grape', '~> 0.16'
 gem 'rack-oauth2'
+gem 'otr-activerecord'
 
 gem 'activerecord'
 gem 'bcrypt'

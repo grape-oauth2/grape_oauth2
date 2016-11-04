@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe GrapeOAuth2::ActiveRecord::Client do
+describe 'GrapeOAuth2::ActiveRecord::Client', skip_if: ENV['ORM'] != 'active_record' do
   let(:client) { Application.new }
 
   let(:key) { SecureRandom.hex(8)  }
