@@ -14,6 +14,7 @@ module GrapeOAuth2
         before_validation :setup_expiration, on: :create
 
         scope :active, -> { where(revoked_at: nil) }
+        scope :by_refresh_token, ->(refresh_token) { find_by(refresh_token: refresh_token) }
 
         class << self
           def create_for(client, resource_owner)

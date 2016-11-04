@@ -39,10 +39,12 @@ module GrapeOAuth2
             access_token.revoke!
           end
 
-          # @see https://tools.ietf.org/html/rfc7009#section-2.2 Revocation Response
           # The authorization server responds with HTTP status code 200 if the token
           # has been revoked successfully or if the client submitted an invalid
-          # token
+          # token.
+          #
+          # @see https://tools.ietf.org/html/rfc7009#section-2.2 Revocation Response
+          #
           status 200
           {}
         end

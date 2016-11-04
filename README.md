@@ -30,7 +30,7 @@ This gem adds a flexible OAuth2 server authentication to your [Grape](https://gi
 If you are using bundler, first add 'grape_oauth2' to your Gemfile:
 
 ```ruby
-gem 'grape_oauth2', github: 'nbulaj/grape_oauth2'
+gem 'grape_oauth2', git: 'https://github.com/nbulaj/grape_oauth2.git'
 ```
 
 And run:
@@ -49,7 +49,7 @@ GrapeOAuth2.configure do |config|
   config.token_lifetime = 7200 # in seconds (2.hours for Rails)
 
   # Allowed OAuth2 Authorization Grants
-  # config.allowed_grant_types = %w(password client_credentials)
+  # config.allowed_grant_types = %w(password client_credentials refresh_token)
 
   # Issue access tokens with refresh token
   # config.refresh_token = true
@@ -61,7 +61,9 @@ GrapeOAuth2.configure do |config|
 end
 ```
 
-As you know, OAuth2 workflow implies the existence of the next three roles: **AccessToken**, **Client** and **ResourceOwner**. So your project must include 3 classes (models) - _AccessToken_, _Application_ and _User_ for example. The gem needs to know what classes it work, so you need to create them and configure `GrapeOAuth2`.
+Currently implemented (partly on completely) grant types: _password, client_credentials, refresh_token_.
+
+As you know, OAuth2 workflow implies the existence of the next three roles: **Access Token**, **Client** and **Resource Owner**. So your project must include 3 classes (models) - _AccessToken_, _Application_ and _User_ for example. The gem needs to know what classes it work, so you need to create them and configure `GrapeOAuth2`.
 
 `resource_owner_class` must have a `self.oauth_authenticate(client, username, password)` method, that returns an instance of the class if authentication successful (`username` and `password` matches for example) and `false` or `nil` in other cases.
 

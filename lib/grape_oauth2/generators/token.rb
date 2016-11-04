@@ -4,7 +4,8 @@ module GrapeOAuth2
       # Grant type => OAuth2 strategy class
       STRATEGY_CLASSES = {
         password: GrapeOAuth2::Strategies::Password,
-        client_credentials: GrapeOAuth2::Strategies::ClientCredentials
+        client_credentials: GrapeOAuth2::Strategies::ClientCredentials,
+        refresh_token: GrapeOAuth2::Strategies::RefreshToken
       }.freeze
 
       class << self
@@ -25,9 +26,12 @@ module GrapeOAuth2
         protected
 
         def execute_default(request, response)
-          strategy_class = STRATEGY_CLASSES[request.grant_type] || request.invalid_grant!
+          strategy = initialize_strategy(request.grant_type) || request.invalid_grant!
+          response.access_token = strategy.process(request)
+        end
 
-          response.access_token = strategy_class.process(request)
+        def initialize_strategy(grant_type)
+          STRATEGY_CLASSES[grant_type]
         end
       end
     end

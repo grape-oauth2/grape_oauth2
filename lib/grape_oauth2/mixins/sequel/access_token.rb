@@ -30,6 +30,10 @@ module GrapeOAuth2
           def active
             where(revoked_at: nil)
           end
+
+          def by_refresh_token(refresh_token)
+            find(refresh_token: refresh_token)
+          end
         end
 
         class << self
@@ -37,12 +41,11 @@ module GrapeOAuth2
             create(client_id: client.id, resource_owner_id: resource_owner && resource_owner.id)
           end
 
-          # TODO: check scopes?
           def authenticate(token, token_type = :access_token)
             if token_type.to_sym == :access_token
-              active.find_by(token: token)
+              active.find(token: token)
             else
-              active.find_by(refresh_token: token)
+              active.find(refresh_token: token)
             end
           end
         end

@@ -20,6 +20,8 @@ GrapeOAuth2.configure do |config|
   config.client_class = Application
   config.access_token_class = AccessToken
   config.resource_owner_class = User
+
+  config.allowed_grant_types << 'refresh_token'
 end
 
 module Twitter

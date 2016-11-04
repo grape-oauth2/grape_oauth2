@@ -20,6 +20,7 @@ end
 require 'grape_oauth2/strategies/base'
 require 'grape_oauth2/strategies/password'
 require 'grape_oauth2/strategies/client_credentials'
+require 'grape_oauth2/strategies/refresh_token'
 
 # Generators
 require 'grape_oauth2/generators/base'

@@ -5,7 +5,6 @@ module GrapeOAuth2
     DEFAULT_ACCESS_GRANT_CLASS = '::AccessGrant'.freeze
     DEFAULT_RESOURCE_OWNER_CLASS = '::User'.freeze
 
-    DEFAULT_ALLOWED_GRANT_TYPES = %w(password client_credentials).freeze
     DEFAULT_REFRESH_TOKEN = false
     DEFAULT_TOKEN_LIFETIME = 7200 # in seconds
     DEFAULT_GRANT_LIFETIME = 7200
@@ -22,9 +21,9 @@ module GrapeOAuth2
       self.resource_owner_class = DEFAULT_RESOURCE_OWNER_CLASS
       self.access_grant_class = DEFAULT_ACCESS_GRANT_CLASS
 
+      self.allowed_grant_types = %w(password client_credentials)
       self.token_lifetime = DEFAULT_TOKEN_LIFETIME
       self.grant_lifetime = DEFAULT_GRANT_LIFETIME
-      self.allowed_grant_types = DEFAULT_ALLOWED_GRANT_TYPES
       self.refresh_token = DEFAULT_REFRESH_TOKEN
     end
   end
