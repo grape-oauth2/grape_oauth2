@@ -13,7 +13,7 @@ group :test do
     gem 'sqlite3'
   end
 
-  gem 'rspec-rails', '~> 3.4'
+  gem 'rspec-rails', '~> 3.5'
   gem 'database_cleaner'
   gem 'rack-test', require: 'rack/test'
   gem 'otr-activerecord'

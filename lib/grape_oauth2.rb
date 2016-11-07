@@ -5,6 +5,7 @@ require 'grape_oauth2/version'
 require 'grape_oauth2/configuration'
 require 'grape_oauth2/scope'
 
+# Extract to separate gems
 # Mixins
 if defined?(ActiveRecord::Base)
   require 'grape_oauth2/mixins/active_record/access_token'

@@ -322,6 +322,20 @@ module MyAPI
 
         body token_response.access_token
       end
+      
+      desc 'OAuth 2.0 Token Revocation'
+
+      params do
+        requires :token, type: String, desc: 'The token that the client wants to get revoked'
+        optional :token_type_hint, type: String, 
+                                   values: %w(access_token refresh_token),
+                                   default: 'access_token',
+                                   desc: 'A hint about the type of the token submitted for revocation'
+      end
+
+      post :revoke do
+       # ...
+      end
     end
   end
 end

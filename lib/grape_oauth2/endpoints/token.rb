@@ -31,7 +31,9 @@ module GrapeOAuth2
 
         params do
           requires :token, type: String, desc: 'The token that the client wants to get revoked'
-          optional :token_type_hint, type: String, values: %w(access_token refresh_token), default: 'access_token',
+          optional :token_type_hint, type: String, 
+                                     values: %w(access_token refresh_token),
+                                     default: 'access_token',
                                      desc: 'A hint about the type of the token submitted for revocation'
         end
 
@@ -43,7 +45,8 @@ module GrapeOAuth2
           client = GrapeOAuth2::Strategies::Base.authenticate_client(request)
           request.invalid_client! if client.nil?
 
-          access_token = GrapeOAuth2.config.access_token_class.authenticate(params[:token], params[:token_type_hint])
+          access_token = GrapeOAuth2.config.access_token_class.authenticate(params[:token],
+                                                                            params[:token_type_hint])
 
           if access_token
             if access_token.client_id
