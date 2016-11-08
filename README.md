@@ -185,10 +185,12 @@ If you decide to use your own classes with the default gem functionality, then y
 
 #### Client
 
-Class that represents an OAuth2 Client should look as follows:
+Class that represents an OAuth2 Client should contain the following API:
 
 ```ruby
 class Client
+  # ...
+
   def self.authenticate(key, secret = nil)
     # Should return a Client instance matching the 
     # key & secret (if specified) provided.
@@ -202,6 +204,8 @@ For the class that represents an OAuth2 Access Token you must define the next AP
 
 ```ruby
 class AccessToken
+  # ...
+
   def self.create_for(client, resource_owner)
     # Creates the record in the database for the provided client and
     # resource owner. Returns an instance of that record.
@@ -250,6 +254,8 @@ As was said before, Resource Owner class (`User` model for example) must contain
 
 ```ruby
 class User
+  # ...
+
   def self.oauth_authenticate(client, username, password)
     # Returns an instance of the User class with matching username
     # and password. If there is no such User or password doesn't match
@@ -307,8 +313,7 @@ module Twitter
 
     helpers GrapeOAuth2::Helpers::AccessTokenHelpers
 
-    # What to do if somebody will request an API with access_token
-    # Authenticate token and raise an error in case of authentication error
+    # Token authentication process: authenticate or raise an error.
     use Rack::OAuth2::Server::Resource::Bearer, 'OAuth API' do |request|
       AccessToken.authenticate(request.access_token) || request.invalid_token!
     end
