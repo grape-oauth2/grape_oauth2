@@ -54,7 +54,7 @@ describe 'Token Endpoint' do
           end
 
           it 'fails when Access Token was issued to another client' do
-            allow(GrapeOAuth2.config).to receive(:refresh_token).and_return(true)
+            allow(GrapeOAuth2.config).to receive(:issue_refresh_token).and_return(true)
 
             another_client = Application.create(name: 'Some')
             token = AccessToken.create_for(another_client, user)
@@ -74,7 +74,7 @@ describe 'Token Endpoint' do
         end
 
         context 'with valid data' do
-          before { allow(GrapeOAuth2.config).to receive(:refresh_token).and_return(true) }
+          before { allow(GrapeOAuth2.config).to receive(:issue_refresh_token).and_return(true) }
 
           it 'returns a new Access Token' do
             token = AccessToken.create_for(application, user)
@@ -116,7 +116,6 @@ describe 'Token Endpoint' do
             expect(AccessToken.last.client_id).to eq application.id
             expect(AccessToken.last.resource_owner_id).to eq user.id
 
-            puts token.reload.inspect
             expect(token.reload.revoked?).to be_truthy
             expect(token.reload).not_to be_accessible
 

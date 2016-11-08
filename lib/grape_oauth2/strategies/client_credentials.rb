@@ -7,7 +7,7 @@ module GrapeOAuth2
 
           request.invalid_client! if client.nil?
 
-          token = GrapeOAuth2.config.access_token_class.create_for(client, nil)
+          token = config.access_token_class.create_for(client, nil)
           token.to_bearer_token
         end
       end

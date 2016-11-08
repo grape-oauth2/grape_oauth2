@@ -12,7 +12,7 @@ module GrapeOAuth2
                   :access_grant_class
 
     attr_accessor :allowed_grant_types, :grant_lifetime, :token_lifetime,
-                  :refresh_token, :revoke_after_refresh
+                  :issue_refresh_token, :revoke_after_refresh
 
     def initialize
       self.client_class = DEFAULT_CLIENT_CLASS
@@ -24,7 +24,7 @@ module GrapeOAuth2
       self.token_lifetime = DEFAULT_TOKEN_LIFETIME
       self.grant_lifetime = DEFAULT_GRANT_LIFETIME
 
-      self.refresh_token = false
+      self.issue_refresh_token = false
       self.revoke_after_refresh = false
     end
   end

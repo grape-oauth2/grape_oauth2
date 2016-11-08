@@ -10,11 +10,11 @@ describe 'GrapeOAuth2::ActiveRecord::AccessToken', skip_if: ENV['ORM'] != 'activ
   describe '#to_bearer_token' do
     context 'config with refresh token' do
       before do
-        GrapeOAuth2.config.refresh_token = true
+        GrapeOAuth2.config.issue_refresh_token = true
       end
 
       after do
-        GrapeOAuth2.config.refresh_token = false
+        GrapeOAuth2.config.issue_refresh_token = false
       end
 
       it 'returns refresh token' do
@@ -25,7 +25,7 @@ describe 'GrapeOAuth2::ActiveRecord::AccessToken', skip_if: ENV['ORM'] != 'activ
     context 'config without refresh token' do
       before do
         GrapeOAuth2.configure do |config|
-          config.refresh_token = false
+          config.issue_refresh_token = false
         end
       end
 

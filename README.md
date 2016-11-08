@@ -4,9 +4,27 @@
 [![Code Climate](https://codeclimate.com/github/nbulaj/grape_oauth2/badges/gpa.svg)](https://codeclimate.com/github/nbulaj/grape_oauth2)
 [![License](http://img.shields.io/badge/license-MIT-brightgreen.svg)](#license)
 
-This gem adds a flexible OAuth2 server authentication to your [Grape](https://github.com/ruby-grape/grape) API project.
+This gem adds a flexible OAuth2 ([RFC 6749](http://www.rfc-editor.org/rfc/rfc6749.txt)) server authentication to your [Grape](https://github.com/ruby-grape/grape) API project.
 
 **Currently under development**.
+
+Implemented features (flows):
+
+- Resource Owner Password Credentials
+- Client Credentials
+- Refresh token
+- Token revocation
+
+Supported token types:
+
+* Bearer
+
+_In progress_:
+
+- Access Token Scopes
+- Access Grants
+- Authorization endpoint
+- Implicit Grant
 
 ## Table of Contents
 
@@ -52,7 +70,10 @@ GrapeOAuth2.configure do |config|
   # config.allowed_grant_types = %w(password client_credentials refresh_token)
 
   # Issue access tokens with refresh token
-  # config.refresh_token = true
+  # config.issue_refresh_token = true
+  
+  # Revoke token after using of refresh token
+  # config.revoke_after_refresh = true
 
   # Classes for OAuth2 Roles
   config.client_class = Application
