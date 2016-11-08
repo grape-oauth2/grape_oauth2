@@ -4,12 +4,14 @@ module GrapeOAuth2
       helpers GrapeOAuth2::Helpers::OAuthParams
 
       namespace :oauth do
+        desc 'OAuth 2.0 Authorization Endpoint'
+
         params do
           use :oauth_authorization_params
         end
 
-        get :authorize do
-          raise NotImplemented
+        post :authorize do
+          raise NotImplementedError
         end
       end
     end

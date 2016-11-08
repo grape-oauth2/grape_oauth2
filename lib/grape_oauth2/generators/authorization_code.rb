@@ -14,32 +14,43 @@ module GrapeOAuth2
           authorization.call(env)
         end
 
-        def authenticate_client!(request)
+        def authenticate_client(request)
           config.client_class.authenticate(request.client_id)
         end
 
         private
 
         def execute_default(request, response)
-          client = authenticate_client!(request) || request.bad_request!
+          client = authenticate_client(request) || request.bad_request!
           response.redirect_uri = request.verify_redirect_uri!(client.redirect_uri) # TODO: split URIs
-
-          request.invalid_request! if request.response_type != :code
 
           # Move to Strategy Class
           # TODO: verify scopes if they valid
           # scopes = request.scope
           # request.invalid_scope! "Unknown scope: #{scope}"
 
-          # TODO: create access grant
-          # access_grant = AccessGrant.create(
-          #    client: client,
-          #    redirect_uri: response.redirect_uri
-          #    scopes: scopes
-          # )
+          if request.params['approve']
+            case request.response_type
+            when :code
+              # Implement me!
+              # authorization_code = config.access_grant_class.create_for(
+              #  client: client,
+              #  redirect_uri: response.redirect_uri
+              # )
 
-          # response.code = access_grant.token
-          response.approve!
+              # response.code = authorization_code.token
+            when :token
+              # Implement me!
+            else
+              request.unsupported_response_type!
+            end
+
+            response.approve!
+          else
+            request.access_denied!
+          end
+
+          response
         end
       end
     end
