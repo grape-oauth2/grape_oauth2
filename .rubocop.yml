@@ -13,3 +13,7 @@ Style/EndOfLine:
   Enabled: false
 Rails/TimeZone:
   Enabled: false
+Metrics/BlockLength:
+  Exclude:
+    - lib/grape_oauth2/mixins/**/*
+    - lib/grape_oauth2/endpoints/*

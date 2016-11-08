@@ -10,9 +10,6 @@ module GrapeOAuth2
         set_allowed_columns :name
 
         one_to_many :access_tokens, class: GrapeOAuth2.config.access_token_class, key: :client_id
-        one_to_many :refresh_tokens, class: GrapeOAuth2.config.access_token_class, key: :client_id do |set|
-          set.exclude(refresh_token: nil)
-        end
 
         def before_validation
           generate_keys if new?

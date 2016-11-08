@@ -5,8 +5,6 @@ module GrapeOAuth2
 
       included do
         has_many :access_tokens, class_name: GrapeOAuth2.config.access_token_class, foreign_key: :client_id
-        has_many :refresh_tokens, -> { where.not(refresh_token: nil) }, class_name: GrapeOAuth2.config.access_token_class,
-                                                                        foreign_key: :client_id
 
         validates :key, :secret, presence: true
         validates :key, uniqueness: true

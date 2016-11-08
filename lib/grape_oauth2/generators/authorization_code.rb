@@ -15,7 +15,7 @@ module GrapeOAuth2
         end
 
         def authenticate_client!(request)
-          GrapeOAuth2.config.client_class.authenticate(request.client_id)
+          config.client_class.authenticate(request.client_id)
         end
 
         private

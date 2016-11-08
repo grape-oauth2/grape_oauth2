@@ -3,7 +3,11 @@ module GrapeOAuth2
     class Base
       class << self
         def allowed_grants
-          GrapeOAuth2.config.allowed_grant_types
+          config.allowed_grant_types
+        end
+
+        def config
+          GrapeOAuth2.config
         end
       end
     end
