@@ -117,7 +117,6 @@ describe 'Token Endpoint' do
             expect(AccessToken.last.resource_owner_id).to eq user.id
 
             expect(token.reload.revoked?).to be_truthy
-            expect(token.reload).not_to be_accessible
 
             expect(json_body[:access_token]).to eq AccessToken.last.token
             expect(json_body[:refresh_token]).to eq AccessToken.last.refresh_token

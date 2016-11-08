@@ -25,10 +25,6 @@ module GrapeOAuth2
           update_column :revoked_at, revoked_at.utc
         end
 
-        def accessible?
-          !expired? && !revoked?
-        end
-
         protected
 
         def generate_token

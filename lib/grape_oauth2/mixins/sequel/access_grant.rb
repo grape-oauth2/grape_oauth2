@@ -38,10 +38,6 @@ module GrapeOAuth2
           save(columns: [:revoked_at], validate: false)
         end
 
-        def accessible?
-          !expired? && !revoked?
-        end
-
         protected
 
         def generate_token

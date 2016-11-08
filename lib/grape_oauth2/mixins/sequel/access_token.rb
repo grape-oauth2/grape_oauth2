@@ -67,10 +67,6 @@ module GrapeOAuth2
           save(columns: [:revoked_at], validate: false)
         end
 
-        def accessible?
-          !expired? && !revoked?
-        end
-
         def to_bearer_token
           Rack::OAuth2::AccessToken::Bearer.new(
             access_token: token,

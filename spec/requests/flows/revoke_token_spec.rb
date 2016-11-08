@@ -38,7 +38,6 @@ describe 'Token Endpoint' do
               expect(last_response.status).to eq 200
 
               expect(AccessToken.last).to be_revoked
-              expect(AccessToken.last).not_to be_accessible
             end
 
             it 'revokes Access Token by its refresh token' do
@@ -53,7 +52,6 @@ describe 'Token Endpoint' do
               expect(last_response.status).to eq 200
 
               expect(AccessToken.last).to be_revoked
-              expect(AccessToken.last).not_to be_accessible
             end
           end
         end

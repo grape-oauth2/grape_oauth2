@@ -179,32 +179,84 @@ end
 
 ### Other ORMs
 
-If you want to use Grape OAuth2 default authentication endpoint or default `GrapeOAuth2::Generators::Token` (or some other flows) behaviour, but your project doesn't use `ActiveRecord` or `Sequel`, then you must create at least 3 models (classes) to cover OAuth2 roles. In other cases you can skip this step and do everything just as you want to.
+If you want to use Grape OAuth2 endpoints, but your project doesn't use `ActiveRecord` or `Sequel`, then you must create at least 3 models (classes) to cover OAuth2 roles. Otherwise you can skip this step and do everything just as you want to.
 
-If you decide to use your own classes with the default gem functionality, then you need to define the next API in them (names of the classes can be customized, it's only an example):
+If you decide to use your own classes with the default gem functionality, then you need to define a specific set ot API.
 
 #### Client
 
-For the class that represents an OAuth2 Client you must define `has_many` relation with `AccessTokens` and authentication method (`self.authenticate(key, secret = nil)`). Dont forget to setup class name in the Grape OAuth2 config.
+Class that represents an OAuth2 Client should look as follows:
+
+```ruby
+class Client
+  def self.authenticate(key, secret = nil)
+    # Should return a Client instance matching the 
+    # key & secret (if specified) provided.
+  end
+end
+```
 
 #### AccessToken
 
-For the class that represents an OAuth2 Access Token you must define `belongs_to` relations with `Client` and `ResourceOwner` classes and the next methods:
+For the class that represents an OAuth2 Access Token you must define the next API:
 
-* `self.create_for(client, resource_owner)` - returns an instance of the class;
-* `self.authenticate(token, token_type = :access_token)` - returns an instance of the class if authenticated and `false`/`nil` in other cases;
-* `expired?` - returns `true` if record is expired;
-* `expires_in_seconds` - returns `nil` if token never expires and count of seconds in other case;
-* `revoked?` - returns `true` if record is revoked;
-* `revoke!(revoked_at = Time.now)` - revoke the token;
-* `accessible?` - returns `true` if record is not expired and is not revoked;
-* `to_bearer_token` - returns an instance of `Rack::OAuth2::AccessToken::Bearer`.
+```ruby
+class AccessToken
+  def self.create_for(client, resource_owner)
+    # Creates the record in the database for the provided client and
+    # resource owner. Returns an instance of that record.
+  end
+
+  def self.authenticate(token, token_type = :access_token)
+    # Returns an Access Token instance matching the token provided.
+    # Note that you MAY include expired access tokens in the result
+    # of this method so long as you implement an instance #expired?
+    # method.
+    
+    # Access Token can be searched by refresh_token value. In that case
+    # token_type must be set to :refresh_token.
+  end
+  
+  def expired?
+    # true if the Access Token has reached its expiration.
+  end
+
+  def revoked?
+    # true if the Access Token was revoked
+  end
+
+  def revoke!(revoked_at = Time.now)
+    # Updates the instance of the Access Token in the database
+    # by setting its :revoked_at attribute to the specific time.
+  end
+
+  def to_bearer_token
+    # Returns an instance of the Rack::OAuth2::AccessToken::Bearer 
+    # initialized with the next hash:
+    #   access_token: '',    # - required
+    #   refresh_token: '',   # - optional
+    #   token_type: '',      # - required
+    #   expires_in: '',      # - required
+    #   scope: ''            # - optional
+  end
+end
+```
 
 You can take a look at the [Grape OAuth2 mixins](https://github.com/nbulaj/grape_oauth2/tree/master/lib/grape_oauth2/mixins) to understand what they are doing and what they are returning.
 
 #### ResourceOwner
 
-As was said before, Resource Owner class (`User` model for example) must contain only one class method (in case of Password Authorization Grant): `self.authenticate(client, username, password)`.
+As was said before, Resource Owner class (`User` model for example) must contain only one class method (in case of Password Authorization Grant): `self.oauth_authenticate(client, username, password)`.
+
+```ruby
+class User
+  def self.oauth_authenticate(client, username, password)
+    # Returns an instance of the User class with matching username
+    # and password. If there is no such User or password doesn't match
+    # then returns nil.
+  end
+end
+```
 
 ## Usage examples
 ### I'm lazy, give me all out of the box!

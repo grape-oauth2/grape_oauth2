@@ -47,10 +47,6 @@ module GrapeOAuth2
           update_column :revoked_at, revoked_at.utc
         end
 
-        def accessible?
-          !expired? && !revoked?
-        end
-
         def to_bearer_token
           Rack::OAuth2::AccessToken::Bearer.new(
             access_token: token,
