@@ -13,30 +13,22 @@ module GrapeOAuth2
         before_validation :generate_tokens, on: :create
         before_validation :setup_expiration, on: :create
 
-        scope :active, -> { where(revoked_at: nil) }
-        scope :by_refresh_token, ->(refresh_token) { find_by(refresh_token: refresh_token) }
-
         class << self
           def create_for(client, resource_owner)
             create(client_id: client.id, resource_owner_id: resource_owner && resource_owner.id)
           end
 
-          def authenticate(token, token_type = :access_token)
-            if token_type.to_sym == :access_token
-              active.find_by(token: token)
+          def authenticate(token, type: :access_token)
+            if type && type.to_sym == :refresh_token
+              find_by(refresh_token: token.to_s)
             else
-              active.find_by(refresh_token: token)
+              find_by(token: token.to_s)
             end
           end
         end
 
         def expired?
           expires_at && Time.now.utc > expires_at
-        end
-
-        def expires_in_seconds
-          return nil if expires_at.nil?
-          GrapeOAuth2.config.token_lifetime
         end
 
         def revoked?
@@ -50,7 +42,7 @@ module GrapeOAuth2
         def to_bearer_token
           Rack::OAuth2::AccessToken::Bearer.new(
             access_token: token,
-            expires_in: expires_in_seconds.to_i,
+            expires_in: expires_at && GrapeOAuth2.config.token_lifetime.to_i,
             refresh_token: refresh_token
           )
         end

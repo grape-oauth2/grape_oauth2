@@ -5,7 +5,7 @@ require 'grape_oauth2/version'
 Gem::Specification.new do |gem|
   gem.name        = 'grape_oauth2'
   gem.version     = GrapeOAuth2.gem_version
-  gem.authors     = ['Nikita Bulaj']
+  gem.authors     = ['Nikita Bulai']
   gem.date        = '2016-05-31'
   gem.email       = ['bulajnikita@gmail.com']
   gem.homepage    = 'http://github.com/nbulaj/grape-oauth2'

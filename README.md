@@ -207,27 +207,27 @@ class AccessToken
     # resource owner. Returns an instance of that record.
   end
 
-  def self.authenticate(token, token_type = :access_token)
+  def self.authenticate(token, type: :access_token)
     # Returns an Access Token instance matching the token provided.
+    # Access Token can be searched by token or refresh token value. In the
+    # first case :type option must be set to :access_token (default), in
+    # the second case - to the :refresh_token.
     # Note that you MAY include expired access tokens in the result
-    # of this method so long as you implement an instance #expired?
+    # of this method so long as you implement an instance `#expired?`
     # method.
-    
-    # Access Token can be searched by refresh_token value. In that case
-    # token_type must be set to :refresh_token.
   end
-  
+
   def expired?
     # true if the Access Token has reached its expiration.
   end
 
   def revoked?
-    # true if the Access Token was revoked
+    # true if the Access Token was revoked.
   end
 
   def revoke!(revoked_at = Time.now)
-    # Updates the instance of the Access Token in the database
-    # by setting its :revoked_at attribute to the specific time.
+    # Revokes an Access Token (by setting its :revoked_at attribute to the
+    # specific time for example).
   end
 
   def to_bearer_token
@@ -335,7 +335,8 @@ POST /oauth/revoke
 
 ### Hey, I wanna control all the authentication process!
 
-If you need to do some special things (check if `client_id` starts with _'MyAPI'_ word for example), then you can just override default authentication methods in models (only if you are using gem mixins, in other cases you **MUST** write them by yourself):
+If you need to do some special things (check if `key` starts with _'MyAPI'_ word for example), then you can just override default authentication methods
+in models (only if you are using gem mixins, in other cases you **MUST** write them by yourself):
 
 ```ruby
 # app/models/application.rb
@@ -343,11 +344,11 @@ class Application < ApplicationRecord
   include GrapeOAuth2::ActiveRecord::Client
   
   class << self
-    def self.authenticate(key, secret, need_secret = true)
+    def self.authenticate(key, secret = nil)
       # My custom condition for successful authentication
       return nil unless key.start_with?('MyAPI')
 
-      if need_secret
+      if secret.present?
         find_by(key: key, secret: secret)
       else
         find_by(key: key)
@@ -441,4 +442,4 @@ Thanks.
 
 Grape OAuth2 gem is released under the [MIT License](http://www.opensource.org/licenses/MIT).
 
-Copyright (c) 2014-2016 Nikita Bulaj (bulajnikita@gmail.com).
+Copyright (c) 2014-2016 Nikita Bulai (bulajnikita@gmail.com).
