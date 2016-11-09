@@ -26,8 +26,12 @@ module GrapeOAuth2
         end
 
         class << self
-          def create_for(client, resource_owner)
-            create(client_id: client.id, resource_owner_id: resource_owner && resource_owner.id)
+          def create_for(client, resource_owner, scopes = nil)
+            create(
+              client_id: client.id,
+              resource_owner_id: resource_owner && resource_owner.id,
+              scopes: scopes
+            )
           end
 
           def authenticate(token, type: :access_token)
@@ -56,7 +60,8 @@ module GrapeOAuth2
           Rack::OAuth2::AccessToken::Bearer.new(
             access_token: token,
             expires_in: expires_at && GrapeOAuth2.config.token_lifetime.to_i,
-            refresh_token: refresh_token
+            refresh_token: refresh_token,
+            scope: scopes
           )
         end
 

@@ -22,6 +22,12 @@ module GrapeOAuth2
         def config
           GrapeOAuth2.config
         end
+
+        def scopes_from(request)
+          return nil if request.scope.nil?
+
+          Array(request.scope).join(' ')
+        end
       end
     end
   end

@@ -177,6 +177,48 @@ class Application < Sequel::Model
 end
 ```
 
+Migration for the simplest use case of the gem looks as follows:
+
+```ruby
+DB.create_table :applications do
+  primary_key :id
+
+  column :name, String, size: 255, null: false
+  column :key, String, size: 255, null: false, index: { unique: true }
+  column :secret, String, size: 255, null: false
+
+
+  column :redirect_uri, String
+
+  column :created_at, DateTime
+  column :updated_at, DateTime
+end
+
+DB.create_table :access_tokens do
+  primary_key :id
+  column :client_id, Integer
+  column :resource_owner_id, Integer, index: true
+
+  column :token, String, size: 255, null: false, index: { unique: true }
+
+  column :refresh_token, String, size: 255, index: { unique: true }
+
+  column :expires_at, DateTime
+  column :revoked_at, DateTime
+  column :created_at, DateTime, null: false
+  column :scopes, String, size: 255
+end
+
+DB.create_table :users do
+  primary_key :id
+  column :name, String, size: 255
+  column :username, String, size: 255
+  column :created_at, DateTime
+  column :updated_at, DateTime
+  column :password_digest, String, size: 255
+end
+```
+
 ### Other ORMs
 
 If you want to use Grape OAuth2 endpoints, but your project doesn't use `ActiveRecord` or `Sequel`, then you must create at least 3 models (classes) to cover OAuth2 roles. Otherwise you can skip this step and do everything just as you want to.
@@ -206,9 +248,10 @@ For the class that represents an OAuth2 Access Token you must define the next AP
 class AccessToken
   # ...
 
-  def self.create_for(client, resource_owner)
+  def self.create_for(client, resource_owner, scopes = nil)
     # Creates the record in the database for the provided client and
-    # resource owner. Returns an instance of that record.
+    # resource owner with specific scopes (if present).
+    # Returns an instance of that record.
   end
 
   def self.authenticate(token, type: :access_token)
