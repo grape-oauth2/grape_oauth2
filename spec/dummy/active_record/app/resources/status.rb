@@ -1,21 +1,21 @@
 module Twitter
   module Resources
     class Status < Grape::API
+      before do
+        access_token_required!
+      end
+
       resources :status do
         get do
-          access_token_required!
-
           { value: 'Nice day!', current_user: current_resource_owner.username }
         end
 
-        get :single_scope do
-          access_token_required! :read
-
+        get :single_scope, scopes: [:read] do
           { value: 'Access granted' }
         end
 
-        get :multiple_scopes do
-          access_token_required! :read, :write
+        get :multiple_scopes, scopes: [:read, :write] do
+          access_token_required!
 
           { value: 'Access granted' }
         end

@@ -22,8 +22,8 @@ Supported token types:
 
 _In progress_:
 
+- Authorization Code Flow
 - Access Grants
-- Authorization endpoint
 - Implicit Grant
 
 ## Table of Contents
@@ -39,6 +39,7 @@ _In progress_:
 - [Usage examples](#usage-examples)
   - [I'm lazy, give me all out of the box!](#im-lazy-give-me-all-out-of-the-box)
   - [Hey, I wanna control all the authentication process!](#hey-i-wanna-control-all-the-authentication-process)
+- [Errors (exceptions) handling](#errors-(exceptions)-handling)
 - [Example App](#example-app)
 - [Contributing](#contributing)
 - [License](#license)
@@ -389,16 +390,46 @@ module Twitter
     class Status < Grape::API
       resources :status do
         get do
-          access_token_required! # all the scopes
+          # public resource, no scopes required
+          access_token_required! 
 
           present(:status, current_user.status)
         end
         
         post do
-          access_token_required! :write # requires 'write' scope
+          # requires 'write' scope to exist in Access Token
+          access_token_required! :write 
           
           status = current_user.statuses.create!(body: 'Hi man!')
-          present(:status, status)
+          present(:status, status, with: V1::Entities::Status)
+        end
+      end
+    end
+  end
+end
+```
+
+If you need to protect all the routes in the endpoint, but it's requires different scopes, than you can
+add `access_token_required!` helper to the `before` filter and setup required scopes directly for the endpoints:
+
+```ruby
+module Twitter
+  module Endpoints
+    class Status < Grape::API
+      before do
+        access_token_required!
+      end
+
+      resources :status do
+        # public endpoint
+        get do
+          present(:status, current_user.status)
+        end
+        
+        # requires :write scope
+        put ':id', scopes: [:write]  do
+          status = current_user.statuses.create!(body: 'Hi man!')
+          present(:status, status, with: V1::Entities::Status)
         end
       end
     end
@@ -474,20 +505,22 @@ module MyAPI
       desc 'OAuth 2.0 Token Revocation'
 
       params do
-        requires :token, type: String, desc: 'The token that the client wants to get revoked'
-        optional :token_type_hint, type: String, 
-                                   values: %w(access_token refresh_token),
-                                   default: 'access_token',
-                                   desc: 'A hint about the type of the token submitted for revocation'
+        use :oauth_token_revocation_params
       end
 
       post :revoke do
-       # ...
+        # ...
       end
     end
   end
 end
 ```
+
+## Errors (exceptions) handling
+
+You can add any exception from the `rack-oauth2` gem (like `Rack::OAuth2::Server::Resource::Bearer::Unauthorized`) to the `rescue_from` if you need to return some special error.
+
+Do not forget to meet the OAuth 2.0 specification.
 
 ## Example App
 
@@ -495,20 +528,19 @@ Take a look at the [sample application](https://github.com/nbulaj/grape_oauth2/t
 
 ## Contributing
 
-You are very welcome to help improve grape_oauth2 if you have suggestions for features that other people can use.
+You are very welcome to help improve `grape_oauth2` if you have suggestions for features that other people can use.
 
 To contribute:
 
 1. Fork the project.
-2. Create your feature branch (`git checkout -b my-new-feature`).
-3. Implement your feature or bug fix.
-4. Add documentation for your feature or bug fix.
-5. Run <tt>rake doc:yard</tt>. If your changes are not 100% documented, go back to step 4.
-6. Add tests for your feature or bug fix.
-7. Run `rake` to make sure all tests pass.
-8. Commit your changes (`git commit -am 'Add new feature'`).
-9. Push to the branch (`git push origin my-new-feature`).
-10. Create new pull request.
+1. Create your feature branch (`git checkout -b my-new-feature`).
+1. Implement your feature or bug fix.
+1. Add documentation for your feature or bug fix.
+1. Add tests for your feature or bug fix.
+1. Run `rake` to make sure all tests pass.
+1. Commit your changes (`git commit -am 'Add new feature'`).
+1. Push to the branch (`git push origin my-new-feature`).
+1. Create new pull request.
 
 Thanks.
 

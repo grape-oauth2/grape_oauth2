@@ -4,8 +4,11 @@ module GrapeOAuth2
       extend ::Grape::API::Helpers
 
       def access_token_required!(*scopes)
+        endpoint_scopes = env['api.endpoint'].options[:route_options][:scopes]
+        required_scopes = endpoint_scopes.presence || scopes
+
         raise Rack::OAuth2::Server::Resource::Bearer::Unauthorized if current_access_token.nil?
-        raise Rack::OAuth2::Server::Resource::Bearer::Forbidden unless valid_access_token?(scopes)
+        raise Rack::OAuth2::Server::Resource::Bearer::Forbidden unless valid_access_token?(required_scopes)
       end
 
       def current_resource_owner
