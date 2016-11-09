@@ -21,6 +21,8 @@ GrapeOAuth2.configure do |config|
   config.access_token_class = AccessToken
   config.resource_owner_class = User
 
+  config.realm = 'Custom Realm'
+
   config.allowed_grant_types << 'refresh_token'
 end
 
@@ -30,9 +32,7 @@ module Twitter
     format :json
     prefix :api
 
-    use Rack::OAuth2::Server::Resource::Bearer, 'OAuth2 API' do |request|
-      AccessToken.authenticate(request.access_token) || request.invalid_token!
-    end
+    use *GrapeOAuth2.middleware
 
     helpers GrapeOAuth2::Helpers::AccessTokenHelpers
 

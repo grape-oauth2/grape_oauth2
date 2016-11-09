@@ -47,4 +47,10 @@ module GrapeOAuth2
   def self.configure
     yield config
   end
+
+  def self.middleware
+    return Rack::OAuth2::Server::Resource::Bearer, config.realm, lambda do |request|
+      AccessToken.authenticate(request.access_token) || request.invalid_token!
+    end
+  end
 end

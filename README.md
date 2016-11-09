@@ -75,6 +75,9 @@ GrapeOAuth2.configure do |config|
   
   # Revoke token after using of refresh token
   # config.revoke_after_refresh = true
+  
+  # WWW-Authenticate Realm (default "OAuth 2.0")
+  # config.realm = 'My API'
 
   # Classes for OAuth2 Roles
   config.client_class = Application
@@ -357,10 +360,7 @@ module Twitter
 
     helpers GrapeOAuth2::Helpers::AccessTokenHelpers
 
-    # Token authentication process: authenticate or raise an error.
-    use Rack::OAuth2::Server::Resource::Bearer, 'OAuth API' do |request|
-      AccessToken.authenticate(request.access_token) || request.invalid_token!
-    end
+    use *GrapeOAuth2.middleware
 
     # Mount default Grape OAuth2 Token endpoint
     mount GrapeOAuth2::Endpoints::Token

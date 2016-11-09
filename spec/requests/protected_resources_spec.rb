@@ -10,7 +10,9 @@ describe 'GET Protected Resources' do
       get 'api/v1/status'
 
       expect(last_response.status).to eq 401
+
       expect(json_body[:error]).to eq('unauthorized')
+      expect(last_response.headers['WWW-Authenticate']).to eq('Bearer realm="Custom Realm"')
     end
 
     it 'returns Unauthorized when token scopes are blank' do
