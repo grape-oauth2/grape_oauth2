@@ -28,11 +28,11 @@ module GrapeOAuth2
         end
 
         def expired?
-          expires_at && Time.now.utc > expires_at
+          !expires_at.nil? && Time.now.utc > expires_at
         end
 
         def revoked?
-          revoked_at && revoked_at <= Time.now.utc
+          !revoked_at.nil? && revoked_at <= Time.now.utc
         end
 
         def revoke!(revoked_at = Time.now)

@@ -29,26 +29,22 @@ module GrapeOAuth2
           # scopes = request.scope
           # request.invalid_scope! "Unknown scope: #{scope}"
 
-          if request.params['approve']
-            case request.response_type
-            when :code
-              # Implement me!
-              # authorization_code = config.access_grant_class.create_for(
-              #  client: client,
-              #  redirect_uri: response.redirect_uri
-              # )
+          case request.response_type
+          when :code
+            # Implement me!
+            # authorization_code = config.access_grant_class.create_for(
+            #  client: client,
+            #  redirect_uri: response.redirect_uri
+            # )
 
-              # response.code = authorization_code.token
-            when :token
-              # Implement me!
-            else
-              request.unsupported_response_type!
-            end
-
-            response.approve!
+            # response.code = authorization_code.token
+          when :token
+            # Implement me!
           else
-            request.access_denied!
+            request.unsupported_response_type!
           end
+
+          response.approve!
 
           response
         end

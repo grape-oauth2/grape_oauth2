@@ -40,11 +40,11 @@ module GrapeOAuth2
         end
 
         def expired?
-          expires_at && Time.now.utc > expires_at
+          !expires_at.nil? && Time.now.utc > expires_at.utc
         end
 
         def revoked?
-          revoked_at && revoked_at <= Time.now.utc
+          !revoked_at.nil? && revoked_at <= Time.now.utc
         end
 
         def revoke!(revoked_at = Time.now)
@@ -68,7 +68,7 @@ module GrapeOAuth2
         end
 
         def setup_expiration
-          self.expires_at = Time.now.utc + GrapeOAuth2.config.token_lifetime if expires_at.nil?
+          self.expires_at = Time.now + GrapeOAuth2.config.token_lifetime if expires_at.nil?
         end
       end
     end

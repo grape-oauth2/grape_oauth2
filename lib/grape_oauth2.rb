@@ -3,7 +3,7 @@ require 'rack/oauth2'
 
 require 'grape_oauth2/version'
 require 'grape_oauth2/configuration'
-require 'grape_oauth2/scope'
+require 'grape_oauth2/scopes'
 
 # Extract to separate gems
 # Mixins

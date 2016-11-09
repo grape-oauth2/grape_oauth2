@@ -14,6 +14,7 @@ Implemented features (flows):
 - Client Credentials
 - Refresh token
 - Token revocation
+- Access Token Scopes
 
 Supported token types:
 
@@ -21,7 +22,6 @@ Supported token types:
 
 _In progress_:
 
-- Access Token Scopes
 - Access Grants
 - Authorization endpoint
 - Implicit Grant
@@ -337,6 +337,32 @@ Available routes:
 POST /oauth/token
 POST /oauth/revoke
 ```
+
+Protect your endpoints with `` method:
+
+```ruby
+module Twitter
+  module Endpoints
+    class Status < Grape::API
+      resources :status do
+        get do
+          access_token_required! # all the scopes
+
+          present(:status, current_user.status)
+        end
+        
+        post do
+          access_token_required! :write # requires 'write' scope
+          
+          status = current_user.statuses.create!(body: 'Hi man!')
+          present(:status, status)
+        end
+      end
+    end
+  end
+end
+```
+
 
 ### Hey, I wanna control all the authentication process!
 
