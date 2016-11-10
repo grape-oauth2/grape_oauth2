@@ -488,7 +488,7 @@ module MyAPI
           request.invalid_grant! if resource_owner.nil? || resource_owner.inactive?
 
           # Create an AccessToken for the client and resource_owner
-          token = AccessToken.create_for(client, resource_owner)
+          token = AccessToken.create_for(client, resource_owner, request.scope)
           response.access_token = token.to_bearer_token
         end
 
@@ -515,6 +515,22 @@ module MyAPI
   end
 end
 ```
+
+## Custom Access Token authenticator
+
+If you don't want to use default `GrapeOAuth2` Access Token authenticator then you can define your own (it must be a proc or lambda):
+
+```ruby
+GrapeOAuth2.configure do |config|
+  config.token_authenticator do |request|
+    AccessToken.find_by(value: request.access_token) || request.invalid_token!
+  end
+  
+  # or config.token_authenticator = lambda { |request| ... }
+end
+```
+
+Don't forget to add the middleware to your root API class (`use *GrapeOAuth2.middleware`).
 
 ## Errors (exceptions) handling
 

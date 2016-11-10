@@ -49,6 +49,6 @@ module GrapeOAuth2
   end
 
   def self.middleware
-    [Rack::OAuth2::Server::Resource::Bearer, config.realm, config.default_token_authenticator]
+    [Rack::OAuth2::Server::Resource::Bearer, config.realm, config.token_authenticator]
   end
 end

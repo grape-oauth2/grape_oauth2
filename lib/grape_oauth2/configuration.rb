@@ -18,8 +18,11 @@ module GrapeOAuth2
     attr_accessor :allowed_grant_types, :code_lifetime, :token_lifetime,
                   :issue_refresh_token, :revoke_after_refresh, :realm
 
+    attr_accessor :token_authenticator
+
     def initialize
       initialize_classes
+      initialize_authenticators
 
       self.token_lifetime = DEFAULT_TOKEN_LIFETIME
       self.code_lifetime = DEFAULT_CODE_LIFETIME
@@ -37,6 +40,14 @@ module GrapeOAuth2
       end
     end
 
+    def token_authenticator(&block)
+      if block_given?
+        instance_variable_set(:'@token_authenticator', block)
+      else
+        instance_variable_get(:'@token_authenticator')
+      end
+    end
+
     private
 
     def initialize_classes
@@ -44,6 +55,10 @@ module GrapeOAuth2
       self.access_token_class = DEFAULT_ACCESS_TOKEN_CLASS
       self.resource_owner_class = DEFAULT_RESOURCE_OWNER_CLASS
       self.access_grant_class = DEFAULT_ACCESS_GRANT_CLASS
+    end
+
+    def initialize_authenticators
+      self.token_authenticator = default_token_authenticator
     end
   end
 end
