@@ -76,7 +76,7 @@ module GrapeOAuth2
       }
     end
 
-    def inject_to_api
+    def inject_to_api(&_block)
       raise ArgumentError, 'block must be specified!' unless block_given?
 
       Module.new do |mod|
