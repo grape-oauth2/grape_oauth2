@@ -40,15 +40,50 @@ require 'grape_oauth2/endpoints/token'
 require 'grape_oauth2/endpoints/authorize'
 
 module GrapeOAuth2
-  def self.config
-    @config ||= GrapeOAuth2::Configuration.new
-  end
+  class << self
+    def config
+      @config ||= GrapeOAuth2::Configuration.new
+    end
 
-  def self.configure
-    yield config
-  end
+    def configure
+      yield config
+    end
 
-  def self.middleware
-    [Rack::OAuth2::Server::Resource::Bearer, config.realm, config.token_authenticator]
+    def middleware
+      [Rack::OAuth2::Server::Resource::Bearer, config.realm, config.token_authenticator]
+    end
+
+    def api(*endpoints)
+      inject_to_api do |api|
+        api.use(*GrapeOAuth2.middleware)
+        api.helpers(GrapeOAuth2::Helpers::AccessTokenHelpers)
+
+        (endpoints.presence || endpoints_mapping.keys).each do |name|
+          endpoint = endpoints_mapping[name.to_sym]
+          raise ArgumentError, "Unrecognized endpoint: #{endpoint}" if endpoint.nil?
+
+          api.mount(endpoint)
+        end
+      end
+    end
+
+    private
+
+    def endpoints_mapping
+      {
+        token: GrapeOAuth2::Endpoints::Token,
+        authorize: GrapeOAuth2::Endpoints::Authorize
+      }
+    end
+
+    def inject_to_api
+      raise ArgumentError, 'block must be specified!' unless block_given?
+
+      Module.new do |mod|
+        mod.define_singleton_method :included do |base|
+          yield base
+        end
+      end
+    end
   end
 end

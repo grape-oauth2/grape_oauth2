@@ -131,6 +131,34 @@ describe 'Token Endpoint' do
             end
           end
         end
+
+        context 'when Token endpoint not mounted' do
+          before do
+            Twitter::API.reset!
+            Twitter::API.change!
+
+            # Mount only Authorization Endpoint
+            Twitter::API.send(:include, GrapeOAuth2.api(:authorize))
+          end
+
+          after do
+            Twitter::API.reset!
+            Twitter::API.change!
+
+            Twitter::API.send(:include, GrapeOAuth2.api)
+          end
+
+          it 'returns 404' do
+            post authentication_url,
+                 grant_type: 'password',
+                 username: user.username,
+                 password: '12345678',
+                 client_id: application.key,
+                 client_secret: application.secret
+
+            expect(last_response.status).to eq 404
+          end
+        end
       end
     end
   end

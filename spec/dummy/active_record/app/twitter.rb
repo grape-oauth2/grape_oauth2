@@ -32,12 +32,7 @@ module Twitter
     format :json
     prefix :api
 
-    use *GrapeOAuth2.middleware
-
-    helpers GrapeOAuth2::Helpers::AccessTokenHelpers
-
-    mount GrapeOAuth2::Endpoints::Token
-    mount GrapeOAuth2::Endpoints::Authorize
+    include GrapeOAuth2.api
 
     mount Twitter::Resources::Status
   end

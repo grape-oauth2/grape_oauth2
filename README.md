@@ -358,7 +358,7 @@ GrapeOAuth2.configure do |config|
 end
 ```
 
-And just mount `GrapeOAuth2` Token endpoint to your main API class:
+And just inject `GrapeOAuth2` into your main API class:
 
 ```ruby
 # app/twitter.rb
@@ -368,15 +368,12 @@ module Twitter
     format :json
     prefix :api
 
-    helpers GrapeOAuth2::Helpers::AccessTokenHelpers
-
-    use *GrapeOAuth2.middleware
-
-    # Mount default Grape OAuth2 Token endpoint
-    mount GrapeOAuth2::Endpoints::Token
-
-    # Mount default authorization endpoint
-    # mount GrapeOAuth2::Endpoints::Authorize
+    # Mount all endpoints by default.
+    # You can define a custom one you want to use by providing them
+    # as an argument:
+    #   include GrapeOAuth2.api :token, :authorize
+    #
+    include GrapeOAuth2.api
    
     # mount any other endpoints
     # ...
@@ -384,9 +381,35 @@ module Twitter
 end
 ```
 
-That's all!
+The `include GrapeOAuth2.api` could be replaced with the next (as it does the same):
 
-Available routes:
+
+```ruby
+# app/twitter.rb
+module Twitter
+  class API < Grape::API
+    version 'v1', using: :path
+    format :json
+    prefix :api
+
+    # Add OAuth2 helpers
+    helpers GrapeOAuth2::Helpers::AccessTokenHelpers
+
+    # Inject token authentication middleware
+    use *GrapeOAuth2.middleware
+
+    # Mount default GrapeOAuth2 Token endpoint
+    mount GrapeOAuth2::Endpoints::Token
+    # Mount default GrapeOAuth2 Authorization endpoint
+    mount GrapeOAuth2::Endpoints::Authorize
+   
+    # mount any other endpoints
+    # ...
+  end
+end
+```
+
+And that is all!  Use the next available routes to get the Access Token:
 
 ```
 POST /oauth/token
