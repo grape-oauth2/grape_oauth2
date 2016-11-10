@@ -49,8 +49,6 @@ module GrapeOAuth2
   end
 
   def self.middleware
-    return Rack::OAuth2::Server::Resource::Bearer, config.realm, lambda do |request|
-      config.access_token_class.authenticate(request.access_token) || request.invalid_token!
-    end
+    [Rack::OAuth2::Server::Resource::Bearer, config.realm, config.default_token_authenticator]
   end
 end

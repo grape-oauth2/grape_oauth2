@@ -19,19 +19,31 @@ module GrapeOAuth2
                   :issue_refresh_token, :revoke_after_refresh, :realm
 
     def initialize
-      self.client_class = DEFAULT_CLIENT_CLASS
-      self.access_token_class = DEFAULT_ACCESS_TOKEN_CLASS
-      self.resource_owner_class = DEFAULT_RESOURCE_OWNER_CLASS
-      self.access_grant_class = DEFAULT_ACCESS_GRANT_CLASS
+      initialize_classes
 
-      self.allowed_grant_types = %w(password client_credentials)
       self.token_lifetime = DEFAULT_TOKEN_LIFETIME
       self.code_lifetime = DEFAULT_CODE_LIFETIME
+      self.allowed_grant_types = %w(password client_credentials)
 
       self.issue_refresh_token = false
       self.revoke_after_refresh = false
 
       self.realm = DEFAULT_REALM
+    end
+
+    def default_token_authenticator
+      lambda do |request|
+        access_token_class.authenticate(request.access_token) || request.invalid_token!
+      end
+    end
+
+    private
+
+    def initialize_classes
+      self.client_class = DEFAULT_CLIENT_CLASS
+      self.access_token_class = DEFAULT_ACCESS_TOKEN_CLASS
+      self.resource_owner_class = DEFAULT_RESOURCE_OWNER_CLASS
+      self.access_grant_class = DEFAULT_ACCESS_GRANT_CLASS
     end
   end
 end
