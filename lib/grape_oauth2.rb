@@ -11,7 +11,7 @@ if defined?(ActiveRecord::Base)
   require 'grape_oauth2/mixins/active_record/access_token'
   require 'grape_oauth2/mixins/active_record/access_grant'
   require 'grape_oauth2/mixins/active_record/client'
-elsif defined?(Sequel)
+elsif defined?(Sequel::Model)
   require 'grape_oauth2/mixins/sequel/access_token'
   require 'grape_oauth2/mixins/sequel/access_grant'
   require 'grape_oauth2/mixins/sequel/client'

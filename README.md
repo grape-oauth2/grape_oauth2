@@ -39,7 +39,8 @@ _In progress_:
 - [Usage examples](#usage-examples)
   - [I'm lazy, give me all out of the box!](#im-lazy-give-me-all-out-of-the-box)
   - [Hey, I wanna control all the authentication process!](#hey-i-wanna-control-all-the-authentication-process)
-- [Errors (exceptions) handling](#errors-(exceptions)-handling)
+- [Custom Access Token authenticator](#custom-access-token-authenticator)
+- [Errors (exceptions) handling](#errors-exceptions-handling)
 - [Example App](#example-app)
 - [Contributing](#contributing)
 - [License](#license)
@@ -78,6 +79,12 @@ GrapeOAuth2.configure do |config|
   
   # WWW-Authenticate Realm (default "OAuth 2.0")
   # config.realm = 'My API'
+  
+  # Access Token authenticator block
+  #
+  # config.token_authenticator do |request|
+  #   config.access_token_class.authenticate(request.access_token) || request.invalid_token!
+  # end
 
   # Classes for OAuth2 Roles
   config.client_class = Application
@@ -314,7 +321,9 @@ end
 ## Usage examples
 ### I'm lazy, give me all out of the box!
 
-OK, if you need a simple common OAuth2 authentication process then you can use gem default OAuth2 endpoint. First you will need to configure GrapeOAuth2 as described above (create migrations, models and authentication methods). 
+If you need a common OAuth2 authentication then you can use default gem endpoints for it. First of all you 
+will need to configure GrapeOAuth2 as described above (create models, migrations, configure the gem).
+For `ActiveRecord` it would be as follows:
 
 ```ruby
 # app/models/access_token.rb
@@ -331,6 +340,7 @@ end
 class User < ApplicationRecord
   has_secure_password
 
+  # Don't forget to setup this method for your Resource Owner model!
   def self.oauth_authenticate(_client, username, password)
     user = find_by(username: username)
     return if user.nil?
@@ -348,7 +358,7 @@ GrapeOAuth2.configure do |config|
 end
 ```
 
-After that just mount GrapeOAuth2 Token endpoint to your main API module:
+And just mount `GrapeOAuth2` Token endpoint to your main API class:
 
 ```ruby
 # app/twitter.rb
@@ -368,6 +378,7 @@ module Twitter
     # Mount default authorization endpoint
     # mount GrapeOAuth2::Endpoints::Authorize
    
+    # mount any other endpoints
     # ...
   end
 end
@@ -382,7 +393,7 @@ POST /oauth/token
 POST /oauth/revoke
 ```
 
-Protect your endpoints with `` method:
+Now you can protect your endpoints with `access_token_required!` method:
 
 ```ruby
 module Twitter
@@ -421,12 +432,12 @@ module Twitter
       end
 
       resources :status do
-        # public endpoint
+        # public endpoint - no scopes required
         get do
           present(:status, current_user.status)
         end
         
-        # requires :write scope
+        # private endpoint - requires :write scope
         put ':id', scopes: [:write]  do
           status = current_user.statuses.create!(body: 'Hi man!')
           present(:status, status, with: V1::Entities::Status)
@@ -436,7 +447,6 @@ module Twitter
   end
 end
 ```
-
 
 ### Hey, I wanna control all the authentication process!
 
@@ -482,10 +492,16 @@ module MyAPI
           # Custom client authentication
           client = Application.find_by(key: request.client_id, active: true)
           request.invalid_client! unless client
+          
+          # Or use default authentication if you don't need to change this part:
+          # client = GrapeOAuth2::Strategies::Base.authenticate_client(request)
 
           # Custom resource owner (User model) authentication
           resource_owner = User.find_by(username: request.username)
           request.invalid_grant! if resource_owner.nil? || resource_owner.inactive?
+          
+          # Or use default authentication if you don't need to change this part:
+          # resource_owner = GrapeOAuth2::Strategies::Base.authenticate_resource_owner(request)
 
           # Create an AccessToken for the client and resource_owner
           token = AccessToken.create_for(client, resource_owner, request.scope)
@@ -540,7 +556,7 @@ Do not forget to meet the OAuth 2.0 specification.
 
 ## Example App
 
-Take a look at the [sample application](https://github.com/nbulaj/grape_oauth2/tree/master/spec/dummy) in the "spec/dummy" project directory.
+Take a look at the [sample applications](https://github.com/nbulaj/grape_oauth2/tree/master/spec/dummy) in the "spec/dummy" project directory.
 
 ## Contributing
 
