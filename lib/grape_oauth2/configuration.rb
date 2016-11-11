@@ -48,7 +48,27 @@ module GrapeOAuth2
       end
     end
 
+    # Checks configuration to be set correctly (requires classes
+    # must exist and respond to the specific set of API methods).
+    def check!
+      check_required_classes!
+      check_required_classes_api!
+    end
+
     private
+
+    REQUIRED_CLASSES_API = {
+      access_token_class: {
+        class_methods: %i(authenticate create_for),
+        instance_methods: %i(expired? revoked? revoke! to_bearer_token)
+      },
+      client_class: {
+        class_methods: %i(authenticate)
+      },
+      resource_owner_class: {
+        class_methods: %i(oauth_authenticate)
+      }
+    }.freeze
 
     def initialize_classes
       self.client_class = DEFAULT_CLIENT_CLASS
@@ -59,6 +79,26 @@ module GrapeOAuth2
 
     def initialize_authenticators
       self.token_authenticator = default_token_authenticator
+    end
+
+    def check_required_classes!
+      [:access_token_class, :client_class, :resource_owner_class].each do |klass|
+        raise "#{klass} must be defined!" unless defined?(send(klass))
+      end
+    end
+
+    def check_required_classes_api!
+      REQUIRED_CLASSES_API.each do |klass, api_methods|
+        api_methods[:class_methods].each do |method|
+          raise "Class method '#{method}' must be defined for the '#{klass}'!" unless send(klass).respond_to?(method)
+        end
+
+        (api_methods[:instance_methods] || []).each do |method|
+          unless send(klass).method_defined?(method)
+            raise "Instance method '#{method}' must be defined for the '#{klass}'!"
+          end
+        end
+      end
     end
   end
 end

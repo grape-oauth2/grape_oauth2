@@ -49,6 +49,10 @@ module GrapeOAuth2
       yield config
     end
 
+    def check_configuration!
+      config.check!
+    end
+
     def middleware
       [Rack::OAuth2::Server::Resource::Bearer, config.realm, config.token_authenticator]
     end
