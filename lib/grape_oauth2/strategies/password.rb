@@ -8,7 +8,7 @@ module GrapeOAuth2
 
           request.invalid_grant! if resource_owner.nil?
 
-          token = config.access_token_class.create_for(client, resource_owner, scopes_from(request))
+          token = config._access_token_class.create_for(client, resource_owner, scopes_from(request))
           token.to_bearer_token
         end
       end

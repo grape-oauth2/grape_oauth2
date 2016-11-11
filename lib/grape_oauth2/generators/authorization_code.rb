@@ -15,14 +15,14 @@ module GrapeOAuth2
         end
 
         def authenticate_client(request)
-          config.client_class.authenticate(request.client_id)
+          config._client_class.authenticate(request.client_id)
         end
 
         private
 
         def execute_default(request, response)
           client = authenticate_client(request) || request.bad_request!
-          response.redirect_uri = request.verify_redirect_uri!(client.redirect_uri) # TODO: split URIs
+          response.redirect_uri = request.verify_redirect_uri!(client.redirect_uri)
 
           # Move to Strategy Class
           # TODO: verify scopes if they valid
@@ -31,21 +31,18 @@ module GrapeOAuth2
 
           case request.response_type
           when :code
-            # Implement me!
-            # authorization_code = config.access_grant_class.create_for(
-            #  client: client,
-            #  redirect_uri: response.redirect_uri
-            # )
-
-            # response.code = authorization_code.token
+            # resource owner can't be nil!
+            authorization_code = config._access_grant_class.create_for(client, resource_owner, response.redirect_uri)
+            response.code = authorization_code.token
           when :token
-            # Implement me!
+            # resource owner can't be nil!
+            access_token = config._access_token_class.create_for(client, nil, scopes_from(request))
+            response.access_token = access_token.to_bearer_token
           else
             request.unsupported_response_type!
           end
 
           response.approve!
-
           response
         end
       end

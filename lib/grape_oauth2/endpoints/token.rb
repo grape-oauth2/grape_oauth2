@@ -41,8 +41,8 @@ module GrapeOAuth2
           client = GrapeOAuth2::Strategies::Base.authenticate_client(request)
           request.invalid_client! if client.nil?
 
-          access_token = GrapeOAuth2.config.access_token_class.authenticate(params[:token],
-                                                                            type: params[:token_type_hint])
+          access_token = GrapeOAuth2.config._access_token_class.authenticate(params[:token],
+                                                                             type: params[:token_type_hint])
 
           if access_token
             if access_token.client

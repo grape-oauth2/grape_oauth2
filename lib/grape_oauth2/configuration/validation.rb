@@ -1,6 +1,15 @@
 module GrapeOAuth2
   class Configuration
     module Validation
+      # Checks configuration to be set correctly (required classes
+      # must be defined and implement specific set of API methods).
+      def check!
+        check_required_classes!
+        check_required_classes_api!
+      end
+
+      private
+
       REQUIRED_CLASSES_API = {
         access_token_class: {
           class_methods: %i(authenticate create_for),

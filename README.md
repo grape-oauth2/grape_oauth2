@@ -92,13 +92,13 @@ GrapeOAuth2.configure do |config|
   # Access Token authenticator block
   #
   # config.token_authenticator do |request|
-  #   config.access_token_class.authenticate(request.access_token) || request.invalid_token!
+  #   AccessToken.authenticate(request.access_token) || request.invalid_token!
   # end
 
   # Classes for OAuth2 Roles
-  config.client_class = Application
-  config.access_token_class = AccessToken
-  config.resource_owner_class = User
+  config.client_class = 'Application'
+  config.access_token_class = 'AccessToken'
+  config.resource_owner_class = 'User'
 end
 ```
 
@@ -408,9 +408,9 @@ end
 # config/oauth2.rb
 GrapeOAuth2.configure do |config|
   # Classes for OAuth2 Roles
-  config.client_class = Application
-  config.access_token_class = AccessToken
-  config.resource_owner_class = User
+  config.client_class = 'Application'
+  config.access_token_class = 'AccessToken'
+  config.resource_owner_class = 'User'
 end
 ```
 

@@ -4,11 +4,6 @@ module GrapeOAuth2
 
     include Validation
 
-    DEFAULT_CLIENT_CLASS = '::Application'.freeze
-    DEFAULT_ACCESS_TOKEN_CLASS = '::AccessToken'.freeze
-    DEFAULT_ACCESS_GRANT_CLASS = '::AccessGrant'.freeze
-    DEFAULT_RESOURCE_OWNER_CLASS = '::User'.freeze
-
     DEFAULT_TOKEN_LIFETIME = 7200 # in seconds
     DEFAULT_CODE_LIFETIME = 7200
 
@@ -42,7 +37,7 @@ module GrapeOAuth2
 
     def default_token_authenticator
       lambda do |request|
-        access_token_class.authenticate(request.access_token) || request.invalid_token!
+        _access_token_class.authenticate(request.access_token) || request.invalid_token!
       end
     end
 
@@ -54,21 +49,22 @@ module GrapeOAuth2
       end
     end
 
-    # Checks configuration to be set correctly (required classes
-    # must be defined and implement specific set of API methods).
-    def check!
-      check_required_classes!
-      check_required_classes_api!
+    # TODO: refactor!
+    def _access_token_class
+      @_access_token_class ||= access_token_class.constantize
+    end
+
+    def _resource_owner_class
+      @_resource_owner_class ||= resource_owner_class.constantize
+    end
+
+    def _client_class
+      @_client_class ||= client_class.constantize
     end
 
     private
 
     def initialize_classes
-      self.client_class = DEFAULT_CLIENT_CLASS
-      self.access_token_class = DEFAULT_ACCESS_TOKEN_CLASS
-      self.resource_owner_class = DEFAULT_RESOURCE_OWNER_CLASS
-      self.access_grant_class = DEFAULT_ACCESS_GRANT_CLASS
-
       self.scopes_validator = GrapeOAuth2::Scopes
     end
 
