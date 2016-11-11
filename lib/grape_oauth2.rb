@@ -5,7 +5,7 @@ require 'grape_oauth2/version'
 require 'grape_oauth2/configuration'
 require 'grape_oauth2/scopes'
 
-# Extract to separate gems
+# Extract to separate gems!!!
 # Mixins
 if defined?(ActiveRecord::Base)
   require 'grape_oauth2/mixins/active_record/access_token'
@@ -15,6 +15,10 @@ elsif defined?(Sequel::Model)
   require 'grape_oauth2/mixins/sequel/access_token'
   require 'grape_oauth2/mixins/sequel/access_grant'
   require 'grape_oauth2/mixins/sequel/client'
+elsif defined?(Mongoid::Document)
+  require 'grape_oauth2/mixins/mongoid/access_token'
+  require 'grape_oauth2/mixins/mongoid/access_grant'
+  require 'grape_oauth2/mixins/mongoid/client'
 end
 
 # Authorization Grants (Strategies)

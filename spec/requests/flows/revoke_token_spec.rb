@@ -86,7 +86,7 @@ describe 'Token Endpoint' do
 
             it 'does not revokes Access Token when token was issued to another client' do
               another_client = Application.create(name: 'Some')
-              AccessToken.last.update(client: another_client)
+              AccessToken.last.update(client_id: another_client.id)
 
               expect {
                 post api_url, token: AccessToken.last.token

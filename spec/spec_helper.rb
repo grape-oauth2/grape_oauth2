@@ -11,7 +11,8 @@ require 'database_cleaner'
 
 ORM_GEMS_MAPPING = {
   'sequel' => 'sequel',
-  'active_record' => 'active_record'
+  'active_record' => 'active_record',
+  'mongoid' => 'mongoid'
 }.freeze
 
 require ORM_GEMS_MAPPING[ENV['ORM']]
@@ -31,8 +32,13 @@ RSpec.configure do |config|
   config.order = 'random'
 
   config.before(:suite) do
-    DatabaseCleaner.strategy = :transaction
-    DatabaseCleaner.clean_with(:deletion)
+    if ENV['ORM'] == 'mongoid'
+      DatabaseCleaner[:mongoid].strategy = :truncation
+      DatabaseCleaner[:mongoid].clean_with :truncation
+    else
+      DatabaseCleaner.strategy = :transaction
+      DatabaseCleaner.clean_with(:deletion)
+    end
   end
 
   config.around(:example) do |example|
