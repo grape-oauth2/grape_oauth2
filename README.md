@@ -44,6 +44,7 @@ _In progress_:
     - [Override default mixins](#override-default-mixins)
     - [Custom authentication endpoints](#custom-authentication-endpoints)
 - [Custom Access Token authenticator](#custom-access-token-authenticator)
+- [Custom scopes validation](#custom-scopes-validation)
 - [Errors (exceptions) handling](#errors-exceptions-handling)
 - [Example App](#example-app)
 - [Contributing](#contributing)
@@ -635,6 +636,36 @@ end
 ```
 
 Don't forget to add the middleware to your root API class (`use *GrapeOAuth2.middleware`, see below).
+
+## Custom scopes validation
+
+If you want to control the process of scopes validation (for protected endpoints for example) then you must implement
+your own class that will implement the following API:
+
+```ruby
+class CustomScopesValidator
+  # `scopes' is the set of required scopes that must be
+  #  present in the Access Token instance.
+  def initialize(scopes)
+    @scopes = scopes || []
+    # ...some custom processing of scopes if required ...
+  end
+  
+  def valid_for?(access_token)
+    # custom scopes validation implementation...
+  end
+end
+```
+
+And set that class as scopes validator in the GrapeOAuth2 config:
+
+```ruby
+GrapeOAuth2.configure do |config|
+  # ...
+  
+  config.scopes_validator = CustomScopesValidator
+end
+```
 
 ## Errors (exceptions) handling
 

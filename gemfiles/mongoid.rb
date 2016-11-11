@@ -2,7 +2,6 @@ source 'https://rubygems.org'
 
 gemspec path: '../'
 
-
 gem 'grape', '~> 0.16'
 gem 'rack-oauth2'
 gem 'mongoid', '~> 6'

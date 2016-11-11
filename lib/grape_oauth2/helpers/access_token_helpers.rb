@@ -23,7 +23,7 @@ module GrapeOAuth2
 
       def valid_access_token?(scopes)
         !current_access_token.revoked? && !current_access_token.expired? &&
-          GrapeOAuth2::Scopes.new(scopes).valid_for?(current_access_token)
+          GrapeOAuth2.config.scopes_validator.new(scopes).valid_for?(current_access_token)
       end
     end
   end

@@ -20,8 +20,8 @@ module GrapeOAuth2
         field :expires_at, type: DateTime
         field :revoked_at, type: DateTime
 
-        index({ token: 1 }, { unique: true })
-        index({ refresh_token: 1 }, { unique: true, sparse: true })
+        index({ token: 1 }, unique: true)
+        index({ refresh_token: 1 }, unique: true, sparse: true)
 
         before_validation :generate_tokens, on: :create
         before_validation :setup_expiration, on: :create
