@@ -1,0 +1,21 @@
+development:
+  clients:
+    default:
+      database: mongoid-dev
+      hosts:
+        - localhost:27017
+      options:
+        raise_not_found_error: false
+        write:
+          w: 1
+
+test:
+  clients:
+    default:
+      database: mongoid-test
+      hosts:
+        - localhost:27017
+      options:
+        raise_not_found_error: false
+        write:
+          w: 1

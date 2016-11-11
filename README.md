@@ -5,7 +5,7 @@
 [![License](http://img.shields.io/badge/license-MIT-brightgreen.svg)](#license)
 
 This gem adds a flexible OAuth2 ([RFC 6749](http://www.rfc-editor.org/rfc/rfc6749.txt)) server authentication and
-endpoints protection to your [Grape](https://github.com/ruby-grape/grape) API project.
+endpoints protection to your [Grape](https://github.com/ruby-grape/grape) API project with any ORM/ODM/PORO.
 
 **Currently under development**.
 
@@ -33,6 +33,7 @@ _In progress_:
 - [Configuration](#configuration)
   - [ActiveRecord](#activerecord)
   - [Sequel](#sequel)
+  - [Mongoid](#mongoid)
   - [Other ORMs](#other-orms)
     - [Client](#client)
     - [AccessToken](#accesstoken)
@@ -120,7 +121,7 @@ class User < ApplicationRecord
 end
 ```
 
-`client_class`, `access_token_class` and `resource_owner_class` classes must contain a specific set of API (methods), that are
+`client_class`, `access_token_class` and `resource_owner_class` objects must contain a specific set of API (methods), that are
 called by the gem. Grape OAuth2 includes predefined mixins for the projects that use the `ActiveRecord` or `Sequel` ORMs,
 and you can just include them into your models. 
 
@@ -234,6 +235,33 @@ DB.create_table :users do
   column :created_at, DateTime
   column :updated_at, DateTime
   column :password_digest, String, size: 255
+end
+```
+
+### Mongoid
+
+```ruby
+# app/models/access_token.rb
+class AccessToken
+  include GrapeOAuth2::Mongoid::AccessToken
+end
+
+# app/models/application.rb
+class Application
+  include GrapeOAuth2::Mongoid::Client
+end
+
+# app/models/user.rb
+class User
+  include Mongoid::Document
+  include Mongoid::Timestamps
+
+  field :username, type: String
+  field :password, type: String
+
+  def self.oauth_authenticate(_client, username, password)
+    find_by(username: username, password: password)
+  end
 end
 ```
 
