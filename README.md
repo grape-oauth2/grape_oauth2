@@ -5,7 +5,7 @@
 [![License](http://img.shields.io/badge/license-MIT-brightgreen.svg)](#license)
 
 This gem adds a flexible OAuth2 ([RFC 6749](http://www.rfc-editor.org/rfc/rfc6749.txt)) server authentication and
-endpoints protection to your [Grape](https://github.com/ruby-grape/grape) API project with any ORM/ODM/PORO.
+endpoints protection to your [Grape](https://github.com/ruby-grape/grape) API project with any ORM / ODM / PORO.
 
 **Currently under development**.
 
@@ -283,7 +283,7 @@ class Client
 
   def self.authenticate(key, secret = nil)
     # Should return a Client instance matching the 
-    # key & secret (if specified) provided.
+    # key & secret provided (secret is an optional argument).
   end
 end
 ```
@@ -310,6 +310,17 @@ class AccessToken
     # Note that you MAY include expired access tokens in the result
     # of this method so long as you implement an instance `#expired?`
     # method.
+  end
+  
+  def client
+    # Returns associated Client instance. Always must be present!
+    # For ORM objects it can be an association (`belongs_to :client` for ActiveRecord).
+  end
+  
+  def resource_owner
+    # Returns associated Resource Owner instance.
+    # Can return `nil` (for Client Credentials flow as an example).
+    # For ORM objects it can be an association (`belongs_to :resource_owner` for ActiveRecord).
   end
 
   def expired?

@@ -45,7 +45,7 @@ module GrapeOAuth2
                                                                             type: params[:token_type_hint])
 
           if access_token
-            if access_token.client_id
+            if access_token.client
               access_token.revoke! if client && client == access_token.client
             else
               # Access token is public
