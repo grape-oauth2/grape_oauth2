@@ -41,6 +41,8 @@ _In progress_:
 - [Usage examples](#usage-examples)
   - [I'm lazy, give me all out of the box!](#im-lazy-give-me-all-out-of-the-box)
   - [Hey, I wanna control all the authentication process!](#hey-i-wanna-control-all-the-authentication-process)
+    - [Override default mixins](#override-default-mixins)
+    - [Custom authentication endpoints](#custom-authentication-endpoints)
 - [Custom Access Token authenticator](#custom-access-token-authenticator)
 - [Errors (exceptions) handling](#errors-exceptions-handling)
 - [Example App](#example-app)
@@ -49,7 +51,10 @@ _In progress_:
 
 ## Installation
 
-If you are using bundler, first add 'grape_oauth2' to your Gemfile:
+**Grape OAuth2** gem requires only `Grape` and `Rack::OAuth2` gems as the dependency.
+Yes, no Rails, ActiveRecord or any other libs or huge frameworks :+1:
+
+If you are using bundler, first add `'grape_oauth2'` to your Gemfile:
 
 ```ruby
 gem 'grape_oauth2', git: 'https://github.com/nbulaj/grape_oauth2.git'
@@ -522,10 +527,11 @@ end
 ```
 
 ### Hey, I wanna control all the authentication process!
+#### Override default mixins
 
-If you need to do some special things (check if `key` starts with _'MyAPI'_ word for example), then you can just
-override default authentication methods in models (only if you are using gem mixins, in other cases
-you **MUST** write them by yourself):
+If you need to do some special things (check if `key` starts with _'MyAPI'_ word for example) and don't want to
+write your own authentication endpoints, then you can just override default authentication methods in models
+(only if you are using gem mixins, in other cases you **MUST** write them by yourself):
 
 ```ruby
 # app/models/application.rb
@@ -547,8 +553,12 @@ class Application < ApplicationRecord
 end
 ```
 
-Besides, you can customize all the OAuth2 Token flow with your own API endpoint and do some stuffs with the help of the Grape OAuth2 gem.
-Just create a common Grape API class, set optional OAuth2 params and process the request with the `GrapeOAuth2::Generators::Token` class:
+#### Custom authentication endpoints
+
+Besides, you can create your own API endpoints for OAuth2 authentication and use `grape_oauth2` gem functionality.
+In that case you will get a full control over the authentication proccess and can do anything in it. Just create
+a common Grape API class, set optional OAuth2 params and process the request with the `GrapeOAuth2::Generators::Token`
+generator for example (for issuing an access token):
 
 ```ruby
 # api/oauth2.rb
@@ -563,22 +573,25 @@ module MyAPI
 
       post :token do
         token_response = GrapeOAuth2::Generators::Token.generate_for(env) do |request, response|
-          # Custom client authentication
+          # You can use default authentication if you don't need to change this part:
+          # client = GrapeOAuth2::Strategies::Base.authenticate_client(request)
+
+          # Or write your custom client authentication:
           client = Application.find_by(key: request.client_id, active: true)
           request.invalid_client! unless client
           
-          # Or use default authentication if you don't need to change this part:
-          # client = GrapeOAuth2::Strategies::Base.authenticate_client(request)
-
-          # Custom resource owner (User model) authentication
-          resource_owner = User.find_by(username: request.username)
-          request.invalid_grant! if resource_owner.nil? || resource_owner.inactive?
-          
-          # Or use default authentication if you don't need to change this part:
+          # You can use default Resource Owner authentication if you don't need to change this part:
           # resource_owner = GrapeOAuth2::Strategies::Base.authenticate_resource_owner(request)
 
-          # Create an AccessToken for the client and resource_owner
-          token = AccessToken.create_for(client, resource_owner, request.scope)
+          # Or define your custom resource owner authentication:
+          resource_owner = User.find_by(username: request.username)
+          request.invalid_grant! if resource_owner.nil? || resource_owner.inactive?
+
+          # You can create an Access Token as you want:
+          token = MyAwesomeAccessToken.create(client: client,
+                                              resource_owner: resource_owner,
+                                              scope: request.scope)
+
           response.access_token = token.to_bearer_token
         end
 
@@ -608,7 +621,8 @@ end
 
 ## Custom Access Token authenticator
 
-If you don't want to use default `GrapeOAuth2` Access Token authenticator then you can define your own (it must be a `proc` or `lambda`):
+If you don't want to use default `GrapeOAuth2` Access Token authenticator then you can define your own in the
+configuration (it must be a `proc` or `lambda`):
 
 ```ruby
 GrapeOAuth2.configure do |config|
@@ -620,7 +634,7 @@ GrapeOAuth2.configure do |config|
 end
 ```
 
-Don't forget to add the middleware to your root API class (`use *GrapeOAuth2.middleware`).
+Don't forget to add the middleware to your root API class (`use *GrapeOAuth2.middleware`, see below).
 
 ## Errors (exceptions) handling
 
