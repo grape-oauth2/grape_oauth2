@@ -4,8 +4,8 @@ module GrapeOAuth2
       extend ActiveSupport::Concern
 
       included do
-        belongs_to :client, class_name: GrapeOAuth2.config.client_class, foreign_key: :client_id
-        belongs_to :resource_owner, class_name: GrapeOAuth2.config.resource_owner_class, foreign_key: :resource_owner_id
+        belongs_to :client, class_name: GrapeOAuth2.config.client_class_name, foreign_key: :client_id
+        belongs_to :resource_owner, class_name: GrapeOAuth2.config.resource_owner_class_name, foreign_key: :resource_owner_id
 
         validates :client_id, presence: true
         validates :token, presence: true, uniqueness: true

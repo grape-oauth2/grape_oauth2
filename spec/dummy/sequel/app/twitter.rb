@@ -13,9 +13,9 @@ DB = if defined?(JRUBY_VERSION)
 load File.expand_path('../config/db.rb', __FILE__)
 
 GrapeOAuth2.configure do |config|
-  config.client_class = 'Application'
-  config.access_token_class = 'AccessToken'
-  config.resource_owner_class = 'User'
+  config.client_class_name = 'Application'
+  config.access_token_class_name = 'AccessToken'
+  config.resource_owner_class_name = 'User'
 
   config.realm = 'Custom Realm'
 

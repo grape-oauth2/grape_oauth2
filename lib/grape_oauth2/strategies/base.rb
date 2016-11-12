@@ -6,7 +6,7 @@ module GrapeOAuth2
           if block_given?
             yield request
           else
-            config._client_class.authenticate(request.client_id, request.client_secret)
+            config.client_class.authenticate(request.client_id, request.client_secret)
           end
         end
 
@@ -14,7 +14,7 @@ module GrapeOAuth2
           if block_given?
             yield client, request
           else
-            config._resource_owner_class.oauth_authenticate(client, request.username, request.password)
+            config.resource_owner_class.oauth_authenticate(client, request.username, request.password)
           end
         end
 

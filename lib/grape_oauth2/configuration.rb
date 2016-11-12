@@ -11,8 +11,8 @@ module GrapeOAuth2
 
     SUPPORTED_GRANT_TYPES = %w(password client_credentials refresh_token).freeze
 
-    attr_accessor :client_class, :access_token_class, :resource_owner_class,
-                  :access_grant_class
+    attr_accessor :access_token_class_name, :access_grant_class_name,
+                  :client_class_name, :resource_owner_class_name
 
     attr_accessor :scopes_validator
 
@@ -37,7 +37,7 @@ module GrapeOAuth2
 
     def default_token_authenticator
       lambda do |request|
-        _access_token_class.authenticate(request.access_token) || request.invalid_token!
+        access_token_class.authenticate(request.access_token) || request.invalid_token!
       end
     end
 
@@ -49,17 +49,20 @@ module GrapeOAuth2
       end
     end
 
-    # TODO: refactor!
-    def _access_token_class
-      @_access_token_class ||= access_token_class.constantize
+    def access_token_class
+      @_access_token_class ||= access_token_class_name.constantize
     end
 
-    def _resource_owner_class
-      @_resource_owner_class ||= resource_owner_class.constantize
+    def resource_owner_class
+      @_resource_owner_class ||= resource_owner_class_name.constantize
     end
 
-    def _client_class
-      @_client_class ||= client_class.constantize
+    def client_class
+      @_client_class ||= client_class_name.constantize
+    end
+
+    def access_grant_class
+      @_access_grant_class ||= access_grant_class_name.constantize
     end
 
     private

@@ -96,9 +96,9 @@ GrapeOAuth2.configure do |config|
   # end
 
   # Classes for OAuth2 Roles
-  config.client_class = 'Application'
-  config.access_token_class = 'AccessToken'
-  config.resource_owner_class = 'User'
+  config.client_class_name = 'Application'
+  config.access_token_class_name = 'AccessToken'
+  config.resource_owner_class_name = 'User'
 end
 ```
 
@@ -408,9 +408,9 @@ end
 # config/oauth2.rb
 GrapeOAuth2.configure do |config|
   # Classes for OAuth2 Roles
-  config.client_class = 'Application'
-  config.access_token_class = 'AccessToken'
-  config.resource_owner_class = 'User'
+  config.client_class_name = 'Application'
+  config.access_token_class_name = 'AccessToken'
+  config.resource_owner_class_name = 'User'
 end
 ```
 

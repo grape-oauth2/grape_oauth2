@@ -15,7 +15,7 @@ module GrapeOAuth2
         end
 
         def authenticate_client(request)
-          config._client_class.authenticate(request.client_id)
+          config.client_class.authenticate(request.client_id)
         end
 
         private
@@ -32,11 +32,11 @@ module GrapeOAuth2
           case request.response_type
           when :code
             # resource owner can't be nil!
-            authorization_code = config._access_grant_class.create_for(client, resource_owner, response.redirect_uri)
+            authorization_code = config.access_grant_class.create_for(client, resource_owner, response.redirect_uri)
             response.code = authorization_code.token
           when :token
             # resource owner can't be nil!
-            access_token = config._access_token_class.create_for(client, nil, scopes_from(request))
+            access_token = config.access_token_class.create_for(client, nil, scopes_from(request))
             response.access_token = access_token.to_bearer_token
           else
             request.unsupported_response_type!

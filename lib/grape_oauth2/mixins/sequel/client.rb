@@ -9,7 +9,7 @@ module GrapeOAuth2
 
         set_allowed_columns :name
 
-        one_to_many :access_tokens, class: GrapeOAuth2.config.access_token_class, key: :client_id
+        one_to_many :access_tokens, class: GrapeOAuth2.config.access_token_class_name, key: :client_id
 
         def before_validation
           generate_keys if new?

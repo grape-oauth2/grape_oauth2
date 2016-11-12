@@ -11,20 +11,20 @@ module GrapeOAuth2
       private
 
       REQUIRED_CLASSES_API = {
-        access_token_class: {
+        access_token_class_name: {
           class_methods: %i(authenticate create_for),
           instance_methods: %i(expired? revoked? revoke! to_bearer_token)
         },
-        client_class: {
+        client_class_name: {
           class_methods: %i(authenticate)
         },
-        resource_owner_class: {
+        resource_owner_class_name: {
           class_methods: %i(oauth_authenticate)
         }
       }.freeze
 
       def check_required_classes!
-        [:access_token_class, :client_class, :resource_owner_class, :scopes_validator].each do |klass|
+        [:access_token_class_name, :client_class_name, :resource_owner_class_name, :scopes_validator].each do |klass|
           object = send(klass)
           raise Error, "'#{klass}' must be defined!" if object.nil? || !defined?(object)
         end

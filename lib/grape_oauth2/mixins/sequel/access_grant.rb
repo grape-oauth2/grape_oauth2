@@ -7,8 +7,8 @@ module GrapeOAuth2
         plugin :validation_helpers
         plugin :timestamps
 
-        many_to_one :client, class: GrapeOAuth2.config.client_class, key: :client_id
-        many_to_one :resource_owner, class: GrapeOAuth2.config.resource_owner_class, key: :resource_owner_id
+        many_to_one :client, class: GrapeOAuth2.config.client_class_name, key: :client_id
+        many_to_one :resource_owner, class: GrapeOAuth2.config.resource_owner_class_name, key: :resource_owner_id
 
         def before_validation
           if new?
