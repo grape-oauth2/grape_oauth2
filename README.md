@@ -1,3 +1,7 @@
+<p align="center">
+  <img alt="Lerna" src="https://raw.githubusercontent.com/nbulaj/grape_oauth2/master/grape_oauth2.png">
+</p>
+
 # Grape OAuth2
 [![Build Status](https://travis-ci.org/nbulaj/grape_oauth2.svg?branch=master)](https://travis-ci.org/nbulaj/grape_oauth2)
 [![Dependency Status](https://gemnasium.com/nbulaj/grape_oauth2.svg)](https://gemnasium.com/nbulaj/grape_oauth2)
