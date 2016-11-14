@@ -5,6 +5,7 @@
 # Grape OAuth2
 [![Build Status](https://travis-ci.org/nbulaj/grape_oauth2.svg?branch=master)](https://travis-ci.org/nbulaj/grape_oauth2)
 [![Dependency Status](https://gemnasium.com/nbulaj/grape_oauth2.svg)](https://gemnasium.com/nbulaj/grape_oauth2)
+[![Coverage Status](https://coveralls.io/repos/github/nbulaj/grape_oauth2/badge.svg)](https://coveralls.io/github/nbulaj/grape_oauth2)
 [![Code Climate](https://codeclimate.com/github/nbulaj/grape_oauth2/badges/gpa.svg)](https://codeclimate.com/github/nbulaj/grape_oauth2)
 [![License](http://img.shields.io/badge/license-MIT-brightgreen.svg)](#license)
 

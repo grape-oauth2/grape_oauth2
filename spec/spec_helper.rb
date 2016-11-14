@@ -3,8 +3,14 @@ ENV['ORM'] ||= 'active_record'
 
 puts "Configured ORM: '#{ENV['ORM']}'"
 
-require 'simplecov'
-SimpleCov.start
+require 'coveralls'
+
+if Coveralls.should_run?
+  Coveralls.wear!
+else
+  require 'simplecov'
+  SimpleCov.start
+end
 
 require 'bundler/setup'
 Bundler.setup

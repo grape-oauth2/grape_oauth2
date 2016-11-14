@@ -11,7 +11,7 @@ module GrapeOAuth2
         end
 
         post :authorize do
-          raise NotImplementedError
+          raise 'Not implemented yet'
         end
       end
     end
