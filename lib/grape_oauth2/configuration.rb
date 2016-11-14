@@ -22,17 +22,7 @@ module GrapeOAuth2
     attr_accessor :token_authenticator
 
     def initialize
-      initialize_classes
-      initialize_authenticators
-
-      self.token_lifetime = DEFAULT_TOKEN_LIFETIME
-      self.code_lifetime = DEFAULT_CODE_LIFETIME
-      self.allowed_grant_types = %w(password client_credentials)
-
-      self.issue_refresh_token = false
-      self.revoke_after_refresh = false
-
-      self.realm = DEFAULT_REALM
+      reset!
     end
 
     def default_token_authenticator
@@ -47,6 +37,20 @@ module GrapeOAuth2
       else
         instance_variable_get(:'@token_authenticator')
       end
+    end
+
+    def reset!
+      initialize_classes
+      initialize_authenticators
+
+      self.token_lifetime = DEFAULT_TOKEN_LIFETIME
+      self.code_lifetime = DEFAULT_CODE_LIFETIME
+      self.allowed_grant_types = %w(password client_credentials)
+
+      self.issue_refresh_token = false
+      self.revoke_after_refresh = false
+
+      self.realm = DEFAULT_REALM
     end
 
     def access_token_class
@@ -65,8 +69,8 @@ module GrapeOAuth2
       @_access_grant_class ||= access_grant_class_name.constantize
     end
 
-    def scopes_validator
-      @_scopes_validator ||= scopes_validator_class_name.constantize
+    def scopes_validator_class
+      @_scopes_validator_class ||= scopes_validator_class_name.constantize
     end
 
     private

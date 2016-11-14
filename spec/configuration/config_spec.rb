@@ -1,9 +1,46 @@
 require 'spec_helper'
 
 describe GrapeOAuth2::Configuration do
-  context 'default config' do
-    let(:config) { described_class.new }
+  let(:config) { described_class.new }
 
+  # Refactor: Mock it
+  class CustomClient
+    def self.authenticate(key, secret = nil)
+    end
+  end
+
+  class CustomAccessToken
+    def self.create_for(client, resource_owner, scopes = nil)
+    end
+
+    def self.authenticate(token, type: :access_token)
+    end
+
+    def client
+    end
+
+    def resource_owner
+    end
+
+    def expired?
+    end
+
+    def revoked?
+    end
+
+    def revoke!(revoked_at = Time.now)
+    end
+
+    def to_bearer_token
+    end
+  end
+
+  class CustomResourceOwner
+    def self.oauth_authenticate(client, username, password)
+    end
+  end
+
+  context 'default config' do
     it 'setup config with default values' do
       expect(config.token_lifetime).to eq(7200)
       expect(config.code_lifetime).to eq(7200)
@@ -18,9 +55,31 @@ describe GrapeOAuth2::Configuration do
     end
   end
 
-  context 'validation' do
-    let(:config) { described_class.new }
+  context 'custom config' do
+    class CustomScopesValidator
+      def initialize(scopes)
+        @scopes = scopes
+      end
 
+      def valid_for?(access_token)
+        false
+      end
+    end
+
+    before do
+      config.access_token_class_name = 'CustomAccessToken'
+      config.resource_owner_class_name = 'CustomResourceOwner'
+      config.client_class_name = 'CustomClient'
+      config.access_grant_class_name = 'Object'
+      config.scopes_validator_class_name = 'CustomScopesValidator'
+    end
+
+    it 'invokes custom scopes validator' do
+      expect(config.scopes_validator_class.new([]).valid_for?(nil)).to be_falsey
+    end
+  end
+
+  context 'validation' do
     context 'with invalid config options' do
       it 'raises an error' do
         expect { config.check! }.to raise_error(GrapeOAuth2::Configuration::Error)
@@ -28,43 +87,6 @@ describe GrapeOAuth2::Configuration do
     end
 
     context 'with valid config options' do
-      # Refactor: Mock it
-      class CustomClient
-        def self.authenticate(key, secret = nil)
-        end
-      end
-
-      class CustomAccessToken
-        def self.create_for(client, resource_owner, scopes = nil)
-        end
-
-        def self.authenticate(token, type: :access_token)
-        end
-
-        def client
-        end
-
-        def resource_owner
-        end
-
-        def expired?
-        end
-
-        def revoked?
-        end
-
-        def revoke!(revoked_at = Time.now)
-        end
-
-        def to_bearer_token
-        end
-      end
-
-      class CustomResourceOwner
-        def self.oauth_authenticate(client, username, password)
-        end
-      end
-
       before do
         config.access_token_class_name = 'CustomAccessToken'
         config.resource_owner_class_name = 'CustomResourceOwner'

@@ -24,9 +24,14 @@ module GrapeOAuth2
       }.freeze
 
       def check_required_classes!
-        [:access_token_class_name, :client_class_name, :resource_owner_class_name, :scopes_validator].each do |klass|
-          object = send(klass)
-          raise Error, "'#{klass}' must be defined!" if object.nil? || !defined?(object)
+        required_classes = (REQUIRED_CLASSES_API.keys + [:scopes_validator_class])
+
+        required_classes.each do |klass|
+          begin
+            object = send(klass)
+          rescue NoMethodError
+            raise Error, "'#{klass}' must be defined!" if object.nil? || !defined?(object)
+          end
         end
       end
 
