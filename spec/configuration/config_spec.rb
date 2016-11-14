@@ -6,6 +6,7 @@ describe GrapeOAuth2::Configuration do
   # Refactor: Mock it
   class CustomClient
     def self.authenticate(key, secret = nil)
+      'Test'
     end
   end
 
@@ -14,6 +15,7 @@ describe GrapeOAuth2::Configuration do
     end
 
     def self.authenticate(token, type: :access_token)
+      'Test'
     end
 
     def client
@@ -37,6 +39,7 @@ describe GrapeOAuth2::Configuration do
 
   class CustomResourceOwner
     def self.oauth_authenticate(client, username, password)
+      'Test'
     end
   end
 
@@ -76,6 +79,18 @@ describe GrapeOAuth2::Configuration do
 
     it 'invokes custom scopes validator' do
       expect(config.scopes_validator_class.new([]).valid_for?(nil)).to be_falsey
+    end
+
+    it 'works with custom Access Token class' do
+      expect(config.access_token_class.authenticate('')).to eq('Test')
+    end
+
+    it 'works with custom Client class' do
+      expect(config.client_class.authenticate('')).to eq('Test')
+    end
+
+    it 'works with custom Resource Owner class' do
+      expect(config.resource_owner_class.oauth_authenticate('', '', '')).to eq('Test')
     end
   end
 

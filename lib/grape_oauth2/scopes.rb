@@ -3,7 +3,7 @@ module GrapeOAuth2
     attr_reader :scopes
 
     def initialize(scopes)
-      @scopes = (scopes || []).map(&:to_s)
+      @scopes = to_array(scopes || [])
     end
 
     def valid_for?(access_token)
@@ -13,8 +13,6 @@ module GrapeOAuth2
     private
 
     def present_in?(token_scopes)
-      # return true if token_scopes.nil? || token_scopes.empty?
-
       required_scopes = Set.new(to_array(scopes))
       authorized_scopes = Set.new(to_array(token_scopes))
 
@@ -22,6 +20,8 @@ module GrapeOAuth2
     end
 
     def to_array(scopes)
+      return [] if scopes.nil?
+
       collection = if scopes.is_a?(Array) || scopes.respond_to?(:to_a)
                      scopes.to_a
                    elsif scopes.is_a?(String)
