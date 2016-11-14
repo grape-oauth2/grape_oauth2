@@ -6,3 +6,4 @@ log/*.log
 /.idea
 gemfiles/*.lock
 Gemfile.lock
+coverage/

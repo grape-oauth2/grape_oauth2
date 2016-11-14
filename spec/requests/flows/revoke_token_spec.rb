@@ -14,7 +14,7 @@ describe 'Token Endpoint' do
           context 'when request is invalid' do
             before { AccessToken.create_for(application, user)  }
 
-            it 'do nothing' do
+            it 'does nothing' do
               expect {
                 post api_url, { token: 'invalid token' }, headers
               }.not_to change { AccessToken.count }

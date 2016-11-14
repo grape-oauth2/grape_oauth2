@@ -10,6 +10,7 @@ group :test do
   gem 'rspec-rails', '~> 3.4'
   gem 'database_cleaner'
   gem 'rack-test', require: 'rack/test'
+  gem 'simplecov', require: false
 end
 
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]

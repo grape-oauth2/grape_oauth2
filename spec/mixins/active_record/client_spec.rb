@@ -77,6 +77,13 @@ describe 'GrapeOAuth2::ActiveRecord::Client', skip_if: ENV['ORM'] != 'active_rec
       expect(Application.authenticate(key, secret)).to eq(client)
     end
 
+    it 'returns a class instance if only key specified' do
+      client.key = key
+      client.save
+
+      expect(Application.authenticate(key)).to eq(client)
+    end
+
     it 'returns nil if authentication failed' do
       client.key = key
       client.secret = secret

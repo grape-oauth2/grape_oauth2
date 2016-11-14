@@ -14,6 +14,7 @@ group :test do
   end
 
   gem 'rspec-rails', '~> 3.5'
+  gem 'simplecov', require: false
   gem 'database_cleaner'
   gem 'rack-test', require: 'rack/test'
   gem 'otr-activerecord'

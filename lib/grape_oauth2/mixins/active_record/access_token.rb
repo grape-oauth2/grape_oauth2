@@ -21,7 +21,7 @@ module GrapeOAuth2
             create(
               client_id: client.id,
               resource_owner_id: resource_owner && resource_owner.id,
-              scopes: scopes
+              scopes: scopes.to_s
             )
           end
 
@@ -58,7 +58,7 @@ module GrapeOAuth2
         protected
 
         def generate_tokens
-          self.token = SecureRandom.hex(16)
+          self.token = SecureRandom.hex(16) if token.blank?
           self.refresh_token = SecureRandom.hex(16) if GrapeOAuth2.config.issue_refresh_token
         end
 

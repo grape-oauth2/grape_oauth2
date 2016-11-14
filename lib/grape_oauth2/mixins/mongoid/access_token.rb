@@ -31,7 +31,7 @@ module GrapeOAuth2
             create(
               client_id: client.id,
               resource_owner_id: resource_owner && resource_owner.id,
-              scopes: scopes
+              scopes: scopes.to_s
             )
           end
 
