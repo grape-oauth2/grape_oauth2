@@ -11,14 +11,14 @@ module GrapeOAuth2
       private
 
       REQUIRED_CLASSES_API = {
-        access_token_class_name: {
+        access_token_class: {
           class_methods: %i(authenticate create_for),
           instance_methods: %i(expired? revoked? revoke! to_bearer_token)
         },
-        client_class_name: {
+        client_class: {
           class_methods: %i(authenticate)
         },
-        resource_owner_class_name: {
+        resource_owner_class: {
           class_methods: %i(oauth_authenticate)
         }
       }.freeze

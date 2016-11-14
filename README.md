@@ -90,7 +90,7 @@ GrapeOAuth2.configure do |config|
   # Revoke token after using of refresh token
   # config.revoke_after_refresh = true
   
-  # WWW-Authenticate Realm (default "OAuth 2.0")
+  # WWW-Authenticate Realm (default is "OAuth 2.0")
   # config.realm = 'My API'
   
   # Access Token authenticator block
@@ -98,6 +98,9 @@ GrapeOAuth2.configure do |config|
   # config.token_authenticator do |request|
   #   AccessToken.authenticate(request.access_token) || request.invalid_token!
   # end
+  
+  # Scopes validator class (default is GrapeOAuth2::Scopes).
+  # config.scopes_validator_class_name = 'MyCustomValidator'
 
   # Classes for OAuth2 Roles
   config.client_class_name = 'Application'
@@ -667,7 +670,7 @@ And set that class as scopes validator in the GrapeOAuth2 config:
 GrapeOAuth2.configure do |config|
   # ...
   
-  config.scopes_validator = CustomScopesValidator
+  config.scopes_validator_class_name = 'CustomScopesValidator'
 end
 ```
 

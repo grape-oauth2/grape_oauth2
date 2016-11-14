@@ -14,7 +14,7 @@ module GrapeOAuth2
     attr_accessor :access_token_class_name, :access_grant_class_name,
                   :client_class_name, :resource_owner_class_name
 
-    attr_accessor :scopes_validator
+    attr_accessor :scopes_validator_class_name
 
     attr_accessor :allowed_grant_types, :code_lifetime, :token_lifetime,
                   :issue_refresh_token, :revoke_after_refresh, :realm
@@ -65,10 +65,14 @@ module GrapeOAuth2
       @_access_grant_class ||= access_grant_class_name.constantize
     end
 
+    def scopes_validator
+      @_scopes_validator ||= scopes_validator_class_name.constantize
+    end
+
     private
 
     def initialize_classes
-      self.scopes_validator = GrapeOAuth2::Scopes
+      self.scopes_validator_class_name = GrapeOAuth2::Scopes.name
     end
 
     def initialize_authenticators
