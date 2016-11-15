@@ -24,6 +24,7 @@ end
 
 # Authorization Grants (Strategies)
 require 'grape_oauth2/strategies/base'
+require 'grape_oauth2/strategies/authorization_code'
 require 'grape_oauth2/strategies/password'
 require 'grape_oauth2/strategies/client_credentials'
 require 'grape_oauth2/strategies/refresh_token'
@@ -31,13 +32,14 @@ require 'grape_oauth2/strategies/refresh_token'
 # Generators
 require 'grape_oauth2/generators/base'
 require 'grape_oauth2/generators/token'
-require 'grape_oauth2/generators/authorization_code'
+require 'grape_oauth2/generators/authorization'
 
 # Helpers
 require 'grape_oauth2/helpers/access_token_helpers'
 require 'grape_oauth2/helpers/oauth_params'
 
 # Responses
+# require 'grape_oauth2/responses/authorization_response'
 require 'grape_oauth2/responses/token_response'
 
 # Endpoints

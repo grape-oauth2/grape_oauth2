@@ -50,6 +50,7 @@ _In progress_:
     - [Custom authentication endpoints](#custom-authentication-endpoints)
 - [Custom Access Token authenticator](#custom-access-token-authenticator)
 - [Custom scopes validation](#custom-scopes-validation)
+- [Process token on Refresh (protect against Replay Attacks)](#process-token-on-refresh-protect-against-replay-attacks)
 - [Errors (exceptions) handling](#errors-exceptions-handling)
 - [Example App](#example-app)
 - [Contributing](#contributing)
@@ -88,8 +89,11 @@ GrapeOAuth2.configure do |config|
   # Issue access tokens with refresh token
   # config.issue_refresh_token = true
   
-  # Revoke token after using of refresh token
-  # config.revoke_after_refresh = true
+  # Process Access Token that was used for the 
+  # Refresh Token Flow (default is :nothing).
+  # Could be a symbol (Access Token instance must respond to it)
+  # or block with refresh token as an argument.
+  # config.on_refresh = :nothing
   
   # WWW-Authenticate Realm (default is "OAuth 2.0")
   # config.realm = 'My API'
@@ -672,6 +676,32 @@ GrapeOAuth2.configure do |config|
   # ...
   
   config.scopes_validator_class_name = 'CustomScopesValidator'
+end
+```
+
+## Process token on Refresh (protect against Replay Attacks)
+
+If you want to do something with the original Access Token that was used with the Refresh Token Flow, then you need to
+configure `on_refresh` option. By default `GrapeOAuth2` gem does nothing on token refresh and that option is set to `:nothing`.
+You can set it to the symbol (in that case Access Token instance must respond to it) or block. Look at the examples:
+
+```ruby
+GrapeOAuth2.configure do |config|
+  # ...
+  
+  config.on_refresh = :destroy # will call :destroy method
+end
+```
+
+```ruby
+GrapeOAuth2.configure do |config|
+  # ...
+  
+  config.on_refresh do |refresh_token|
+    refresh_token.destroy
+    
+    MyAwesomeLogger.info("Token ##{refresh_token.id} was destroyed on refresh!")
+  end
 end
 ```
 

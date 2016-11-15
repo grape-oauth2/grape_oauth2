@@ -7,7 +7,7 @@ module GrapeOAuth2
         plugin :validation_helpers
         plugin :timestamps
 
-        set_allowed_columns :name
+        set_allowed_columns :name, :redirect_uri
 
         one_to_many :access_tokens, class: GrapeOAuth2.config.access_token_class_name, key: :client_id
 

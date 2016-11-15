@@ -29,7 +29,7 @@ ActiveRecord::Schema.define(version: 3) do
     t.datetime :created_at, null: false
   end
 
-  create_table :access_grants do |t|
+  create_table :access_codes do |t|
     t.integer :resource_owner_id
     t.integer :client_id
 
@@ -47,7 +47,7 @@ ActiveRecord::Schema.define(version: 3) do
   add_index :access_tokens, :client_id
   add_index :access_tokens, :refresh_token, unique: true
 
-  add_index :access_grants, :token, unique: true
-  add_index :access_grants, :resource_owner_id
-  add_index :access_grants, :client_id
+  add_index :access_codes, :token, unique: true
+  add_index :access_codes, :resource_owner_id
+  add_index :access_codes, :client_id
 end

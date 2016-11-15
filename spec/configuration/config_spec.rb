@@ -52,7 +52,7 @@ describe GrapeOAuth2::Configuration do
       expect(config.allowed_grant_types).to eq(%w(password client_credentials))
 
       expect(config.issue_refresh_token).to be_falsey
-      expect(config.revoke_after_refresh).to be_falsey
+      expect(config.on_refresh).to eq(:nothing)
 
       expect(config.scopes_validator_class_name).to eq(GrapeOAuth2::Scopes.name)
     end

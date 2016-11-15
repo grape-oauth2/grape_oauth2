@@ -17,9 +17,9 @@ module GrapeOAuth2
     attr_accessor :scopes_validator_class_name
 
     attr_accessor :allowed_grant_types, :code_lifetime, :token_lifetime,
-                  :issue_refresh_token, :revoke_after_refresh, :realm
+                  :issue_refresh_token, :realm
 
-    attr_accessor :token_authenticator
+    attr_accessor :token_authenticator, :on_refresh
 
     def initialize
       reset!
@@ -39,6 +39,18 @@ module GrapeOAuth2
       end
     end
 
+    def on_refresh(&block)
+      if block_given?
+        instance_variable_set(:'@on_refresh', block)
+      else
+        instance_variable_get(:'@on_refresh')
+      end
+    end
+
+    def on_refresh?
+      !on_refresh.nil? && on_refresh != :nothing
+    end
+
     def reset!
       initialize_classes
       initialize_authenticators
@@ -48,7 +60,7 @@ module GrapeOAuth2
       self.allowed_grant_types = %w(password client_credentials)
 
       self.issue_refresh_token = false
-      self.revoke_after_refresh = false
+      self.on_refresh = :nothing
 
       self.realm = DEFAULT_REALM
     end

@@ -19,6 +19,17 @@ module GrapeOAuth2
           super
         end
 
+        class << self
+          def create_for(client, resource_owner, redirect_uri, scopes = nil)
+            create(
+              client_id: client.id,
+              resource_owner_id: resource_owner && resource_owner.id,
+              redirect_uri: redirect_uri,
+              scopes: scopes.to_s
+            )
+          end
+        end
+
         def validate
           super
           validates_presence [:token, :client_id]
@@ -45,7 +56,7 @@ module GrapeOAuth2
         end
 
         def setup_expiration
-          self.expires_at = Time.now.utc + GrapeOAuth2.config.grant_lifetime if expires_at.nil?
+          self.expires_at = Time.now.utc + GrapeOAuth2.config.code_lifetime if expires_at.nil?
         end
       end
     end

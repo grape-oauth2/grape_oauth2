@@ -12,9 +12,23 @@ module GrapeOAuth2
           request.unauthorized_client! if refresh_token && refresh_token.client != client
 
           token = config.access_token_class.create_for(client, refresh_token.resource_owner)
-          refresh_token.revoke! if config.revoke_after_refresh
+          on_refresh_callback(refresh_token) if config.on_refresh?
 
           token.to_bearer_token
+        end
+
+        private
+
+        def on_refresh_callback(access_token)
+          callback = config.on_refresh
+
+          if callback.respond_to?(:call)
+            callback.call(access_token)
+          elsif access_token.respond_to?(callback)
+            access_token.send(callback)
+          else
+            raise ArgumentError, ":on_refresh is not a block and Access Token class doesn't respond to #{callback}!"
+          end
         end
       end
     end

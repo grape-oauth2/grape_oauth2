@@ -6,7 +6,7 @@ module GrapeOAuth2
           if block_given?
             yield request
           else
-            config.client_class.authenticate(request.client_id, request.client_secret)
+            config.client_class.authenticate(request.client_id, request.try(:client_secret))
           end
         end
 

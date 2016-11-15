@@ -11,7 +11,7 @@ module GrapeOAuth2
         end
 
         post :authorize do
-          raise 'Not implemented yet'
+          GrapeOAuth2::Generators::Authorization.generate_for(env)
         end
       end
     end

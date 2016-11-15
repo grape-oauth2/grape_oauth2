@@ -10,22 +10,22 @@ module GrapeOAuth2
         belongs_to :resource_owner, class_name: GrapeOAuth2.config.resource_owner_class_name,
                                     foreign_key: :resource_owner_id
 
-        validates :resource_owner_id, :client_id, :redirect_uri, presence: true
+        # resource_owner_id - required!
+        validates :client_id, :redirect_uri, presence: true
         validates :token, presence: true, uniqueness: true
 
         before_validation :generate_token, on: :create
         before_validation :setup_expiration, on: :create
 
-        def expired?
-          expires_at && Time.now.utc > expires_at
-        end
-
-        def revoked?
-          revoked_at && revoked_at <= Time.now.utc
-        end
-
-        def revoke!(revoked_at = Time.now)
-          update_column :revoked_at, revoked_at.utc
+        class << self
+          def create_for(client, resource_owner, redirect_uri, scopes = nil)
+            create(
+              client_id: client.id,
+              resource_owner_id: resource_owner && resource_owner.id,
+              redirect_uri: redirect_uri,
+              scopes: scopes.to_s
+            )
+          end
         end
 
         protected
@@ -35,7 +35,7 @@ module GrapeOAuth2
         end
 
         def setup_expiration
-          self.expires_at = Time.now.utc + GrapeOAuth2.config.grant_lifetime if expires_at.nil?
+          self.expires_at = Time.now.utc + GrapeOAuth2.config.code_lifetime if expires_at.nil?
         end
       end
     end

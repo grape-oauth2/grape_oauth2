@@ -9,6 +9,7 @@ GrapeOAuth2.configure do |config|
   config.client_class_name = 'Application'
   config.access_token_class_name = 'AccessToken'
   config.resource_owner_class_name = 'User'
+  config.access_grant_class_name = 'AccessCode'
 
   config.realm = 'Custom Realm'
 
@@ -17,6 +18,7 @@ end
 
 # Models
 require_relative 'models/access_token'
+require_relative 'models/access_code'
 require_relative 'models/application'
 require_relative 'models/user'
 

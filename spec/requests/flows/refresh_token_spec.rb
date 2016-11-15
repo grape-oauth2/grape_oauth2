@@ -98,8 +98,8 @@ describe 'Token Endpoint' do
             expect(json_body[:refresh_token]).to eq AccessToken.last.refresh_token
           end
 
-          it 'rrevokes old Access Token if configured' do
-            allow(GrapeOAuth2.config).to receive(:revoke_after_refresh).and_return(true)
+          it 'revokes old Access Token if it is configured' do
+            allow(GrapeOAuth2.config).to receive(:on_refresh).and_return(:revoke!)
 
             token = AccessToken.create_for(application, user)
             expect(token.refresh_token).not_to be_nil
@@ -113,13 +113,84 @@ describe 'Token Endpoint' do
             expect(last_response.status).to eq 200
 
             expect(AccessToken.count).to eq 2
-            expect(AccessToken.last.client_id).to eq application.id
-            expect(AccessToken.last.resource_owner_id).to eq user.id
+            expect(AccessToken.last.client).to eq application
+            expect(AccessToken.last.resource_owner).to eq user
 
             expect(token.reload.revoked?).to be_truthy
 
             expect(json_body[:access_token]).to eq AccessToken.last.token
             expect(json_body[:refresh_token]).to eq AccessToken.last.refresh_token
+          end
+
+          it 'destroy old Access Token if it is configured' do
+            allow(GrapeOAuth2.config).to receive(:on_refresh).and_return(:destroy)
+
+            token = AccessToken.create_for(application, user)
+            expect(token.refresh_token).not_to be_nil
+
+            post api_url,
+                 grant_type: 'refresh_token',
+                 refresh_token: token.refresh_token,
+                 client_id: application.key,
+                 client_secret: application.secret
+
+            expect(last_response.status).to eq 200
+
+            expect(AccessToken.count).to eq 1
+            expect(AccessToken.where(token: token.token).first).to be_nil
+          end
+
+          it 'calls custom block on token refresh if it is configured' do
+            scopes = 'just for test'
+            allow(GrapeOAuth2.config).to receive(:on_refresh).and_return(->(token) { token.update(scopes: scopes) })
+
+            token = AccessToken.create_for(application, user)
+            expect(token.refresh_token).not_to be_nil
+
+            post api_url,
+                 grant_type: 'refresh_token',
+                 refresh_token: token.refresh_token,
+                 client_id: application.key,
+                 client_secret: application.secret
+
+            expect(last_response.status).to eq 200
+
+            expect(AccessToken.count).to eq 2
+            expect(token.reload.scopes).to eq(scopes)
+          end
+
+          it 'does nothing on token refresh if :on_refresh is equal to :nothing or nil' do
+            allow(GrapeOAuth2.config).to receive(:on_refresh).and_return(:nothing)
+
+            token = AccessToken.create_for(application, user)
+            expect(token.refresh_token).not_to be_nil
+
+            # Check for :nothing
+            expect(GrapeOAuth2::Strategies::RefreshToken).not_to receive(:on_refresh_callback)
+
+            post api_url,
+                 grant_type: 'refresh_token',
+                 refresh_token: token.refresh_token,
+                 client_id: application.key,
+                 client_secret: application.secret
+
+            expect(last_response.status).to eq 200
+
+            allow(GrapeOAuth2.config).to receive(:on_refresh).and_return(nil)
+
+            token = AccessToken.create_for(application, user)
+            expect(token.refresh_token).not_to be_nil
+
+            # Check for nil
+            expect(GrapeOAuth2::Strategies::RefreshToken).not_to receive(:on_refresh_callback)
+
+            post api_url,
+                 grant_type: 'refresh_token',
+                 refresh_token: token.refresh_token,
+                 client_id: application.key,
+                 client_secret: application.secret
+
+            expect(last_response.status).to eq 200
           end
 
           it 'returns a new Access Token even if used token is expired' do

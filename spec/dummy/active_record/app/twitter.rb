@@ -9,6 +9,7 @@ load File.expand_path('../config/db.rb', __FILE__)
 GrapeOAuth2.configure do |config|
   config.client_class_name = 'Application'
   config.access_token_class_name = 'AccessToken'
+  config.access_grant_class_name = 'AccessCode'
   config.resource_owner_class_name = 'User'
 
   config.realm = 'Custom Realm'
@@ -19,7 +20,7 @@ end
 # Models
 require_relative 'models/application_record'
 require_relative 'models/access_token'
-require_relative 'models/access_grant'
+require_relative 'models/access_code'
 require_relative 'models/application'
 require_relative 'models/user'
 

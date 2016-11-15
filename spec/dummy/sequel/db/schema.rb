@@ -27,6 +27,19 @@ DB.create_table :access_tokens do
   column :scopes, String, size: 255
 end
 
+DB.create_table :access_codes do
+  primary_key :id
+  column :client_id, Integer
+  column :resource_owner_id, Integer, index: true
+
+  column :token, String, size: 255, null: false, index: { unique: true }
+  column :redirect_uri, String, size: 255, index: { unique: true }
+
+  column :expires_at, DateTime
+  column :created_at, DateTime, null: false
+  column :scopes, String, size: 255
+end
+
 DB.create_table :users do
   primary_key :id
   column :name, String, size: 255
