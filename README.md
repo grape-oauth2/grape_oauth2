@@ -89,8 +89,7 @@ GrapeOAuth2.configure do |config|
   # Issue access tokens with refresh token
   # config.issue_refresh_token = true
   
-  # Process Access Token that was used for the 
-  # Refresh Token Flow (default is :nothing).
+  # Process Access Token that was used for the Refresh Token Flow (default is :nothing).
   # Could be a symbol (Access Token instance must respond to it)
   # or block with refresh token as an argument.
   # config.on_refresh = :nothing
@@ -682,14 +681,15 @@ end
 ## Process token on Refresh (protect against Replay Attacks)
 
 If you want to do something with the original Access Token that was used with the Refresh Token Flow, then you need to
-configure `on_refresh` option. By default `GrapeOAuth2` gem does nothing on token refresh and that option is set to `:nothing`.
-You can set it to the symbol (in that case Access Token instance must respond to it) or block. Look at the examples:
+setup `on_refresh` configuration option. By default `GrapeOAuth2` gem does nothing on token refresh and that
+option is set to `:nothing`. You can set it to the symbol (in that case `Access Token` instance must respond to it)
+or block. Look at the examples:
 
 ```ruby
 GrapeOAuth2.configure do |config|
   # ...
   
-  config.on_refresh = :destroy # will call :destroy method
+  config.on_refresh = :destroy # will call :destroy method (`refresh_token.destroy`)
 end
 ```
 
@@ -707,7 +707,7 @@ end
 
 ## Errors (exceptions) handling
 
-You can add any exception from the [`rack-oauth2`](https://github.com/nov/rack-oauth2) gem (like `Rack::OAuth2::Server::Resource::Bearer::Unauthorized`)
+You can add any exception class from the [`rack-oauth2`](https://github.com/nov/rack-oauth2) gem (like `Rack::OAuth2::Server::Resource::Bearer::Unauthorized`)
 to the `rescue_from` if you need to return some special response.
 
 Example:
