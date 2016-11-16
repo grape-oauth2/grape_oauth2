@@ -1,4 +1,3 @@
-# Process raw Rack Response
 module GrapeOAuth2
   class TokenResponse < Base
     def access_token

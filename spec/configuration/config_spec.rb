@@ -94,6 +94,7 @@ describe GrapeOAuth2::Configuration do
     end
 
     it 'works with custom token authenticator' do
+      # before
       GrapeOAuth2.configure do |config|
         config.token_authenticator do |request|
           raise ArgumentError, 'Test'
@@ -101,11 +102,17 @@ describe GrapeOAuth2::Configuration do
       end
 
       expect { config.token_authenticator.call }.to raise_error(ArgumentError)
+
+      # after
+      GrapeOAuth2.configure do |config|
+        config.token_authenticator = config.default_token_authenticator
+      end
     end
 
     it 'works with custom on_refresh callback' do
       token = AccessToken.create
 
+      # before
       GrapeOAuth2.configure do |config|
         config.on_refresh do |access_token|
           access_token.update(scopes: 'test')
@@ -115,6 +122,11 @@ describe GrapeOAuth2::Configuration do
       expect {
         GrapeOAuth2::Strategies::RefreshToken.send(:on_refresh_callback, token)
       }.to change { token.scopes }.to('test')
+
+      # after
+      GrapeOAuth2.configure do |config|
+        config.on_refresh = :nothing
+      end
     end
   end
 
