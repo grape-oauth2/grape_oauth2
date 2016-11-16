@@ -8,12 +8,6 @@ describe 'GrapeOAuth2::ActiveRecord::AccessToken', skip_if: ENV['ORM'] != 'activ
   let(:token) { SecureRandom.hex(16) }
 
   describe 'validations' do
-    it 'validate client_id presence' do
-      token = AccessToken.new
-      expect(token).not_to be_valid
-      expect(token.errors.messages).to include(:client_id)
-    end
-
     it 'validate token uniqueness' do
       another_token = AccessToken.create(client: application)
       token = AccessToken.new(client: application, token: another_token.token)

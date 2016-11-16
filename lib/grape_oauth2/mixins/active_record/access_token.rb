@@ -10,7 +10,6 @@ module GrapeOAuth2
         belongs_to :resource_owner, class_name: GrapeOAuth2.config.resource_owner_class_name,
                                     foreign_key: :resource_owner_id
 
-        validates :client_id, presence: true
         validates :token, presence: true, uniqueness: true
 
         before_validation :generate_tokens, on: :create
@@ -19,8 +18,8 @@ module GrapeOAuth2
         class << self
           def create_for(client, resource_owner, scopes = nil)
             create(
-              client_id: client.id,
-              resource_owner_id: resource_owner && resource_owner.id,
+              client: client,
+              resource_owner: resource_owner,
               scopes: scopes.to_s
             )
           end

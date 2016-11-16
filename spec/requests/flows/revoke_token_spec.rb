@@ -12,7 +12,7 @@ describe 'Token Endpoint' do
 
         describe 'for public token' do
           context 'when request is invalid' do
-            before { AccessToken.create_for(application, user)  }
+            before { AccessToken.create_for(application, user) }
 
             it 'does nothing' do
               expect {
@@ -35,7 +35,8 @@ describe 'Token Endpoint' do
           end
 
           context 'with valid data' do
-            before { AccessToken.create_for(application, user)  }
+            # Token doesn't belongs to anybody
+            before { AccessToken.create_for(nil, nil)  }
 
             it 'revokes Access Token by its token' do
               expect {

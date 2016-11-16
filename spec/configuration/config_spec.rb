@@ -92,6 +92,30 @@ describe GrapeOAuth2::Configuration do
     it 'works with custom Resource Owner class' do
       expect(config.resource_owner_class.oauth_authenticate('', '', '')).to eq('Test')
     end
+
+    it 'works with custom token authenticator' do
+      GrapeOAuth2.configure do |config|
+        config.token_authenticator do |request|
+          raise ArgumentError, 'Test'
+        end
+      end
+
+      expect { config.token_authenticator.call }.to raise_error(ArgumentError)
+    end
+
+    it 'works with custom on_refresh callback' do
+      token = AccessToken.create
+
+      GrapeOAuth2.configure do |config|
+        config.on_refresh do |access_token|
+          access_token.update(scopes: 'test')
+        end
+      end
+
+      expect {
+        GrapeOAuth2::Strategies::RefreshToken.send(:on_refresh_callback, token)
+      }.to change { token.scopes }.to('test')
+    end
   end
 
   context 'validation' do

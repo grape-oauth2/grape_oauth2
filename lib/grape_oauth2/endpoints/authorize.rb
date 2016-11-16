@@ -11,7 +11,18 @@ module GrapeOAuth2
         end
 
         post :authorize do
-          GrapeOAuth2::Generators::Authorization.generate_for(env)
+          response = GrapeOAuth2::Generators::Authorization.generate_for(env)
+
+          # Status
+          status response.status
+
+          # Headers
+          response.headers.each do |key, value|
+            header key, value
+          end
+
+          # Body
+          body response.body
         end
       end
     end

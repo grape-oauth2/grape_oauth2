@@ -10,7 +10,7 @@ module GrapeOAuth2
         field :resource_owner_id, type: BSON::ObjectId
         field :client_id, type: BSON::ObjectId
 
-        belongs_to :client, class_name: 'Application', foreign_key: :client_id
+        belongs_to :client, class_name: 'Application', foreign_key: :client_id, optional: true
         belongs_to :resource_owner, class_name: 'User', foreign_key: :resource_owner_id, optional: true
 
         field :token, type: String
@@ -29,8 +29,8 @@ module GrapeOAuth2
         class << self
           def create_for(client, resource_owner, scopes = nil)
             create(
-              client_id: client.id,
-              resource_owner_id: resource_owner && resource_owner.id,
+              client: client,
+              resource_owner: resource_owner,
               scopes: scopes.to_s
             )
           end

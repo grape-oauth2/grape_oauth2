@@ -3,19 +3,11 @@ module GrapeOAuth2
     class Base
       class << self
         def authenticate_client(request)
-          if block_given?
-            yield request
-          else
-            config.client_class.authenticate(request.client_id, request.try(:client_secret))
-          end
+          config.client_class.authenticate(request.client_id, request.try(:client_secret))
         end
 
         def authenticate_resource_owner(client, request)
-          if block_given?
-            yield client, request
-          else
-            config.resource_owner_class.oauth_authenticate(client, request.username, request.password)
-          end
+          config.resource_owner_class.oauth_authenticate(client, request.username, request.password)
         end
 
         def config

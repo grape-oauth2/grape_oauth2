@@ -21,15 +21,15 @@ module GrapeOAuth2
 
         def validate
           super
-          validates_presence [:token, :client_id]
+          validates_presence [:token]
           validates_unique [:token]
         end
 
         class << self
           def create_for(client, resource_owner, scopes = nil)
             create(
-              client_id: client.id,
-              resource_owner_id: resource_owner && resource_owner.id,
+              client: client,
+              resource_owner: resource_owner,
               scopes: scopes.to_s
             )
           end

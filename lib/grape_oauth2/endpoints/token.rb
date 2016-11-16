@@ -34,18 +34,18 @@ module GrapeOAuth2
         end
 
         post :revoke do
-          request = Rack::OAuth2::Server::Token::Request.new(env)
-
-          # The authorization server, if applicable, first authenticates the client
-          # and checks its ownership of the provided token.
-          client = GrapeOAuth2::Strategies::Base.authenticate_client(request)
-          request.invalid_client! if client.nil?
-
           access_token = GrapeOAuth2.config.access_token_class.authenticate(params[:token],
                                                                             type: params[:token_type_hint])
 
           if access_token
             if access_token.client
+              request = Rack::OAuth2::Server::Token::Request.new(env)
+
+              # The authorization server, if applicable, first authenticates the client
+              # and checks its ownership of the provided token.
+              client = GrapeOAuth2::Strategies::Base.authenticate_client(request)
+              request.invalid_client! if client.nil?
+
               access_token.revoke! if client && client == access_token.client
             else
               # Access token is public

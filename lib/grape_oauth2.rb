@@ -39,7 +39,8 @@ require 'grape_oauth2/helpers/access_token_helpers'
 require 'grape_oauth2/helpers/oauth_params'
 
 # Responses
-# require 'grape_oauth2/responses/authorization_response'
+require 'grape_oauth2/responses/base'
+require 'grape_oauth2/responses/authorization_response'
 require 'grape_oauth2/responses/token_response'
 
 # Endpoints
