@@ -1,13 +1,14 @@
 require 'spec_helper'
 
 describe 'Token Endpoint' do
-  describe 'POST /oauth/token' do
-    describe 'Resource Owner Password Credentials flow' do
-      context 'with valid params' do
-        let(:authentication_url) { '/api/v1/oauth/token' }
-        let(:application) { Application.create(name: 'App1') }
-        let(:user) { User.create(username: 'test', password: '12345678') }
+  let(:application) { Application.create(name: 'App1') }
+  let(:user) { User.create(username: 'test', password: '12345678') }
 
+  describe 'Resource Owner Password Credentials flow' do
+    describe 'POST /oauth/token' do
+      let(:authentication_url) { '/api/v1/oauth/token' }
+
+      context 'with valid params' do
         context 'when request is invalid' do
           it 'fails without Grant Type' do
             post authentication_url,
@@ -147,6 +148,7 @@ describe 'Token Endpoint' do
 
             Twitter::API.send(:include, GrapeOAuth2.api)
             Twitter::API.mount(Twitter::Resources::Status)
+            Twitter::API.mount(Twitter::Resources::CustomToken)
           end
 
           it 'returns 404' do
@@ -160,6 +162,47 @@ describe 'Token Endpoint' do
             expect(last_response.status).to eq 404
           end
         end
+      end
+    end
+  end
+
+  describe 'POST /oauth/custom_token' do
+    context 'when block processed successfully' do
+      it 'returns an access token' do
+        application.update(name: 'Admin')
+
+        post '/api/v1/oauth/custom_token',
+             grant_type: 'password',
+             username: user.username,
+             password: '12345678',
+             client_id: application.key,
+             client_secret: application.secret
+
+        expect(last_response.status).to eq 200
+
+        expect(AccessToken.count).to eq 1
+        expect(AccessToken.first.client_id).to eq application.id
+
+        expect(json_body[:access_token]).to be_present
+        expect(json_body[:token_type]).to eq 'bearer'
+        expect(json_body[:expires_in]).to eq 7200
+      end
+    end
+
+    context 'when authentication failed' do
+      it 'returns an error' do
+        application.update(name: 'Admin')
+
+        post '/api/v1/oauth/custom_token',
+             grant_type: 'password',
+             username: 'invalid@example.com',
+             password: 'invalid',
+             client_id: application.key,
+             client_secret: application.secret
+
+        expect(json_body[:error]).to eq('invalid_grant')
+        expect(json_body[:error_description]).not_to be_blank
+        expect(last_response.status).to eq 400
       end
     end
   end

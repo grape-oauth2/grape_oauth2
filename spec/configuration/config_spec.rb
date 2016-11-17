@@ -128,12 +128,65 @@ describe GrapeOAuth2::Configuration do
         config.on_refresh = :nothing
       end
     end
+
+    it 'raises an error with invalid on_refresh callback' do
+      # before
+      GrapeOAuth2.configure do |config|
+        config.on_refresh = 'invalid'
+      end
+
+      expect {
+        GrapeOAuth2::Strategies::RefreshToken.send(:on_refresh_callback, nil)
+      }.to raise_error(ArgumentError)
+
+      # after
+      GrapeOAuth2.configure do |config|
+        config.on_refresh = :nothing
+      end
+    end
   end
 
   context 'validation' do
     context 'with invalid config options' do
-      it 'raises an error' do
+      it 'raises an error for default configuration' do
         expect { config.check! }.to raise_error(GrapeOAuth2::Configuration::Error)
+      end
+
+      it "raises an error if configured classes doesn't have an instance methods" do
+        class InvalidAccessToken
+          # Only class methods
+          def self.create_for(client, resource_owner, scopes = nil)
+          end
+
+          def self.authenticate(token, type: :access_token)
+            'Test'
+          end
+        end
+
+        config.access_token_class_name = 'InvalidAccessToken'
+        config.resource_owner_class_name = 'CustomResourceOwner'
+        config.client_class_name = 'CustomClient'
+        config.access_grant_class_name = 'Object'
+
+        expect { config.check! }.to raise_error(GrapeOAuth2::Configuration::APIMissing) do |error|
+          expect(error.message).to include('access_token_class')
+          expect(error.message).to include('Instance method')
+        end
+      end
+
+      it "raises an error if configured classes doesn't have a class methods" do
+        class InvalidClient
+        end
+
+        config.access_token_class_name = 'CustomAccessToken'
+        config.resource_owner_class_name = 'CustomResourceOwner'
+        config.client_class_name = 'InvalidClient'
+        config.access_grant_class_name = 'Object'
+
+        expect { config.check! }.to raise_error(GrapeOAuth2::Configuration::APIMissing) do |error|
+          expect(error.message).to include('client_class')
+          expect(error.message).to include('Class method')
+        end
       end
     end
 

@@ -1,6 +1,7 @@
 module GrapeOAuth2
   class Configuration
     Error = Class.new(StandardError)
+    APIMissing = Class.new(Error)
 
     include Validation
 

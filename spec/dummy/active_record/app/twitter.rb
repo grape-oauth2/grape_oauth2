@@ -25,6 +25,7 @@ require_relative 'models/application'
 require_relative 'models/user'
 
 # Twitter Endpoints
+require_relative 'resources/custom_token'
 require_relative 'resources/status'
 
 module Twitter
@@ -36,5 +37,6 @@ module Twitter
     include GrapeOAuth2.api
 
     mount Twitter::Resources::Status
+    mount Twitter::Resources::CustomToken
   end
 end

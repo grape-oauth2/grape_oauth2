@@ -45,14 +45,14 @@ module GrapeOAuth2
       def check_class_methods(klass, required_methods)
         (required_methods || []).each do |method|
           method_exist = send(klass).respond_to?(method)
-          raise Error, "Class method '#{method}' must be defined for the '#{klass}'!" unless method_exist
+          raise APIMissing, "Class method '#{method}' must be defined for the '#{klass}'!" unless method_exist
         end
       end
 
       def check_instance_methods(klass, required_methods)
         (required_methods || []).each do |method|
           unless send(klass).method_defined?(method)
-            raise Error, "Instance method '#{method}' must be defined for the '#{klass}'!"
+            raise APIMissing, "Instance method '#{method}' must be defined for the '#{klass}'!"
           end
         end
       end

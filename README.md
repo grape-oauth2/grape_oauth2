@@ -593,7 +593,7 @@ module MyAPI
           request.invalid_client! unless client
           
           # You can use default Resource Owner authentication if you don't need to change this part:
-          # resource_owner = GrapeOAuth2::Strategies::Base.authenticate_resource_owner(request)
+          # resource_owner = GrapeOAuth2::Strategies::Base.authenticate_resource_owner(client, request)
 
           # Or define your custom resource owner authentication:
           resource_owner = User.find_by(username: request.username)
