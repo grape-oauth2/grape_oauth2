@@ -40,3 +40,6 @@ matrix:
   - rvm: ruby-head
     gemfile: gemfiles/mongoid.rb
     env: ORM=mongoid
+  - rvm: jruby-9.1.5.0
+    gemfile: gemfiles/sequel.rb
+    env: ORM=sequel
