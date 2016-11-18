@@ -1,9 +1,9 @@
 ---
 engines:
   duplication:
-      enabled: true
-      checks:
-        Similar code:
-          enabled: false # separate mixins and revert it
-        Identical code:
-          enabled: false
+    enabled: true
+    checks:
+      Similar code:
+        enabled: false # separate mixins and revert it
+      Identical code:
+        enabled: false

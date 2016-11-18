@@ -4,6 +4,7 @@ module GrapeOAuth2
     APIMissing = Class.new(Error)
 
     include Validation
+    include ClassAccessors
 
     DEFAULT_TOKEN_LIFETIME = 7200 # in seconds
     DEFAULT_CODE_LIFETIME = 7200
@@ -64,26 +65,6 @@ module GrapeOAuth2
       self.on_refresh = :nothing
 
       self.realm = DEFAULT_REALM
-    end
-
-    def access_token_class
-      @_access_token_class ||= access_token_class_name.constantize
-    end
-
-    def resource_owner_class
-      @_resource_owner_class ||= resource_owner_class_name.constantize
-    end
-
-    def client_class
-      @_client_class ||= client_class_name.constantize
-    end
-
-    def access_grant_class
-      @_access_grant_class ||= access_grant_class_name.constantize
-    end
-
-    def scopes_validator_class
-      @_scopes_validator_class ||= scopes_validator_class_name.constantize
     end
 
     private
