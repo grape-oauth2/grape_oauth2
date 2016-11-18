@@ -1,5 +1,9 @@
 ---
 engines:
   duplication:
-    exclude_paths:
-        - "lib/grape_oauth2/mixins/"
+      enabled: true
+      checks:
+        Similar code:
+          enabled: false # separate mixins and revert it
+        Identical code:
+          enabled: false
