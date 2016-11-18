@@ -26,6 +26,7 @@ require_relative 'models/user'
 
 # Twitter Endpoints
 require_relative 'resources/custom_token'
+require_relative 'resources/custom_authorization'
 require_relative 'resources/status'
 
 module Twitter
@@ -38,5 +39,6 @@ module Twitter
 
     mount Twitter::Resources::Status
     mount Twitter::Resources::CustomToken
+    mount Twitter::Resources::CustomAuthorization
   end
 end

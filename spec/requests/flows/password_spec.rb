@@ -149,6 +149,7 @@ describe 'Token Endpoint' do
             Twitter::API.send(:include, GrapeOAuth2.api)
             Twitter::API.mount(Twitter::Resources::Status)
             Twitter::API.mount(Twitter::Resources::CustomToken)
+            Twitter::API.mount(Twitter::Resources::CustomAuthorization)
           end
 
           it 'returns 404' do

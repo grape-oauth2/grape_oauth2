@@ -1,10 +1,11 @@
 require 'spec_helper'
 
-describe 'GET /oauth/authorize' do
-  describe 'Authorization Code flow' do
+describe 'Authorization Code flow' do
+  let(:redirect_uri) { 'http://localhost:3000/home' }
+  let(:application) { Application.create(name: 'App1', redirect_uri: redirect_uri) }
+
+  describe 'POST /oauth/authorize' do
     let(:authorize_url) { '/api/v1/oauth/authorize' }
-    let(:redirect_uri) { 'http://localhost:3000/home' }
-    let(:application) { Application.create(name: 'App1', redirect_uri: redirect_uri) }
 
     context 'with valid params' do
       context 'when response_type is :code' do
@@ -48,6 +49,17 @@ describe 'GET /oauth/authorize' do
         expect(last_response.status).to eq 400
         # expect(json_body[:error]).to eq('invalid_request')
       end
+    end
+  end
+
+  describe 'POST /oauth/custom_authorize' do
+    it 'invokes custom block' do
+      post '/api/v1/oauth/custom_authorize',
+           client_id: application.key,
+           redirect_uri: redirect_uri,
+           response_type: 'code'
+
+      expect(last_response.status).to eq(400)
     end
   end
 end
