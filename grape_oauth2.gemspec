@@ -9,8 +9,8 @@ Gem::Specification.new do |gem|
   gem.date        = '2016-05-31'
   gem.email       = ['bulajnikita@gmail.com']
   gem.homepage    = 'http://github.com/nbulaj/grape-oauth2'
-  gem.summary     = 'Grape OAuth2'
-  gem.description = 'Provides flexible high-level OAuth2 support for Grape'
+  gem.summary     = 'Grape OAuth2 provider'
+  gem.description = 'Provides flexible, ORM-agnostic, fully customizable and simple OAuth2 support for Grape APIs'
   gem.license     = 'MIT'
 
   gem.require_paths = %w(lib)

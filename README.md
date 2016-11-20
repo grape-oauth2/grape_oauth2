@@ -73,6 +73,23 @@ And run:
 bundle install
 ```
 
+If you running your Grape API with `rackup` and using the [gem from git source](http://bundler.io/git.html), then
+you need to explicitly require bundler in the `config.ru`:
+
+```ruby
+require 'bundler/setup'
+Bundler.setup
+```
+
+or run your app with bundle exec command:
+
+```
+> bundle exec rackup config.ru
+[2016-11-19 02:35:33] INFO  WEBrick 1.3.1
+[2016-11-19 02:35:33] INFO  ruby 2.3.1 (2016-04-26) [i386-mingw32]
+[2016-11-19 02:35:33] INFO  WEBrick::HTTPServer#start: pid=5472 port=9292
+```
+
 ## Configuration
 
 Main Grape OAuth2 configuration must be placed in `config/initializers/` (in case you are using [Rails](https://github.com/rails/rails))
@@ -83,11 +100,11 @@ GrapeOAuth2.configure do |config|
   # Access Tokens lifetime
   config.token_lifetime = 7200 # in seconds (2.hours for Rails)
 
-  # Allowed OAuth2 Authorization Grants
-  # config.allowed_grant_types = %w(password client_credentials refresh_token)
+  # Allowed OAuth2 Authorization Grants (default is %w(password client_credentials)
+  config.allowed_grant_types = %w(password client_credentials refresh_token)
 
-  # Issue access tokens with refresh token
-  # config.issue_refresh_token = true
+  # Issue access tokens with refresh token (default is false)
+  config.issue_refresh_token = true
   
   # Process Access Token that was used for the Refresh Token Flow (default is :nothing).
   # Could be a symbol (Access Token instance must respond to it)
@@ -97,8 +114,7 @@ GrapeOAuth2.configure do |config|
   # WWW-Authenticate Realm (default is "OAuth 2.0")
   # config.realm = 'My API'
   
-  # Access Token authenticator block
-  #
+  # Access Token authenticator block.
   # config.token_authenticator do |request|
   #   AccessToken.authenticate(request.access_token) || request.invalid_token!
   # end
@@ -338,6 +354,11 @@ class AccessToken
     # Returns associated Resource Owner instance.
     # Can return `nil` (for Client Credentials flow as an example).
     # For ORM objects it can be an association (`belongs_to :resource_owner` for ActiveRecord).
+  end
+  
+  def scopes
+    # Returns Access Token authorised set of scopes. Can be a space-separated String, 
+    # Array or any object, that responds to `to_a`.
   end
 
   def expired?
