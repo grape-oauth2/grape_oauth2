@@ -19,6 +19,10 @@ module GrapeOAuth2
 
           Array(request.scope).join(' ')
         end
+
+        def expose_to_bearer_token(token)
+          Rack::OAuth2::AccessToken::Bearer.new(token.to_bearer_token)
+        end
       end
     end
   end

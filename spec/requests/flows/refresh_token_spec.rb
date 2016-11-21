@@ -166,7 +166,7 @@ describe 'Token Endpoint' do
             expect(token.refresh_token).not_to be_nil
 
             # Check for :nothing
-            expect(GrapeOAuth2::Strategies::RefreshToken).not_to receive(:on_refresh_callback)
+            expect(GrapeOAuth2::Strategies::RefreshToken).not_to receive(:run_on_refresh_callback)
 
             post api_url,
                  grant_type: 'refresh_token',
@@ -182,7 +182,7 @@ describe 'Token Endpoint' do
             expect(token.refresh_token).not_to be_nil
 
             # Check for nil
-            expect(GrapeOAuth2::Strategies::RefreshToken).not_to receive(:on_refresh_callback)
+            expect(GrapeOAuth2::Strategies::RefreshToken).not_to receive(:run_on_refresh_callback)
 
             post api_url,
                  grant_type: 'refresh_token',

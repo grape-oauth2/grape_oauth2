@@ -46,12 +46,12 @@ module GrapeOAuth2
         end
 
         def to_bearer_token
-          Rack::OAuth2::AccessToken::Bearer.new(
+          {
             access_token: token,
             expires_in: expires_at && GrapeOAuth2.config.token_lifetime.to_i,
             refresh_token: refresh_token,
             scope: scopes
-          )
+          }
         end
 
         protected

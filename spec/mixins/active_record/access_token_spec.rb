@@ -28,7 +28,7 @@ describe 'GrapeOAuth2::ActiveRecord::AccessToken', skip_if: ENV['ORM'] != 'activ
       end
 
       it 'returns refresh token' do
-        expect(access_token.to_bearer_token.access_token).not_to be_blank
+        expect(access_token.to_bearer_token[:access_token]).not_to be_blank
       end
     end
 
@@ -40,7 +40,7 @@ describe 'GrapeOAuth2::ActiveRecord::AccessToken', skip_if: ENV['ORM'] != 'activ
       end
 
       it 'returns blank refresh token' do
-        expect(access_token.to_bearer_token.refresh_token).to be_blank
+        expect(access_token.to_bearer_token[:refresh_token]).to be_blank
       end
     end
   end

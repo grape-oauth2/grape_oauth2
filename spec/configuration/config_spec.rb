@@ -120,7 +120,7 @@ describe GrapeOAuth2::Configuration do
       end
 
       expect {
-        GrapeOAuth2::Strategies::RefreshToken.send(:on_refresh_callback, token)
+        GrapeOAuth2::Strategies::RefreshToken.send(:run_on_refresh_callback, token)
       }.to change { token.scopes }.to('test')
 
       # after
@@ -136,7 +136,7 @@ describe GrapeOAuth2::Configuration do
       end
 
       expect {
-        GrapeOAuth2::Strategies::RefreshToken.send(:on_refresh_callback, nil)
+        GrapeOAuth2::Strategies::RefreshToken.send(:run_on_refresh_callback, nil)
       }.to raise_error(ArgumentError)
 
       # after

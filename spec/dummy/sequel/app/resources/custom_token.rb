@@ -18,7 +18,7 @@ module Twitter
             request.invalid_grant! if resource_owner.nil?
 
             token = AccessToken.create_for(client, resource_owner, request.scope)
-            response.access_token = token.to_bearer_token
+            response.access_token = GrapeOAuth2::Strategies::Base.expose_to_bearer_token(token)
           end
 
           status token_response.status

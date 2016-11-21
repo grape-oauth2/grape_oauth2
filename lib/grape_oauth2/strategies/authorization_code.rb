@@ -20,7 +20,7 @@ module GrapeOAuth2
           when :token
             # resource owner can't be nil!
             access_token = config.access_token_class.create_for(client, nil, scopes_from(request))
-            response.access_token = access_token.to_bearer_token
+            response.access_token = expose_to_bearer_token(access_token)
           else
             request.unsupported_response_type!
           end

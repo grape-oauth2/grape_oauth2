@@ -375,13 +375,12 @@ class AccessToken
   end
 
   def to_bearer_token
-    # Returns an instance of the Rack::OAuth2::AccessToken::Bearer 
-    # initialized with the next hash:
-    #   access_token: '',    # - required
-    #   refresh_token: '',   # - optional
-    #   token_type: '',      # - required
-    #   expires_in: '',      # - required
-    #   scope: ''            # - optional
+    # Returns a Hash of Bearer token attributes like the following:
+    #   access_token: '',      # - required
+    #   refresh_token: '',     # - optional
+    #   token_type: 'bearer',  # - required
+    #   expires_in: '',        # - required
+    #   scope: ''              # - optional
   end
 end
 ```
@@ -625,7 +624,7 @@ module MyAPI
                                               resource_owner: resource_owner,
                                               scope: request.scope)
 
-          response.access_token = token.to_bearer_token
+          response.access_token = GrapeOAuth2::Strategies::Base.expose_to_bearer_token(token)
         end
 
         # If request is successful, then return it

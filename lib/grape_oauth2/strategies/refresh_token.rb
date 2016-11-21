@@ -12,14 +12,14 @@ module GrapeOAuth2
           request.unauthorized_client! if refresh_token && refresh_token.client != client
 
           token = config.access_token_class.create_for(client, refresh_token.resource_owner)
-          on_refresh_callback(refresh_token) if config.on_refresh?
+          run_on_refresh_callback(refresh_token) if config.on_refresh?
 
-          token.to_bearer_token
+          expose_to_bearer_token(token)
         end
 
         private
 
-        def on_refresh_callback(access_token)
+        def run_on_refresh_callback(access_token)
           callback = config.on_refresh
 
           if callback.respond_to?(:call)
