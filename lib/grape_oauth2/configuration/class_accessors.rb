@@ -16,8 +16,12 @@ module GrapeOAuth2
       @_access_grant_class ||= access_grant_class_name.constantize
     end
 
-    def scopes_validator_class
-      @_scopes_validator_class ||= scopes_validator_class_name.constantize
+    def scopes_validator
+      scopes_validator_class_name.constantize
+    end
+
+    def token_generator
+      token_generator_class_name.constantize
     end
   end
 end

@@ -20,13 +20,17 @@ module GrapeOAuth2
         },
         resource_owner_class: {
           class_methods: %i(oauth_authenticate)
+        },
+        token_generator: {
+          class_methods: %i(generate)
+        },
+        scopes_validator: {
+          instance_methods: %i(valid_for?)
         }
       }.freeze
 
       def check_required_classes!
-        required_classes = (REQUIRED_CLASSES_API.keys + [:scopes_validator_class])
-
-        required_classes.each do |klass|
+        REQUIRED_CLASSES_API.keys.each do |klass|
           begin
             object = send(klass)
           rescue NoMethodError

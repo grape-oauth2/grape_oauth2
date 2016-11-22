@@ -6,6 +6,7 @@ require 'grape_oauth2/configuration/validation'
 require 'grape_oauth2/configuration/class_accessors'
 require 'grape_oauth2/configuration'
 require 'grape_oauth2/scopes'
+require 'grape_oauth2/unique_token'
 
 # Extract to separate gems!!!
 # Mixins
@@ -41,8 +42,8 @@ require 'grape_oauth2/helpers/oauth_params'
 
 # Responses
 require 'grape_oauth2/responses/base'
-require 'grape_oauth2/responses/authorization_response'
-require 'grape_oauth2/responses/token_response'
+require 'grape_oauth2/responses/authorization'
+require 'grape_oauth2/responses/token'
 
 # Endpoints
 require 'grape_oauth2/endpoints/token'

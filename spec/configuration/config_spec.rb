@@ -69,6 +69,16 @@ describe GrapeOAuth2::Configuration do
       end
     end
 
+    class CustomTokenGenerator
+      def self.generate(options = {})
+        if options[:custom]
+          'custom_token'
+        else
+          'default_token'
+        end
+      end
+    end
+
     before do
       config.access_token_class_name = 'CustomAccessToken'
       config.resource_owner_class_name = 'CustomResourceOwner'
@@ -78,7 +88,7 @@ describe GrapeOAuth2::Configuration do
     end
 
     it 'invokes custom scopes validator' do
-      expect(config.scopes_validator_class.new([]).valid_for?(nil)).to be_falsey
+      expect(config.scopes_validator.new([]).valid_for?(nil)).to be_falsey
     end
 
     it 'works with custom Access Token class' do
@@ -106,6 +116,21 @@ describe GrapeOAuth2::Configuration do
       # after
       GrapeOAuth2.configure do |config|
         config.token_authenticator = config.default_token_authenticator
+      end
+    end
+
+    it 'works with custom token generator' do
+      # before
+      GrapeOAuth2.configure do |config|
+        config.token_generator_class_name = 'CustomTokenGenerator'
+      end
+
+      expect(GrapeOAuth2.config.token_generator.generate).to eq('default_token')
+      expect(GrapeOAuth2.config.token_generator.generate(custom: true)).to eq('custom_token')
+
+      # after
+      GrapeOAuth2.configure do |config|
+        config.token_generator_class_name = GrapeOAuth2::UniqueToken.name
       end
     end
 

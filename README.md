@@ -50,6 +50,7 @@ _In progress_:
     - [Custom authentication endpoints](#custom-authentication-endpoints)
 - [Custom Access Token authenticator](#custom-access-token-authenticator)
 - [Custom scopes validation](#custom-scopes-validation)
+- [Custom token generator](#custom-token-generator)
 - [Process token on Refresh (protect against Replay Attacks)](#process-token-on-refresh-protect-against-replay-attacks)
 - [Errors (exceptions) handling](#errors-exceptions-handling)
 - [Example App](#example-app)
@@ -121,6 +122,10 @@ GrapeOAuth2.configure do |config|
   
   # Scopes validator class (default is GrapeOAuth2::Scopes).
   # config.scopes_validator_class_name = 'MyCustomValidator'
+  
+  # Token generator class (default is GrapeOAuth2::UniqueToken).
+  # Must respond to `self.generate(opts = {})`.
+  # config.token_generator_class_name = 'JWTGenerator'
 
   # Classes for OAuth2 Roles
   config.client_class_name = 'Application'
@@ -695,6 +700,28 @@ GrapeOAuth2.configure do |config|
   # ...
   
   config.scopes_validator_class_name = 'CustomScopesValidator'
+end
+```
+
+## Custom token generator
+
+If you want to generate your own tokens for Access Tokens and Authorization Codes then you need to write your own generator:
+
+```ruby
+class SomeTokenGenerator
+  def self.generate(options = {})
+    # Returns a generated token string.
+  end
+end
+```
+
+And set it as a token generator class in the GrapeOAuth2 config:
+
+```ruby
+GrapeOAuth2.configure do |config|
+  # ...
+  
+  config.token_generator_class_name = 'SomeTokenGenerator'
 end
 ```
 

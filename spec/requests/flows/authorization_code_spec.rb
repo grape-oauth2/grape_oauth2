@@ -16,6 +16,8 @@ describe 'Authorization Code flow' do
               redirect_uri: redirect_uri,
               response_type: 'code'
           }.to change { AccessCode.count }.from(0).to(1)
+
+          expect(last_response.status).to eq 302
         end
       end
 
@@ -37,7 +39,7 @@ describe 'Authorization Code flow' do
              client_id: application.key
 
         expect(last_response.status).to eq 400
-        # expect(json_body[:error]).to eq('invalid_request')
+        expect(json_body[:error]).to eq('invalid_request')
       end
 
       it 'should fail with unsupported response_type' do
@@ -47,7 +49,7 @@ describe 'Authorization Code flow' do
              response_type: 'invalid'
 
         expect(last_response.status).to eq 400
-        # expect(json_body[:error]).to eq('invalid_request')
+        expect(json_body[:error]).to eq('unsupported_response_type')
       end
     end
   end

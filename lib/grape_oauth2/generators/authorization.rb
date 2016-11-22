@@ -11,7 +11,7 @@ module GrapeOAuth2
             end
           end
 
-          GrapeOAuth2::AuthorizationResponse.new(authorization.call(env))
+          GrapeOAuth2::Responses::Authorization.new(authorization.call(env))
         rescue Rack::OAuth2::Server::Authorize::BadRequest => error
           error_response(error)
         end
@@ -19,9 +19,12 @@ module GrapeOAuth2
         private
 
         def error_response(error)
-          # Add other data to the response!
-          response = Rack::Response.new([{ error: error.error, description: error.description }], error.status)
-          GrapeOAuth2::AuthorizationResponse.new([error.status, {}, Rack::BodyProxy.new(response)])
+          response = Rack::Response.new
+          response.status = error.status
+          response.header['Content-Type'] = 'application/json'
+          response.write(JSON.dump(Rack::OAuth2::Util.compact_hash(error.protocol_params)))
+
+          GrapeOAuth2::Responses::Authorization.new(response.finish)
         end
 
         def execute_default(request, response)

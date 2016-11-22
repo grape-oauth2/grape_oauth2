@@ -2,9 +2,9 @@ module GrapeOAuth2
   module Strategies
     class Password < Base
       class << self
-        def process(request, &authenticator)
+        def process(request)
           client = authenticate_client(request) || request.invalid_client!
-          resource_owner = authenticate_resource_owner(client, request, &authenticator)
+          resource_owner = authenticate_resource_owner(client, request)
 
           request.invalid_grant! if resource_owner.nil?
 

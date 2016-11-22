@@ -52,7 +52,7 @@ module GrapeOAuth2
         protected
 
         def generate_token
-          self.token = SecureRandom.hex(16)
+          self.token = GrapeOAuth2.config.token_generator.generate
         end
 
         def setup_expiration

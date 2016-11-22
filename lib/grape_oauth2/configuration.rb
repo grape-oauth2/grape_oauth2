@@ -14,7 +14,7 @@ module GrapeOAuth2
     SUPPORTED_GRANT_TYPES = %w(password client_credentials refresh_token).freeze
 
     attr_accessor :access_token_class_name, :access_grant_class_name,
-                  :client_class_name, :resource_owner_class_name
+                  :client_class_name, :resource_owner_class_name, :token_generator_class_name
 
     attr_accessor :scopes_validator_class_name
 
@@ -49,7 +49,7 @@ module GrapeOAuth2
       end
     end
 
-    def on_refresh?
+    def on_refresh_runnable?
       !on_refresh.nil? && on_refresh != :nothing
     end
 
@@ -71,6 +71,7 @@ module GrapeOAuth2
 
     def initialize_classes
       self.scopes_validator_class_name = GrapeOAuth2::Scopes.name
+      self.token_generator_class_name = GrapeOAuth2::UniqueToken.name
     end
 
     def initialize_authenticators

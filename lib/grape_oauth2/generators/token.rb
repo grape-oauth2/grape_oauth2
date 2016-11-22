@@ -20,7 +20,7 @@ module GrapeOAuth2
             end
           end
 
-          GrapeOAuth2::TokenResponse.new(token.call(env))
+          GrapeOAuth2::Responses::Token.new(token.call(env))
         end
 
         protected

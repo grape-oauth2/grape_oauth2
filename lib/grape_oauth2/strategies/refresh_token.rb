@@ -2,8 +2,8 @@ module GrapeOAuth2
   module Strategies
     class RefreshToken < Base
       class << self
-        def process(request, &authenticator)
-          client = authenticate_client(request, &authenticator)
+        def process(request)
+          client = authenticate_client(request)
 
           request.invalid_client! if client.nil?
 
@@ -12,7 +12,7 @@ module GrapeOAuth2
           request.unauthorized_client! if refresh_token && refresh_token.client != client
 
           token = config.access_token_class.create_for(client, refresh_token.resource_owner)
-          run_on_refresh_callback(refresh_token) if config.on_refresh?
+          run_on_refresh_callback(refresh_token) if config.on_refresh_runnable?
 
           expose_to_bearer_token(token)
         end

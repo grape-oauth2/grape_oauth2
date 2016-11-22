@@ -68,8 +68,8 @@ module GrapeOAuth2
         protected
 
         def generate_tokens
-          self.token = SecureRandom.hex(16) if token.blank?
-          self.refresh_token = SecureRandom.hex(16) if GrapeOAuth2.config.issue_refresh_token
+          self.token = GrapeOAuth2.config.token_generator.generate if token.blank?
+          self.refresh_token = GrapeOAuth2.config.token_generator.generate if GrapeOAuth2.config.issue_refresh_token
         end
 
         def setup_expiration

@@ -33,8 +33,8 @@ module GrapeOAuth2
         protected
 
         def generate_keys
-          self.key = SecureRandom.hex(16) if key.nil? || key.empty?
-          self.secret = SecureRandom.hex(16) if secret.nil? || secret.empty?
+          self.key = SecureRandom.hex(32) if key.nil? || key.empty?
+          self.secret = SecureRandom.hex(32) if secret.nil? || secret.empty?
         end
       end
     end

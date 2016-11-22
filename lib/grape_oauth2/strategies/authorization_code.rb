@@ -2,8 +2,8 @@ module GrapeOAuth2
   module Strategies
     class AuthorizationCode < Base
       class << self
-        def process(request, response, &authenticator)
-          client = authenticate_client(request, &authenticator)
+        def process(request, response)
+          client = authenticate_client(request)
           request.bad_request! if client.nil?
 
           response.redirect_uri = request.verify_redirect_uri!(client.redirect_uri)
@@ -21,8 +21,6 @@ module GrapeOAuth2
             # resource owner can't be nil!
             access_token = config.access_token_class.create_for(client, nil, scopes_from(request))
             response.access_token = expose_to_bearer_token(access_token)
-          else
-            request.unsupported_response_type!
           end
 
           response.approve!
