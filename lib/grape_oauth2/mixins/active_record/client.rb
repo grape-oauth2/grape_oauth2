@@ -22,8 +22,8 @@ module GrapeOAuth2
         protected
 
         def generate_keys
-          self.key = SecureRandom.hex(32) if key.nil? || key.empty?
-          self.secret = SecureRandom.hex(32) if secret.nil? || secret.empty?
+          self.key = GrapeOAuth2::UniqueToken.generate if key.nil? || key.empty?
+          self.secret = GrapeOAuth2::UniqueToken.generate if secret.nil? || secret.empty?
         end
       end
     end

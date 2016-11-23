@@ -12,8 +12,8 @@ module GrapeOAuth2
 
         def before_validation
           if new?
-            generate_tokens
             setup_expiration
+            generate_tokens
           end
 
           super
@@ -68,8 +68,8 @@ module GrapeOAuth2
         protected
 
         def generate_tokens
-          self.token = GrapeOAuth2.config.token_generator.generate if token.blank?
-          self.refresh_token = GrapeOAuth2.config.token_generator.generate if GrapeOAuth2.config.issue_refresh_token
+          self.token = GrapeOAuth2.config.token_generator.generate(values) if token.blank?
+          self.refresh_token = GrapeOAuth2::UniqueToken.generate if GrapeOAuth2.config.issue_refresh_token
         end
 
         def setup_expiration

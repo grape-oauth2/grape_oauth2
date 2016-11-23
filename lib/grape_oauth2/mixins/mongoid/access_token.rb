@@ -23,8 +23,8 @@ module GrapeOAuth2
         index({ token: 1 }, unique: true)
         index({ refresh_token: 1 }, unique: true, sparse: true)
 
-        before_validation :generate_tokens, on: :create
         before_validation :setup_expiration, on: :create
+        before_validation :generate_tokens, on: :create
 
         class << self
           def create_for(client, resource_owner, scopes = nil)
@@ -68,8 +68,8 @@ module GrapeOAuth2
         protected
 
         def generate_tokens
-          self.token = GrapeOAuth2.config.token_generator.generate
-          self.refresh_token = GrapeOAuth2.config.token_generator.generate if GrapeOAuth2.config.issue_refresh_token
+          self.token = GrapeOAuth2.config.token_generator.generate(attributes) if token.blank?
+          self.refresh_token = GrapeOAuth2::UniqueToken.generate if GrapeOAuth2.config.issue_refresh_token
         end
 
         def setup_expiration

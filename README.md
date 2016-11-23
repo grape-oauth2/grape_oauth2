@@ -709,7 +709,13 @@ If you want to generate your own tokens for Access Tokens and Authorization Code
 
 ```ruby
 class SomeTokenGenerator
-  def self.generate(options = {})
+  # @param attributes [Hash]
+  #   Access Token attributes before creation
+  #
+  # @param options [Hash]
+  #   Options for Generator
+  #
+  def self.generate(attributes = {}, options = {})
     # Returns a generated token string.
   end
 end
