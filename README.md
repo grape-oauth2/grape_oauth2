@@ -32,6 +32,13 @@ _In progress_:
 - Access Grants
 - Implicit Grant
 
+## Documentation valid for `master` branch
+
+Please check the documentation for the version of `GrapOAuth2` you are using in:
+https://github.com/nbulaj/grape_oauth2/releases
+
+- See the [Wiki](https://github.com/nbulaj/grape_oauth2/wiki)
+
 ## Table of Contents
 
 - [Installation](#installation)
@@ -305,11 +312,8 @@ end
 
 ### Other ORMs
 
-If you want to use Grape OAuth2 endpoints, but your project doesn't use `ActiveRecord` or `Sequel`, then you must
-create at least 3 models (classes) to cover OAuth2 roles. Otherwise you can skip this step and do everything
-just as you want to.
-
-If you decide to use your own classes with the default gem functionality, then you need to define a specific set ot API.
+If you want to use Grape OAuth2 gem, but your project doesn't use `ActiveRecord`, `Sequel` or `Mongoid`, then you can
+create at least 3 classes (models) to cover OAuth2 roles and define a specific set ot API for them as described below.
 
 #### Client
 
@@ -321,7 +325,7 @@ class Client
 
   def self.authenticate(key, secret = nil)
     # Should return a Client instance matching the 
-    # key & secret provided (secret is an optional argument).
+    # key & secret provided (`secret` is optional).
   end
 end
 ```
@@ -396,7 +400,7 @@ to understand what they are doing and what they are returning.
 #### ResourceOwner
 
 As was said before, Resource Owner class (`User` model for example) must contain only one class method
-(in case of Password Authorization Grant): `self.oauth_authenticate(client, username, password)`.
+(**only for** Password Authorization Grant): `self.oauth_authenticate(client, username, password)`.
 
 ```ruby
 class User

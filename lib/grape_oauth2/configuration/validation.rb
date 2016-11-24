@@ -1,8 +1,8 @@
 module GrapeOAuth2
   class Configuration
     module Validation
-      # Checks configuration to be set correctly (required classes
-      # must be defined and implement specific set of API methods).
+      # Checks configuration to be set correctly
+      # (required classes must be defined and implement specific set of API).
       def check!
         check_required_classes!
         check_required_classes_api!
@@ -17,9 +17,6 @@ module GrapeOAuth2
         },
         client_class: {
           class_methods: %i(authenticate)
-        },
-        resource_owner_class: {
-          class_methods: %i(oauth_authenticate)
         },
         token_generator: {
           class_methods: %i(generate)
