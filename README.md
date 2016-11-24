@@ -9,7 +9,7 @@
 [![Code Climate](https://codeclimate.com/github/nbulaj/grape_oauth2/badges/gpa.svg)](https://codeclimate.com/github/nbulaj/grape_oauth2)
 [![License](http://img.shields.io/badge/license-MIT-brightgreen.svg)](#license)
 
-This gem adds a flexible OAuth2 ([RFC 6749](http://www.rfc-editor.org/rfc/rfc6749.txt)) server authentication and
+This gem adds a flexible OAuth2 ([RFC 6749](http://www.rfc-editor.org/rfc/rfc6749.txt)) server authorization and
 endpoints protection to your [Grape](https://github.com/ruby-grape/grape) API project with any ORM / ODM / PORO.
 
 **Currently under development**.
@@ -131,7 +131,7 @@ GrapeOAuth2.configure do |config|
   # config.scopes_validator_class_name = 'MyCustomValidator'
   
   # Token generator class (default is GrapeOAuth2::UniqueToken).
-  # Must respond to `self.generate(opts = {})`.
+  # Must respond to `self.generate(payload = {}, options = {})`.
   # config.token_generator_class_name = 'JWTGenerator'
 
   # Classes for OAuth2 Roles
@@ -713,13 +713,13 @@ If you want to generate your own tokens for Access Tokens and Authorization Code
 
 ```ruby
 class SomeTokenGenerator
-  # @param attributes [Hash]
-  #   Access Token attributes before creation
+  # @param payload [Hash]
+  #   Access Token payload (attributes before creation for example)
   #
   # @param options [Hash]
   #   Options for Generator
   #
-  def self.generate(attributes = {}, options = {})
+  def self.generate(payload = {}, options = {})
     # Returns a generated token string.
   end
 end
