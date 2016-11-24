@@ -16,6 +16,7 @@ gem 'sequel'
 gem 'sequel_secure_password'
 
 group :test do
+  gem 'rack'
   gem 'rspec-rails', '~> 3.4'
   gem 'database_cleaner'
   gem 'rack-test', require: 'rack/test'

@@ -14,6 +14,6 @@ matrix:
     - rvm: ruby-head
   include:
     - rvm: jruby-9.1.5.0
-      env: JRUBY_OPTS="--debug"
+      env: JRUBY_OPTS="$JRUBY_OPTS --debug"
       gemfile: gemfiles/sequel.rb
       env: ORM=sequel
