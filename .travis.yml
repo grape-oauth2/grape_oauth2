@@ -10,36 +10,10 @@ before_install:
   - gem install bundler -v '~> 1.10'
 
 matrix:
-  allow_failures:
+  allow_failures :
     - rvm: ruby-head
   include:
-  - rvm: 2.2.4
-    gemfile: gemfiles/active_record.rb
-    env: ORM=active_record
-  - rvm: 2.2.4
-    gemfile: gemfiles/sequel.rb
-    env: ORM=sequel
-  - rvm: 2.2.4
-    gemfile: gemfiles/mongoid.rb
-    env: ORM=mongoid
-  - rvm: 2.3.1
-    gemfile: gemfiles/active_record.rb
-    env: ORM=active_record
-  - rvm: 2.3.1
-    gemfile: gemfiles/sequel.rb
-    env: ORM=sequel
-  - rvm: 2.3.1
-    gemfile: gemfiles/mongoid.rb
-    env: ORM=mongoid
-  - rvm: ruby-head
-    gemfile: gemfiles/active_record.rb
-    env: ORM=active_record
-  - rvm: ruby-head
-    gemfile: gemfiles/sequel.rb
-    env: ORM=sequel
-  - rvm: ruby-head
-    gemfile: gemfiles/mongoid.rb
-    env: ORM=mongoid
-  - rvm: jruby-9.1.5.0
-    gemfile: gemfiles/sequel.rb
-    env: ORM=sequel
+    - rvm: jruby-9.1.5.0
+      env: JRUBY_OPTS="--debug"
+      gemfile: gemfiles/sequel.rb
+      env: ORM=sequel

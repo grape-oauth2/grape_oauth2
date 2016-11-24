@@ -4,6 +4,7 @@ gemspec path: '../'
 
 platforms :jruby do
   gem 'jdbc-sqlite3'
+  gem 'jruby-openssl'
 end
 
 platforms :ruby, :mswin, :mswin64, :mingw, :x64_mingw do

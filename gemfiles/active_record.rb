@@ -3,6 +3,7 @@ source 'https://rubygems.org'
 gemspec path: '../'
 
 platforms :jruby do
+  gem 'activerecord-jdbcpostgresql-adapter'
   gem 'jdbc-sqlite3'
 end
 
