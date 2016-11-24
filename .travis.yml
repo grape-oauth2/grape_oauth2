@@ -13,7 +13,6 @@ matrix:
   allow_failures :
     - rvm: ruby-head
   include:
-    - rvm: jruby-9.1.5.0
-      env: JRUBY_OPTS="$JRUBY_OPTS --debug"
+    - rvm: jruby-9.1.6.0
+      env: ORM=sequel JRUBY_OPTS="$JRUBY_OPTS --debug"
       gemfile: gemfiles/sequel.rb
-      env: ORM=sequel
