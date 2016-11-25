@@ -27,6 +27,8 @@ module Grape
           before_validation :setup_expiration, on: :create
           before_validation :generate_tokens, on: :create
 
+          validates :token, presence: true, uniqueness: true
+
           class << self
             def create_for(client, resource_owner, scopes = nil)
               create(

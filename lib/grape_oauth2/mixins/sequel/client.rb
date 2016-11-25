@@ -20,7 +20,7 @@ module Grape
           def validate
             super
             validates_presence [:key, :secret]
-            validates_unique [:key]
+            validates_unique :key
           end
 
           def self.authenticate(key, secret = nil)
@@ -34,8 +34,8 @@ module Grape
           protected
 
           def generate_keys
-            self.key = Grape::OAuth2::UniqueToken.generate if key.nil? || key.empty?
-            self.secret = Grape::OAuth2::UniqueToken.generate if secret.nil? || secret.empty?
+            self.key = Grape::OAuth2::UniqueToken.generate if key.blank?
+            self.secret = Grape::OAuth2::UniqueToken.generate if secret.blank?
           end
         end
       end

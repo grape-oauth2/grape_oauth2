@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Grape::OAuth2::ActiveRecord::AccessToken', skip_if: ENV['ORM'] != 'active_record' do
+describe 'Grape::OAuth2::Sequel::AccessToken', skip_if: ENV['ORM'] != 'sequel' do
   let(:application) { Application.create(name: 'Test') }
   let(:user) { User.create(username: 'test', password: '123123') }
   let(:access_token) { AccessToken.create(client: application, resource_owner: user) }
@@ -13,7 +13,7 @@ describe 'Grape::OAuth2::ActiveRecord::AccessToken', skip_if: ENV['ORM'] != 'act
       token = AccessToken.new(client: application, token: another_token.token)
 
       expect(token).not_to be_valid
-      expect(token.errors.messages).to include(:token)
+      expect(token.errors).to include(:token)
     end
   end
 
@@ -96,7 +96,7 @@ describe 'Grape::OAuth2::ActiveRecord::AccessToken', skip_if: ENV['ORM'] != 'act
 
   describe '#expired?' do
     it 'return false if expires_at nil' do
-      access_token.update_column(:expires_at, nil)
+      access_token.update_fields({ expires_at: nil }, [:expires_at])
 
       expect(access_token.expired?).to be_falsey
     end
@@ -106,8 +106,8 @@ describe 'Grape::OAuth2::ActiveRecord::AccessToken', skip_if: ENV['ORM'] != 'act
     end
 
     it 'return false if expires_at > Time.now' do
-      expired_at = Time.now.utc - Grape::OAuth2.config.access_token_lifetime + 1
-      access_token.update_column(:expires_at, expired_at)
+      expires_at = Time.now.utc - Grape::OAuth2.config.access_token_lifetime + 1
+      access_token.update_fields({ expires_at: expires_at }, [:expires_at])
 
       expect(access_token.expired?).to be_truthy
     end
@@ -115,13 +115,13 @@ describe 'Grape::OAuth2::ActiveRecord::AccessToken', skip_if: ENV['ORM'] != 'act
 
   describe '#revoked?' do
     it 'return false if revoked_at nil' do
-      access_token.update_column(:revoked_at, nil)
+      access_token.update_fields({ revoked_at: nil }, [:revoked_at])
 
       expect(access_token.revoked?).to be_falsey
     end
 
     it 'return false if revoked_at present' do
-      access_token.update_column(:revoked_at, Time.now.utc)
+      access_token.update_fields({ revoked_at: Time.now.utc }, [:revoked_at])
       expect(access_token.revoked?).to be_truthy
     end
   end

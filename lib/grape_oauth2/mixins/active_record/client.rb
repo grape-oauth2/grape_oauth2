@@ -23,8 +23,8 @@ module Grape
           protected
 
           def generate_keys
-            self.key = Grape::OAuth2::UniqueToken.generate if key.nil? || key.empty?
-            self.secret = Grape::OAuth2::UniqueToken.generate if secret.nil? || secret.empty?
+            self.key = Grape::OAuth2::UniqueToken.generate if key.blank?
+            self.secret = Grape::OAuth2::UniqueToken.generate if secret.blank?
           end
         end
       end

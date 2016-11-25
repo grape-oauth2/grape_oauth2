@@ -22,8 +22,8 @@ module Grape
 
           def validate
             super
-            validates_presence [:token]
-            validates_unique [:token]
+            validates_presence :token
+            validates_unique :token
           end
 
           class << self

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Grape::OAuth2::ActiveRecord::AccessToken', skip_if: ENV['ORM'] != 'active_record' do
+describe 'Grape::OAuth2::Mongoid::AccessToken', skip_if: ENV['ORM'] != 'mongoid' do
   let(:application) { Application.create(name: 'Test') }
   let(:user) { User.create(username: 'test', password: '123123') }
   let(:access_token) { AccessToken.create(client: application, resource_owner: user) }
@@ -96,7 +96,7 @@ describe 'Grape::OAuth2::ActiveRecord::AccessToken', skip_if: ENV['ORM'] != 'act
 
   describe '#expired?' do
     it 'return false if expires_at nil' do
-      access_token.update_column(:expires_at, nil)
+      access_token.update_attribute(:expires_at, nil)
 
       expect(access_token.expired?).to be_falsey
     end
@@ -107,7 +107,7 @@ describe 'Grape::OAuth2::ActiveRecord::AccessToken', skip_if: ENV['ORM'] != 'act
 
     it 'return false if expires_at > Time.now' do
       expired_at = Time.now.utc - Grape::OAuth2.config.access_token_lifetime + 1
-      access_token.update_column(:expires_at, expired_at)
+      access_token.update_attribute(:expires_at, expired_at)
 
       expect(access_token.expired?).to be_truthy
     end
@@ -115,13 +115,13 @@ describe 'Grape::OAuth2::ActiveRecord::AccessToken', skip_if: ENV['ORM'] != 'act
 
   describe '#revoked?' do
     it 'return false if revoked_at nil' do
-      access_token.update_column(:revoked_at, nil)
+      access_token.update_attribute(:revoked_at, nil)
 
       expect(access_token.revoked?).to be_falsey
     end
 
     it 'return false if revoked_at present' do
-      access_token.update_column(:revoked_at, Time.now.utc)
+      access_token.update_attribute(:revoked_at, Time.now.utc)
       expect(access_token.revoked?).to be_truthy
     end
   end
@@ -177,7 +177,7 @@ describe 'Grape::OAuth2::ActiveRecord::AccessToken', skip_if: ENV['ORM'] != 'act
 
       token = AccessToken.create(client: application, resource_owner: user)
       expect(token.expires_at).not_to be_nil
-      expect(token.expires_at).to be_within(1).of(current_time + 3500)
+      expect(token.expires_at.to_i).to be_within(1).of((current_time + 3500).to_i)
 
       Grape::OAuth2.config.access_token_lifetime = Grape::OAuth2::Configuration::DEFAULT_TOKEN_LIFETIME
     end

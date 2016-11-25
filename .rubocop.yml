@@ -2,7 +2,6 @@ LineLength:
   Max: 120
 AllCops:
   Exclude:
-    - 'doorkeeper/**/*'
     - 'spec/**/*'
   DisplayCopNames: true
 Rails:

@@ -15,6 +15,9 @@ module Grape
 
           before_validation :generate_keys, on: :create
 
+          validates :key, :secret, presence: true
+          validates :key, uniqueness: true
+
           def self.authenticate(key, secret = nil)
             if secret.nil?
               Application.find_by(key: key)
@@ -26,8 +29,8 @@ module Grape
           protected
 
           def generate_keys
-            self.key = Grape::OAuth2::UniqueToken.generate if key.nil? || key.empty?
-            self.secret = Grape::OAuth2::UniqueToken.generate if secret.nil? || secret.empty?
+            self.key = Grape::OAuth2::UniqueToken.generate if key.blank?
+            self.secret = Grape::OAuth2::UniqueToken.generate if secret.blank?
           end
         end
       end
