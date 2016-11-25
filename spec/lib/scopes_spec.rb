@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe GrapeOAuth2::Scopes do
+describe Grape::OAuth2::Scopes do
   context '#valid_for?' do
     it 'true when all the requested scopes included in the Access Token scopes' do
       scopes = described_class.new(['read', 'write'])

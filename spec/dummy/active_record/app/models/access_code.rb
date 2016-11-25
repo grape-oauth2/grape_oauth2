@@ -1,3 +1,3 @@
 class AccessCode < ApplicationRecord
-  include GrapeOAuth2::ActiveRecord::AccessGrant
+  include Grape::OAuth2::ActiveRecord::AccessGrant
 end

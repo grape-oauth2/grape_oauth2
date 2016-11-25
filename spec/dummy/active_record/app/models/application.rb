@@ -1,3 +1,3 @@
 class Application < ApplicationRecord
-  include GrapeOAuth2::ActiveRecord::Client
+  include Grape::OAuth2::ActiveRecord::Client
 end

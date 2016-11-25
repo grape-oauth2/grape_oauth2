@@ -1,3 +1,3 @@
 class AccessCode
-  include GrapeOAuth2::Mongoid::AccessGrant
+  include Grape::OAuth2::Mongoid::AccessGrant
 end

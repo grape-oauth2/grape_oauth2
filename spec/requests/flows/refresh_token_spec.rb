@@ -54,7 +54,7 @@ describe 'Token Endpoint' do
           end
 
           it 'fails when Access Token was issued to another client' do
-            allow(GrapeOAuth2.config).to receive(:issue_refresh_token).and_return(true)
+            allow(Grape::OAuth2.config).to receive(:issue_refresh_token).and_return(true)
 
             another_client = Application.create(name: 'Some')
             token = AccessToken.create_for(another_client, user)
@@ -74,7 +74,7 @@ describe 'Token Endpoint' do
         end
 
         context 'with valid data' do
-          before { allow(GrapeOAuth2.config).to receive(:issue_refresh_token).and_return(true) }
+          before { allow(Grape::OAuth2.config).to receive(:issue_refresh_token).and_return(true) }
 
           it 'returns a new Access Token' do
             token = AccessToken.create_for(application, user)
@@ -99,7 +99,7 @@ describe 'Token Endpoint' do
           end
 
           it 'revokes old Access Token if it is configured' do
-            allow(GrapeOAuth2.config).to receive(:on_refresh).and_return(:revoke!)
+            allow(Grape::OAuth2.config).to receive(:on_refresh).and_return(:revoke!)
 
             token = AccessToken.create_for(application, user)
             expect(token.refresh_token).not_to be_nil
@@ -123,7 +123,7 @@ describe 'Token Endpoint' do
           end
 
           it 'destroy old Access Token if it is configured' do
-            allow(GrapeOAuth2.config).to receive(:on_refresh).and_return(:destroy)
+            allow(Grape::OAuth2.config).to receive(:on_refresh).and_return(:destroy)
 
             token = AccessToken.create_for(application, user)
             expect(token.refresh_token).not_to be_nil
@@ -142,7 +142,7 @@ describe 'Token Endpoint' do
 
           it 'calls custom block on token refresh if it is configured' do
             scopes = 'just for test'
-            allow(GrapeOAuth2.config).to receive(:on_refresh).and_return(->(token) { token.update(scopes: scopes) })
+            allow(Grape::OAuth2.config).to receive(:on_refresh).and_return(->(token) { token.update(scopes: scopes) })
 
             token = AccessToken.create_for(application, user)
             expect(token.refresh_token).not_to be_nil
@@ -160,13 +160,13 @@ describe 'Token Endpoint' do
           end
 
           it 'does nothing on token refresh if :on_refresh is equal to :nothing or nil' do
-            allow(GrapeOAuth2.config).to receive(:on_refresh).and_return(:nothing)
+            allow(Grape::OAuth2.config).to receive(:on_refresh).and_return(:nothing)
 
             token = AccessToken.create_for(application, user)
             expect(token.refresh_token).not_to be_nil
 
             # Check for :nothing
-            expect(GrapeOAuth2::Strategies::RefreshToken).not_to receive(:run_on_refresh_callback)
+            expect(Grape::OAuth2::Strategies::RefreshToken).not_to receive(:run_on_refresh_callback)
 
             post api_url,
                  grant_type: 'refresh_token',
@@ -176,13 +176,13 @@ describe 'Token Endpoint' do
 
             expect(last_response.status).to eq 200
 
-            allow(GrapeOAuth2.config).to receive(:on_refresh).and_return(nil)
+            allow(Grape::OAuth2.config).to receive(:on_refresh).and_return(nil)
 
             token = AccessToken.create_for(application, user)
             expect(token.refresh_token).not_to be_nil
 
             # Check for nil
-            expect(GrapeOAuth2::Strategies::RefreshToken).not_to receive(:run_on_refresh_callback)
+            expect(Grape::OAuth2::Strategies::RefreshToken).not_to receive(:run_on_refresh_callback)
 
             post api_url,
                  grant_type: 'refresh_token',

@@ -1,7 +1,7 @@
 module Twitter
   module Resources
     class CustomAuthorization < ::Grape::API
-      helpers GrapeOAuth2::Helpers::OAuthParams
+      helpers Grape::OAuth2::Helpers::OAuthParams
 
       namespace :oauth do
         params do
@@ -9,7 +9,7 @@ module Twitter
         end
 
         post :custom_authorize do
-          response = GrapeOAuth2::Generators::Authorization.generate_for(env) do |request, response|
+          response = Grape::OAuth2::Generators::Authorization.generate_for(env) do |request, response|
             request.unsupported_response_type!
           end
 

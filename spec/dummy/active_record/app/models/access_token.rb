@@ -1,3 +1,3 @@
 class AccessToken < ApplicationRecord
-  include GrapeOAuth2::ActiveRecord::AccessToken
+  include Grape::OAuth2::ActiveRecord::AccessToken
 end

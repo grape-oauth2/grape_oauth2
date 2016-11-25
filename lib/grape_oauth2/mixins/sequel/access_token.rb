@@ -1,80 +1,82 @@
-module GrapeOAuth2
-  module Sequel
-    module AccessToken
-      extend ActiveSupport::Concern
+module Grape
+  module OAuth2
+    module Sequel
+      module AccessToken
+        extend ActiveSupport::Concern
 
-      included do
-        plugin :validation_helpers
-        plugin :timestamps
+        included do
+          plugin :validation_helpers
+          plugin :timestamps
 
-        many_to_one :client, class: GrapeOAuth2.config.client_class_name, key: :client_id
-        many_to_one :resource_owner, class: GrapeOAuth2.config.resource_owner_class_name, key: :resource_owner_id
+          many_to_one :client, class: Grape::OAuth2.config.client_class_name, key: :client_id
+          many_to_one :resource_owner, class: Grape::OAuth2.config.resource_owner_class_name, key: :resource_owner_id
 
-        def before_validation
-          if new?
-            setup_expiration
-            generate_tokens
+          def before_validation
+            if new?
+              setup_expiration
+              generate_tokens
+            end
+
+            super
           end
 
-          super
-        end
-
-        def validate
-          super
-          validates_presence [:token]
-          validates_unique [:token]
-        end
-
-        class << self
-          def create_for(client, resource_owner, scopes = nil)
-            create(
-              client: client,
-              resource_owner: resource_owner,
-              scopes: scopes.to_s
-            )
+          def validate
+            super
+            validates_presence [:token]
+            validates_unique [:token]
           end
 
-          def authenticate(token, type: :access_token)
-            if type && type.to_sym == :refresh_token
-              first(refresh_token: token.to_s)
-            else
-              first(token: token.to_s)
+          class << self
+            def create_for(client, resource_owner, scopes = nil)
+              create(
+                client: client,
+                resource_owner: resource_owner,
+                scopes: scopes.to_s
+              )
+            end
+
+            def authenticate(token, type: :access_token)
+              if type && type.to_sym == :refresh_token
+                first(refresh_token: token.to_s)
+              else
+                first(token: token.to_s)
+              end
             end
           end
-        end
 
-        def expired?
-          !expires_at.nil? && Time.now.utc > expires_at.utc
-        end
+          def expired?
+            !expires_at.nil? && Time.now.utc > expires_at.utc
+          end
 
-        def revoked?
-          !revoked_at.nil? && revoked_at <= Time.now.utc
-        end
+          def revoked?
+            !revoked_at.nil? && revoked_at <= Time.now.utc
+          end
 
-        def revoke!(revoked_at = Time.now)
-          set(revoked_at: revoked_at.utc)
-          save(columns: [:revoked_at], validate: false)
-        end
+          def revoke!(revoked_at = Time.now)
+            set(revoked_at: revoked_at.utc)
+            save(columns: [:revoked_at], validate: false)
+          end
 
-        def to_bearer_token
-          {
-            access_token: token,
-            expires_in: expires_at && GrapeOAuth2.config.access_token_lifetime.to_i,
-            refresh_token: refresh_token,
-            scope: scopes
-          }
-        end
+          def to_bearer_token
+            {
+              access_token: token,
+              expires_in: expires_at && Grape::OAuth2.config.access_token_lifetime.to_i,
+              refresh_token: refresh_token,
+              scope: scopes
+            }
+          end
 
-        protected
+          protected
 
-        def generate_tokens
-          self.token = GrapeOAuth2.config.token_generator.generate(values) if token.blank?
-          self.refresh_token = GrapeOAuth2::UniqueToken.generate if GrapeOAuth2.config.issue_refresh_token
-        end
+          def generate_tokens
+            self.token = Grape::OAuth2.config.token_generator.generate(values) if token.blank?
+            self.refresh_token = Grape::OAuth2::UniqueToken.generate if Grape::OAuth2.config.issue_refresh_token
+          end
 
-        def setup_expiration
-          expires_in = GrapeOAuth2.config.access_token_lifetime
-          self.expires_at = Time.now + expires_in if expires_at.nil? && !expires_in.nil?
+          def setup_expiration
+            expires_in = Grape::OAuth2.config.access_token_lifetime
+            self.expires_at = Time.now + expires_in if expires_at.nil? && !expires_in.nil?
+          end
         end
       end
     end

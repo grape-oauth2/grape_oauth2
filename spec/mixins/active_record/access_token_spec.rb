@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'GrapeOAuth2::ActiveRecord::AccessToken', skip_if: ENV['ORM'] != 'active_record' do
+describe 'Grape::OAuth2::ActiveRecord::AccessToken', skip_if: ENV['ORM'] != 'active_record' do
   let(:application) { Application.create }
   let(:user) { User.create(username: 'test', password: '123123') }
   let(:access_token) { AccessToken.create(client: application, resource_owner: user) }
@@ -20,11 +20,11 @@ describe 'GrapeOAuth2::ActiveRecord::AccessToken', skip_if: ENV['ORM'] != 'activ
   describe '#to_bearer_token' do
     context 'config with refresh token' do
       before do
-        GrapeOAuth2.config.issue_refresh_token = true
+        Grape::OAuth2.config.issue_refresh_token = true
       end
 
       after do
-        GrapeOAuth2.config.issue_refresh_token = false
+        Grape::OAuth2.config.issue_refresh_token = false
       end
 
       it 'returns refresh token' do
@@ -34,7 +34,7 @@ describe 'GrapeOAuth2::ActiveRecord::AccessToken', skip_if: ENV['ORM'] != 'activ
 
     context 'config without refresh token' do
       before do
-        GrapeOAuth2.configure do |config|
+        Grape::OAuth2.configure do |config|
           config.issue_refresh_token = false
         end
       end
@@ -106,7 +106,7 @@ describe 'GrapeOAuth2::ActiveRecord::AccessToken', skip_if: ENV['ORM'] != 'activ
     end
 
     it 'return false if expires_at > Time.now' do
-      expired_at = Time.now.utc - GrapeOAuth2.config.access_token_lifetime + 1
+      expired_at = Time.now.utc - Grape::OAuth2.config.access_token_lifetime + 1
       access_token.update_column(:expires_at, expired_at)
 
       expect(access_token.expired?).to be_truthy
@@ -163,23 +163,23 @@ describe 'GrapeOAuth2::ActiveRecord::AccessToken', skip_if: ENV['ORM'] != 'activ
 
   describe 'expiration' do
     it 'set to nil if configuration option set to nil' do
-      GrapeOAuth2.config.access_token_lifetime = nil
+      Grape::OAuth2.config.access_token_lifetime = nil
 
       token = AccessToken.create(client: application, resource_owner: user)
       expect(token.expires_at).to be_nil
 
-      GrapeOAuth2.config.access_token_lifetime = GrapeOAuth2::Configuration::DEFAULT_TOKEN_LIFETIME
+      Grape::OAuth2.config.access_token_lifetime = Grape::OAuth2::Configuration::DEFAULT_TOKEN_LIFETIME
     end
 
     it 'set to specific time if configuration option set to some value' do
       current_time = Time.now.utc
-      GrapeOAuth2.config.access_token_lifetime = 3500
+      Grape::OAuth2.config.access_token_lifetime = 3500
 
       token = AccessToken.create(client: application, resource_owner: user)
       expect(token.expires_at).not_to be_nil
       expect(token.expires_at).to be_within(1).of(current_time + 3500)
 
-      GrapeOAuth2.config.access_token_lifetime = GrapeOAuth2::Configuration::DEFAULT_TOKEN_LIFETIME
+      Grape::OAuth2.config.access_token_lifetime = Grape::OAuth2::Configuration::DEFAULT_TOKEN_LIFETIME
     end
   end
 end

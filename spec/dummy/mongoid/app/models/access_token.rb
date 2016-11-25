@@ -1,3 +1,3 @@
 class AccessToken
-  include GrapeOAuth2::Mongoid::AccessToken
+  include Grape::OAuth2::Mongoid::AccessToken
 end

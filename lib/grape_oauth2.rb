@@ -49,53 +49,55 @@ require 'grape_oauth2/responses/token'
 require 'grape_oauth2/endpoints/token'
 require 'grape_oauth2/endpoints/authorize'
 
-module GrapeOAuth2
-  class << self
-    def config
-      @config ||= GrapeOAuth2::Configuration.new
-    end
+module Grape
+  module OAuth2
+    class << self
+      def config
+        @config ||= Grape::OAuth2::Configuration.new
+      end
 
-    def configure
-      yield config
-    end
+      def configure
+        yield config
+      end
 
-    def check_configuration!
-      config.check!
-    end
+      def check_configuration!
+        config.check!
+      end
 
-    def middleware
-      [Rack::OAuth2::Server::Resource::Bearer, config.realm, config.token_authenticator]
-    end
+      def middleware
+        [Rack::OAuth2::Server::Resource::Bearer, config.realm, config.token_authenticator]
+      end
 
-    def api(*endpoints)
-      inject_to_api do |api|
-        api.use(*GrapeOAuth2.middleware)
-        api.helpers(GrapeOAuth2::Helpers::AccessTokenHelpers)
+      def api(*endpoints)
+        inject_to_api do |api|
+          api.use(*Grape::OAuth2.middleware)
+          api.helpers(Grape::OAuth2::Helpers::AccessTokenHelpers)
 
-        (endpoints.presence || endpoints_mapping.keys).each do |name|
-          endpoint = endpoints_mapping[name.to_sym]
-          raise ArgumentError, "Unrecognized endpoint: #{endpoint}" if endpoint.nil?
+          (endpoints.presence || endpoints_mapping.keys).each do |name|
+            endpoint = endpoints_mapping[name.to_sym]
+            raise ArgumentError, "Unrecognized endpoint: #{endpoint}" if endpoint.nil?
 
-          api.mount(endpoint)
+            api.mount(endpoint)
+          end
         end
       end
-    end
 
-    private
+      private
 
-    def endpoints_mapping
-      {
-        token: GrapeOAuth2::Endpoints::Token,
-        authorize: GrapeOAuth2::Endpoints::Authorize
-      }
-    end
+      def endpoints_mapping
+        {
+          token: Grape::OAuth2::Endpoints::Token,
+          authorize: Grape::OAuth2::Endpoints::Authorize
+        }
+      end
 
-    def inject_to_api(&_block)
-      raise ArgumentError, 'block must be specified!' unless block_given?
+      def inject_to_api(&_block)
+        raise ArgumentError, 'block must be specified!' unless block_given?
 
-      Module.new do |mod|
-        mod.define_singleton_method :included do |base|
-          yield base
+        Module.new do |mod|
+          mod.define_singleton_method :included do |base|
+            yield base
+          end
         end
       end
     end

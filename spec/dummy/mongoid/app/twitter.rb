@@ -5,7 +5,7 @@ require File.expand_path('../../../../../lib/grape_oauth2', __FILE__)
 # Database
 load File.expand_path('../config/db.rb', __FILE__)
 
-GrapeOAuth2.configure do |config|
+Grape::OAuth2.configure do |config|
   config.client_class_name = 'Application'
   config.access_token_class_name = 'AccessToken'
   config.resource_owner_class_name = 'User'
@@ -33,7 +33,7 @@ module Twitter
     format :json
     prefix :api
 
-    include GrapeOAuth2.api
+    include Grape::OAuth2.api
 
     mount Twitter::Resources::Status
     mount Twitter::Resources::CustomToken

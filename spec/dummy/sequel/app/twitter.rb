@@ -12,7 +12,7 @@ DB = if defined?(JRUBY_VERSION)
 # Database
 load File.expand_path('../config/db.rb', __FILE__)
 
-GrapeOAuth2.configure do |config|
+Grape::OAuth2.configure do |config|
   config.client_class_name = 'Application'
   config.access_token_class_name = 'AccessToken'
   config.resource_owner_class_name = 'User'
@@ -41,12 +41,12 @@ module Twitter
     format :json
     prefix :api
 
-    use *GrapeOAuth2.middleware
+    use *Grape::OAuth2.middleware
 
-    helpers GrapeOAuth2::Helpers::AccessTokenHelpers
+    helpers Grape::OAuth2::Helpers::AccessTokenHelpers
 
-    mount GrapeOAuth2::Endpoints::Token
-    mount GrapeOAuth2::Endpoints::Authorize
+    mount Grape::OAuth2::Endpoints::Token
+    mount Grape::OAuth2::Endpoints::Authorize
 
     mount Twitter::Resources::Status
     mount Twitter::Resources::CustomToken

@@ -139,14 +139,14 @@ describe 'Token Endpoint' do
             Twitter::API.change!
 
             # Mount only Authorization Endpoint
-            Twitter::API.send(:include, GrapeOAuth2.api(:authorize))
+            Twitter::API.send(:include, Grape::OAuth2.api(:authorize))
           end
 
           after do
             Twitter::API.reset!
             Twitter::API.change!
 
-            Twitter::API.send(:include, GrapeOAuth2.api)
+            Twitter::API.send(:include, Grape::OAuth2.api)
             Twitter::API.mount(Twitter::Resources::Status)
             Twitter::API.mount(Twitter::Resources::CustomToken)
             Twitter::API.mount(Twitter::Resources::CustomAuthorization)

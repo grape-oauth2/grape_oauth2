@@ -1,4 +1,4 @@
 class AccessToken < ApplicationRecord
   set_dataset :access_tokens
-  include GrapeOAuth2::Sequel::AccessToken
+  include Grape::OAuth2::Sequel::AccessToken
 end

@@ -1,81 +1,83 @@
-module GrapeOAuth2
-  class Configuration
-    Error = Class.new(StandardError)
-    APIMissing = Class.new(Error)
+module Grape
+  module OAuth2
+    class Configuration
+      Error = Class.new(StandardError)
+      APIMissing = Class.new(Error)
 
-    include Validation
-    include ClassAccessors
+      include Validation
+      include ClassAccessors
 
-    DEFAULT_TOKEN_LIFETIME = 7200 # in seconds
-    DEFAULT_CODE_LIFETIME = 1800
+      DEFAULT_TOKEN_LIFETIME = 7200 # in seconds
+      DEFAULT_CODE_LIFETIME = 1800
 
-    DEFAULT_REALM = 'OAuth 2.0'.freeze
+      DEFAULT_REALM = 'OAuth 2.0'.freeze
 
-    SUPPORTED_GRANT_TYPES = %w(password client_credentials refresh_token).freeze
+      SUPPORTED_GRANT_TYPES = %w(password client_credentials refresh_token).freeze
 
-    attr_accessor :access_token_class_name, :access_grant_class_name,
-                  :client_class_name, :resource_owner_class_name
+      attr_accessor :access_token_class_name, :access_grant_class_name,
+                    :client_class_name, :resource_owner_class_name
 
-    attr_accessor :scopes_validator_class_name, :token_generator_class_name
+      attr_accessor :scopes_validator_class_name, :token_generator_class_name
 
-    attr_accessor :allowed_grant_types, :authorization_code_lifetime, :access_token_lifetime,
-                  :issue_refresh_token, :realm
+      attr_accessor :allowed_grant_types, :authorization_code_lifetime, :access_token_lifetime,
+                    :issue_refresh_token, :realm
 
-    attr_accessor :token_authenticator, :on_refresh
+      attr_accessor :token_authenticator, :on_refresh
 
-    def initialize
-      reset!
-    end
-
-    def default_token_authenticator
-      lambda do |request|
-        access_token_class.authenticate(request.access_token) || request.invalid_token!
+      def initialize
+        reset!
       end
-    end
 
-    def token_authenticator(&block)
-      if block_given?
-        instance_variable_set(:'@token_authenticator', block)
-      else
-        instance_variable_get(:'@token_authenticator')
+      def default_token_authenticator
+        lambda do |request|
+          access_token_class.authenticate(request.access_token) || request.invalid_token!
+        end
       end
-    end
 
-    def on_refresh(&block)
-      if block_given?
-        instance_variable_set(:'@on_refresh', block)
-      else
-        instance_variable_get(:'@on_refresh')
+      def token_authenticator(&block)
+        if block_given?
+          instance_variable_set(:'@token_authenticator', block)
+        else
+          instance_variable_get(:'@token_authenticator')
+        end
       end
-    end
 
-    def on_refresh_runnable?
-      !on_refresh.nil? && on_refresh != :nothing
-    end
+      def on_refresh(&block)
+        if block_given?
+          instance_variable_set(:'@on_refresh', block)
+        else
+          instance_variable_get(:'@on_refresh')
+        end
+      end
 
-    def reset!
-      initialize_classes
-      initialize_authenticators
+      def on_refresh_runnable?
+        !on_refresh.nil? && on_refresh != :nothing
+      end
 
-      self.access_token_lifetime = DEFAULT_TOKEN_LIFETIME
-      self.authorization_code_lifetime = DEFAULT_CODE_LIFETIME
-      self.allowed_grant_types = %w(password client_credentials)
+      def reset!
+        initialize_classes
+        initialize_authenticators
 
-      self.issue_refresh_token = false
-      self.on_refresh = :nothing
+        self.access_token_lifetime = DEFAULT_TOKEN_LIFETIME
+        self.authorization_code_lifetime = DEFAULT_CODE_LIFETIME
+        self.allowed_grant_types = %w(password client_credentials)
 
-      self.realm = DEFAULT_REALM
-    end
+        self.issue_refresh_token = false
+        self.on_refresh = :nothing
 
-    private
+        self.realm = DEFAULT_REALM
+      end
 
-    def initialize_classes
-      self.scopes_validator_class_name = GrapeOAuth2::Scopes.name
-      self.token_generator_class_name = GrapeOAuth2::UniqueToken.name
-    end
+      private
 
-    def initialize_authenticators
-      self.token_authenticator = default_token_authenticator
+      def initialize_classes
+        self.scopes_validator_class_name = Grape::OAuth2::Scopes.name
+        self.token_generator_class_name = Grape::OAuth2::UniqueToken.name
+      end
+
+      def initialize_authenticators
+        self.token_authenticator = default_token_authenticator
+      end
     end
   end
 end

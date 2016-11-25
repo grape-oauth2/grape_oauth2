@@ -1,3 +1,3 @@
 class Application
-  include GrapeOAuth2::Mongoid::Client
+  include Grape::OAuth2::Mongoid::Client
 end

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe GrapeOAuth2::Configuration do
+describe Grape::OAuth2::Configuration do
   let(:config) { described_class.new }
 
   # Refactor: Mock it
@@ -48,13 +48,13 @@ describe GrapeOAuth2::Configuration do
       expect(config.access_token_lifetime).to eq(7200)
       expect(config.authorization_code_lifetime).to eq(1800)
 
-      expect(config.realm).to eq(GrapeOAuth2::Configuration::DEFAULT_REALM)
+      expect(config.realm).to eq(Grape::OAuth2::Configuration::DEFAULT_REALM)
       expect(config.allowed_grant_types).to eq(%w(password client_credentials))
 
       expect(config.issue_refresh_token).to be_falsey
       expect(config.on_refresh).to eq(:nothing)
 
-      expect(config.scopes_validator_class_name).to eq(GrapeOAuth2::Scopes.name)
+      expect(config.scopes_validator_class_name).to eq(Grape::OAuth2::Scopes.name)
     end
   end
 
@@ -105,7 +105,7 @@ describe GrapeOAuth2::Configuration do
 
     it 'works with custom token authenticator' do
       # before
-      GrapeOAuth2.configure do |config|
+      Grape::OAuth2.configure do |config|
         config.token_authenticator do |request|
           raise ArgumentError, 'Test'
         end
@@ -114,23 +114,23 @@ describe GrapeOAuth2::Configuration do
       expect { config.token_authenticator.call }.to raise_error(ArgumentError)
 
       # after
-      GrapeOAuth2.configure do |config|
+      Grape::OAuth2.configure do |config|
         config.token_authenticator = config.default_token_authenticator
       end
     end
 
     it 'works with custom token generator' do
       # before
-      GrapeOAuth2.configure do |config|
+      Grape::OAuth2.configure do |config|
         config.token_generator_class_name = 'CustomTokenGenerator'
       end
 
-      expect(GrapeOAuth2.config.token_generator.generate).to eq('default_token')
-      expect(GrapeOAuth2.config.token_generator.generate(custom: true)).to eq('custom_token')
+      expect(Grape::OAuth2.config.token_generator.generate).to eq('default_token')
+      expect(Grape::OAuth2.config.token_generator.generate(custom: true)).to eq('custom_token')
 
       # after
-      GrapeOAuth2.configure do |config|
-        config.token_generator_class_name = GrapeOAuth2::UniqueToken.name
+      Grape::OAuth2.configure do |config|
+        config.token_generator_class_name = Grape::OAuth2::UniqueToken.name
       end
     end
 
@@ -138,34 +138,34 @@ describe GrapeOAuth2::Configuration do
       token = AccessToken.create
 
       # before
-      GrapeOAuth2.configure do |config|
+      Grape::OAuth2.configure do |config|
         config.on_refresh do |access_token|
           access_token.update(scopes: 'test')
         end
       end
 
       expect {
-        GrapeOAuth2::Strategies::RefreshToken.send(:run_on_refresh_callback, token)
+        Grape::OAuth2::Strategies::RefreshToken.send(:run_on_refresh_callback, token)
       }.to change { token.scopes }.to('test')
 
       # after
-      GrapeOAuth2.configure do |config|
+      Grape::OAuth2.configure do |config|
         config.on_refresh = :nothing
       end
     end
 
     it 'raises an error with invalid on_refresh callback' do
       # before
-      GrapeOAuth2.configure do |config|
+      Grape::OAuth2.configure do |config|
         config.on_refresh = 'invalid'
       end
 
       expect {
-        GrapeOAuth2::Strategies::RefreshToken.send(:run_on_refresh_callback, nil)
+        Grape::OAuth2::Strategies::RefreshToken.send(:run_on_refresh_callback, nil)
       }.to raise_error(ArgumentError)
 
       # after
-      GrapeOAuth2.configure do |config|
+      Grape::OAuth2.configure do |config|
         config.on_refresh = :nothing
       end
     end
@@ -174,7 +174,7 @@ describe GrapeOAuth2::Configuration do
   context 'validation' do
     context 'with invalid config options' do
       it 'raises an error for default configuration' do
-        expect { config.check! }.to raise_error(GrapeOAuth2::Configuration::Error)
+        expect { config.check! }.to raise_error(Grape::OAuth2::Configuration::Error)
       end
 
       it "raises an error if configured classes doesn't have an instance methods" do
@@ -193,7 +193,7 @@ describe GrapeOAuth2::Configuration do
         config.client_class_name = 'CustomClient'
         config.access_grant_class_name = 'Object'
 
-        expect { config.check! }.to raise_error(GrapeOAuth2::Configuration::APIMissing) do |error|
+        expect { config.check! }.to raise_error(Grape::OAuth2::Configuration::APIMissing) do |error|
           expect(error.message).to include('access_token_class')
           expect(error.message).to include('Instance method')
         end
@@ -208,7 +208,7 @@ describe GrapeOAuth2::Configuration do
         config.client_class_name = 'InvalidClient'
         config.access_grant_class_name = 'Object'
 
-        expect { config.check! }.to raise_error(GrapeOAuth2::Configuration::APIMissing) do |error|
+        expect { config.check! }.to raise_error(Grape::OAuth2::Configuration::APIMissing) do |error|
           expect(error.message).to include('client_class')
           expect(error.message).to include('Class method')
         end

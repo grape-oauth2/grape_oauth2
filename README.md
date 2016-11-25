@@ -1,8 +1,8 @@
 <p align="center">
-  <img alt="Lerna" src="https://raw.githubusercontent.com/nbulaj/grape_oauth2/master/grape_oauth2.png">
+  <img alt="Grape::OAuth2 - OAuth2 provider for Grape" src="https://raw.githubusercontent.com/nbulaj/grape_oauth2/master/grape_oauth2.png">
 </p>
 
-# Grape OAuth2
+# Grape::OAuth2
 [![Build Status](https://travis-ci.org/nbulaj/grape_oauth2.svg?branch=master)](https://travis-ci.org/nbulaj/grape_oauth2)
 [![Dependency Status](https://gemnasium.com/nbulaj/grape_oauth2.svg)](https://gemnasium.com/nbulaj/grape_oauth2)
 [![Coverage Status](https://coveralls.io/repos/github/nbulaj/grape_oauth2/badge.svg)](https://coveralls.io/github/nbulaj/grape_oauth2)
@@ -28,13 +28,13 @@ Supported token types:
 
 _In progress_:
 
-- Authorization Code Flow
+- Authorization Code Flow (partially implemented)
 - Access Grants
 - Implicit Grant
 
 ## Documentation valid for `master` branch
 
-Please check the documentation for the version of `GrapOAuth2` you are using in:
+Please check the documentation for the version of `Grape::OAuth2` you are using in:
 https://github.com/nbulaj/grape_oauth2/releases
 
 - See the [Wiki](https://github.com/nbulaj/grape_oauth2/wiki)
@@ -66,7 +66,7 @@ https://github.com/nbulaj/grape_oauth2/releases
 
 ## Installation
 
-**Grape OAuth2** gem requires only `Grape` and `Rack::OAuth2` gems as the dependency.
+**Grape::OAuth2** gem requires only `Grape` and `Rack::OAuth2` gems as the dependency.
 Yes, no Rails, ActiveRecord or any other libs or huge frameworks :+1:
 
 If you are using bundler, first add `'grape_oauth2'` to your Gemfile:
@@ -100,11 +100,11 @@ or run your app with bundle exec command:
 
 ## Configuration
 
-Main Grape OAuth2 configuration must be placed in `config/initializers/` (in case you are using [Rails](https://github.com/rails/rails))
+Main `Grape::OAuth2` configuration must be placed in `config/initializers/` (in case you are using [Rails](https://github.com/rails/rails))
 or in some place, that will be processed at the application startup:
 
 ```ruby
-GrapeOAuth2.configure do |config|
+Grape::OAuth2.configure do |config|
   # Access Tokens lifetime (expires in)
   config.access_token_lifetime = 7200 # in seconds (2.hours for Rails), `nil` if never expires
   
@@ -130,10 +130,10 @@ GrapeOAuth2.configure do |config|
   #   AccessToken.authenticate(request.access_token) || request.invalid_token!
   # end
   
-  # Scopes validator class (default is GrapeOAuth2::Scopes).
+  # Scopes validator class (default is Grape::OAuth2::Scopes).
   # config.scopes_validator_class_name = 'MyCustomValidator'
   
-  # Token generator class (default is GrapeOAuth2::UniqueToken).
+  # Token generator class (default is Grape::OAuth2::UniqueToken).
   # Must respond to `self.generate(payload = {}, options = {})`.
   # config.token_generator_class_name = 'JWTGenerator'
 
@@ -148,7 +148,7 @@ Currently implemented (partly on completely) grant types: _password, client_cred
 
 As you know, OAuth2 workflow implies the existence of the next three roles: **Access Token**, **Client** and **Resource Owner**.
 So your project must include 3 classes (models) - _AccessToken_, _Application_ and _User_ for example. The gem needs to know
-what classes it work, so you need to create them and configure `GrapeOAuth2`.
+what classes it work, so you need to create them and configure `Grape::OAuth2`.
 
 `resource_owner_class` must have a `self.oauth_authenticate(client, username, password)` method, that returns an instance of the
 class if authentication successful (`username` and `password` matches for example) and `false` or `nil` in other cases.
@@ -170,7 +170,7 @@ end
 ```
 
 `client_class`, `access_token_class` and `resource_owner_class` objects must contain a specific set of API (methods), that are
-called by the gem. Grape OAuth2 includes predefined mixins for the projects that use the `ActiveRecord` or `Sequel` ORMs,
+called by the gem. `Grape::OAuth2` includes predefined mixins for the projects that use the `ActiveRecord` or `Sequel` ORMs,
 and you can just include them into your models. 
 
 ### ActiveRecord
@@ -178,12 +178,12 @@ and you can just include them into your models.
 ```ruby
 # app/models/access_token.rb
 class AccessToken < ApplicationRecord
-  include GrapeOAuth2::ActiveRecord::AccessToken
+  include Grape::OAuth2::ActiveRecord::AccessToken
 end
 
 # app/models/application.rb
 class Application < ApplicationRecord
-  include GrapeOAuth2::ActiveRecord::Client
+  include Grape::OAuth2::ActiveRecord::Client
 end
 ```
 
@@ -235,12 +235,12 @@ end
 ```ruby
 # app/models/access_token.rb
 class AccessToken < Sequel::Model
-  include GrapeOAuth2::Sequel::AccessToken
+  include Grape::OAuth2::Sequel::AccessToken
 end
 
 # app/models/application.rb
 class Application < Sequel::Model
-  include GrapeOAuth2::Sequel::Client
+  include Grape::OAuth2::Sequel::Client
 end
 ```
 
@@ -291,12 +291,12 @@ end
 ```ruby
 # app/models/access_token.rb
 class AccessToken
-  include GrapeOAuth2::Mongoid::AccessToken
+  include Grape::OAuth2::Mongoid::AccessToken
 end
 
 # app/models/application.rb
 class Application
-  include GrapeOAuth2::Mongoid::Client
+  include Grape::OAuth2::Mongoid::Client
 end
 
 # app/models/user.rb
@@ -315,7 +315,7 @@ end
 
 ### Other ORMs
 
-If you want to use Grape OAuth2 gem, but your project doesn't use `ActiveRecord`, `Sequel` or `Mongoid`, then you can
+If you want to use `Grape::OAuth2` gem, but your project doesn't use `ActiveRecord`, `Sequel` or `Mongoid`, then you can
 create at least 3 classes (models) to cover OAuth2 roles and define a specific set ot API for them as described below.
 
 #### Client
@@ -397,7 +397,7 @@ class AccessToken
 end
 ```
 
-You can take a look at the [Grape OAuth2 mixins](https://github.com/nbulaj/grape_oauth2/tree/master/lib/grape_oauth2/mixins)
+You can take a look at the [Grape::OAuth2 mixins](https://github.com/nbulaj/grape_oauth2/tree/master/lib/grape_oauth2/mixins)
 to understand what they are doing and what they are returning.
 
 #### ResourceOwner
@@ -421,18 +421,18 @@ end
 ### I'm lazy, give me all out of the box!
 
 If you need a common OAuth2 authentication then you can use default gem endpoints for it. First of all you 
-will need to configure GrapeOAuth2 as described above (create models, migrations, configure the gem).
+will need to configure Grape::OAuth2 as described above (create models, migrations, configure the gem).
 For `ActiveRecord` it would be as follows:
 
 ```ruby
 # app/models/access_token.rb
 class AccessToken < ApplicationRecord
-  include GrapeOAuth2::ActiveRecord::AccessToken
+  include Grape::OAuth2::ActiveRecord::AccessToken
 end
 
 # app/models/application.rb
 class Application < ApplicationRecord
-  include GrapeOAuth2::ActiveRecord::Client
+  include Grape::OAuth2::ActiveRecord::Client
 end
 
 # app/models/user.rb
@@ -449,7 +449,7 @@ class User < ApplicationRecord
 end
 
 # config/oauth2.rb
-GrapeOAuth2.configure do |config|
+Grape::OAuth2.configure do |config|
   # Classes for OAuth2 Roles
   config.client_class_name = 'Application'
   config.access_token_class_name = 'AccessToken'
@@ -457,7 +457,7 @@ GrapeOAuth2.configure do |config|
 end
 ```
 
-And just inject `GrapeOAuth2` into your main API class:
+And just inject `Grape::OAuth2` into your main API class:
 
 ```ruby
 # app/twitter.rb
@@ -470,9 +470,9 @@ module Twitter
     # Mount all endpoints by default.
     # You can define a custom one you want to use by providing them
     # as an argument:
-    #   include GrapeOAuth2.api :token, :authorize
+    #   include Grape::OAuth2.api :token, :authorize
     #
-    include GrapeOAuth2.api
+    include Grape::OAuth2.api
    
     # mount any other endpoints
     # ...
@@ -480,7 +480,7 @@ module Twitter
 end
 ```
 
-The `include GrapeOAuth2.api` could be replaced with the next (as it does the same):
+The `include Grape::OAuth2.api` could be replaced with the next (as it does the same):
 
 
 ```ruby
@@ -492,15 +492,15 @@ module Twitter
     prefix :api
 
     # Add OAuth2 helpers
-    helpers GrapeOAuth2::Helpers::AccessTokenHelpers
+    helpers Grape::OAuth2::Helpers::AccessTokenHelpers
 
     # Inject token authentication middleware
-    use *GrapeOAuth2.middleware
+    use *Grape::OAuth2.middleware
 
-    # Mount default GrapeOAuth2 Token endpoint
-    mount GrapeOAuth2::Endpoints::Token
-    # Mount default GrapeOAuth2 Authorization endpoint
-    mount GrapeOAuth2::Endpoints::Authorize
+    # Mount default Grape::OAuth2 Token endpoint
+    mount Grape::OAuth2::Endpoints::Token
+    # Mount default Grape::OAuth2 Authorization endpoint
+    mount Grape::OAuth2::Endpoints::Authorize
    
     # mount any other endpoints
     # ...
@@ -580,7 +580,7 @@ write your own authentication endpoints, then you can just override default auth
 ```ruby
 # app/models/application.rb
 class Application < ApplicationRecord
-  include GrapeOAuth2::ActiveRecord::Client
+  include Grape::OAuth2::ActiveRecord::Client
   
   class << self
     def self.authenticate(key, secret = nil)
@@ -601,14 +601,14 @@ end
 
 Besides, you can create your own API endpoints for OAuth2 authentication and use `grape_oauth2` gem functionality.
 In that case you will get a full control over the authentication proccess and can do anything in it. Just create
-a common Grape API class, set optional OAuth2 params and process the request with the `GrapeOAuth2::Generators::Token`
+a common Grape API class, set optional OAuth2 params and process the request with the `Grape::OAuth2::Generators::Token`
 generator for example (for issuing an access token):
 
 ```ruby
 # api/oauth2.rb
 module MyAPI
   class OAuth2 < Grape::API
-    helpers GrapeOAuth2::Helpers::OAuthParams
+    helpers Grape::OAuth2::Helpers::OAuthParams
 
     namespace :oauth do
       params do
@@ -616,16 +616,16 @@ module MyAPI
       end
 
       post :token do
-        token_response = GrapeOAuth2::Generators::Token.generate_for(env) do |request, response|
+        token_response = Grape::OAuth2::Generators::Token.generate_for(env) do |request, response|
           # You can use default authentication if you don't need to change this part:
-          # client = GrapeOAuth2::Strategies::Base.authenticate_client(request)
+          # client = Grape::OAuth2::Strategies::Base.authenticate_client(request)
 
           # Or write your custom client authentication:
           client = Application.find_by(key: request.client_id, active: true)
           request.invalid_client! unless client
           
           # You can use default Resource Owner authentication if you don't need to change this part:
-          # resource_owner = GrapeOAuth2::Strategies::Base.authenticate_resource_owner(client, request)
+          # resource_owner = Grape::OAuth2::Strategies::Base.authenticate_resource_owner(client, request)
 
           # Or define your custom resource owner authentication:
           resource_owner = User.find_by(username: request.username)
@@ -636,7 +636,7 @@ module MyAPI
                                               resource_owner: resource_owner,
                                               scope: request.scope)
 
-          response.access_token = GrapeOAuth2::Strategies::Base.expose_to_bearer_token(token)
+          response.access_token = Grape::OAuth2::Strategies::Base.expose_to_bearer_token(token)
         end
 
         # If request is successful, then return it
@@ -665,11 +665,11 @@ end
 
 ## Custom Access Token authenticator
 
-If you don't want to use default `GrapeOAuth2` Access Token authenticator then you can define your own in the
+If you don't want to use default `Grape::OAuth2` Access Token authenticator then you can define your own in the
 configuration (it must be a `proc` or `lambda`):
 
 ```ruby
-GrapeOAuth2.configure do |config|
+Grape::OAuth2.configure do |config|
   config.token_authenticator do |request|
     AccessToken.find_by(token: request.access_token) || request.invalid_token!
   end
@@ -678,7 +678,7 @@ GrapeOAuth2.configure do |config|
 end
 ```
 
-Don't forget to add the middleware to your root API class (`use *GrapeOAuth2.middleware`, see below).
+Don't forget to add the middleware to your root API class (`use *Grape::OAuth2.middleware`, see below).
 
 ## Custom scopes validation
 
@@ -700,10 +700,10 @@ class CustomScopesValidator
 end
 ```
 
-And set that class as scopes validator in the GrapeOAuth2 config:
+And set that class as scopes validator in the Grape::OAuth2 config:
 
 ```ruby
-GrapeOAuth2.configure do |config|
+Grape::OAuth2.configure do |config|
   # ...
   
   config.scopes_validator_class_name = 'CustomScopesValidator'
@@ -728,10 +728,10 @@ class SomeTokenGenerator
 end
 ```
 
-And set it as a token generator class in the GrapeOAuth2 config:
+And set it as a token generator class in the Grape::OAuth2 config:
 
 ```ruby
-GrapeOAuth2.configure do |config|
+Grape::OAuth2.configure do |config|
   # ...
   
   config.token_generator_class_name = 'SomeTokenGenerator'
@@ -741,12 +741,12 @@ end
 ## Process token on Refresh (protect against Replay Attacks)
 
 If you want to do something with the original Access Token that was used with the Refresh Token Flow, then you need to
-setup `on_refresh` configuration option. By default `GrapeOAuth2` gem does nothing on token refresh and that
+setup `on_refresh` configuration option. By default `Grape::OAuth2` gem does nothing on token refresh and that
 option is set to `:nothing`. You can set it to the symbol (in that case `Access Token` instance must respond to it)
 or block. Look at the examples:
 
 ```ruby
-GrapeOAuth2.configure do |config|
+Grape::OAuth2.configure do |config|
   # ...
   
   config.on_refresh = :destroy # will call :destroy method (`refresh_token.destroy`)
@@ -754,7 +754,7 @@ end
 ```
 
 ```ruby
-GrapeOAuth2.configure do |config|
+Grape::OAuth2.configure do |config|
   # ...
   
   config.on_refresh do |refresh_token|
@@ -775,7 +775,7 @@ Example:
 ```ruby
 module Twitter
   class API < Grape::API
-    include GrapeOAuth2.api
+    include Grape::OAuth2.api
     
     # ...
     
@@ -790,7 +790,9 @@ Do not forget to meet the OAuth 2.0 specification.
 
 ## Example App
 
-Take a look at the [sample applications](https://github.com/nbulaj/grape_oauth2/tree/master/spec/dummy) in the "spec/dummy" project directory.
+If you want to see the gem in action then you can look at [sample app](https://github.com/grape-oauth2/grape-oauth2-sample) (deployable to Heroku). 
+
+Or you can take a look at the [sample applications](https://github.com/nbulaj/grape_oauth2/tree/master/spec/dummy) in the "_spec/dummy_" project directory.
 
 ## Contributing
 
@@ -812,6 +814,6 @@ Thanks.
 
 ## License
 
-Grape OAuth2 gem is released under the [MIT License](http://www.opensource.org/licenses/MIT).
+`Grape::OAuth2` gem is released under the [MIT License](http://www.opensource.org/licenses/MIT).
 
 Copyright (c) 2014-2016 Nikita Bulai (bulajnikita@gmail.com).
