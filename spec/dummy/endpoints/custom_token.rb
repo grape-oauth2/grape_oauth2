@@ -1,5 +1,5 @@
 module Twitter
-  module Resources
+  module Endpoints
     class CustomToken < ::Grape::API
       helpers Grape::OAuth2::Helpers::OAuthParams
 
@@ -11,13 +11,13 @@ module Twitter
         post :custom_token do
           token_response = Grape::OAuth2::Generators::Token.generate_for(env) do |request, response|
             # Custom client authentication:
-            client = Application.find_by(key: request.client_id, name: 'Admin')
-            request.invalid_client! if client.nil?
+            client = Grape::OAuth2::Strategies::Base.authenticate_client(request)
+            request.invalid_client! if client.nil? || client.name != 'Admin'
 
             resource_owner = Grape::OAuth2::Strategies::Base.authenticate_resource_owner(client, request)
             request.invalid_grant! if resource_owner.nil?
 
-            token = AccessToken.create_for(client, resource_owner, request.scope)
+            token = AccessToken.create_for(client, resource_owner, request.scope.join(' '))
             response.access_token = Grape::OAuth2::Strategies::Base.expose_to_bearer_token(token)
           end
 

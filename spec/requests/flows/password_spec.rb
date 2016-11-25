@@ -147,9 +147,9 @@ describe 'Token Endpoint' do
             Twitter::API.change!
 
             Twitter::API.send(:include, Grape::OAuth2.api)
-            Twitter::API.mount(Twitter::Resources::Status)
-            Twitter::API.mount(Twitter::Resources::CustomToken)
-            Twitter::API.mount(Twitter::Resources::CustomAuthorization)
+            Twitter::API.mount(Twitter::Endpoints::Status)
+            Twitter::API.mount(Twitter::Endpoints::CustomToken)
+            Twitter::API.mount(Twitter::Endpoints::CustomAuthorization)
           end
 
           it 'returns 404' do

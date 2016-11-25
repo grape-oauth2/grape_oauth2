@@ -27,9 +27,11 @@ ORM_GEMS_MAPPING = {
 require ORM_GEMS_MAPPING[ENV['ORM']]
 
 require 'grape_oauth2'
-require File.expand_path("../dummy/#{ENV['ORM']}/app/twitter", __FILE__)
 
-TWITTER_APP = Rack::Builder.parse_file(File.expand_path("../dummy/#{ENV['ORM']}/config.ru", __FILE__)).first
+# Require Rack app by ORM
+require File.expand_path("../dummy/orm/#{ENV['ORM']}/app/twitter", __FILE__)
+
+TWITTER_APP = Rack::Builder.parse_file(File.expand_path("../dummy/orm/#{ENV['ORM']}/config.ru", __FILE__)).first
 
 require 'support/api_helper'
 

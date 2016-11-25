@@ -1,6 +1,6 @@
 require 'grape'
 
-require File.expand_path('../../../../../lib/grape_oauth2', __FILE__)
+require File.expand_path('../../../../../../lib/grape_oauth2', __FILE__)
 
 # SQLite memory database
 DB = if defined?(JRUBY_VERSION)
@@ -12,16 +12,8 @@ DB = if defined?(JRUBY_VERSION)
 # Database
 load File.expand_path('../config/db.rb', __FILE__)
 
-Grape::OAuth2.configure do |config|
-  config.client_class_name = 'Application'
-  config.access_token_class_name = 'AccessToken'
-  config.resource_owner_class_name = 'User'
-  config.access_grant_class_name = 'AccessCode'
-
-  config.realm = 'Custom Realm'
-
-  config.allowed_grant_types << 'refresh_token'
-end
+# Grape::OAuth2 config
+load File.expand_path('../../../../grape_oauth2_config.rb', __FILE__)
 
 # Models
 require_relative 'models/application_record'
@@ -31,9 +23,9 @@ require_relative 'models/application'
 require_relative 'models/user'
 
 # Twitter Endpoints
-require_relative 'resources/custom_token'
-require_relative 'resources/custom_authorization'
-require_relative 'resources/status'
+require_relative '../../../endpoints/custom_token'
+require_relative '../../../endpoints/custom_authorization'
+require_relative '../../../endpoints/status'
 
 module Twitter
   class API < Grape::API
@@ -48,8 +40,8 @@ module Twitter
     mount Grape::OAuth2::Endpoints::Token
     mount Grape::OAuth2::Endpoints::Authorize
 
-    mount Twitter::Resources::Status
-    mount Twitter::Resources::CustomToken
-    mount Twitter::Resources::CustomAuthorization
+    mount Twitter::Endpoints::Status
+    mount Twitter::Endpoints::CustomToken
+    mount Twitter::Endpoints::CustomAuthorization
   end
 end

@@ -1,5 +1,5 @@
 module Twitter
-  module Resources
+  module Endpoints
     class Status < Grape::API
       before do
         access_token_required!

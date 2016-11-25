@@ -1,5 +1,5 @@
 module Twitter
-  module Resources
+  module Endpoints
     class CustomAuthorization < ::Grape::API
       helpers Grape::OAuth2::Helpers::OAuthParams
 
