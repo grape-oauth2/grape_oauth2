@@ -106,7 +106,7 @@ describe 'GrapeOAuth2::ActiveRecord::AccessToken', skip_if: ENV['ORM'] != 'activ
     end
 
     it 'return false if expires_at > Time.now' do
-      expired_at = Time.now.utc - GrapeOAuth2.config.token_lifetime + 1
+      expired_at = Time.now.utc - GrapeOAuth2.config.access_token_lifetime + 1
       access_token.update_column(:expires_at, expired_at)
 
       expect(access_token.expired?).to be_truthy
@@ -136,6 +136,50 @@ describe 'GrapeOAuth2::ActiveRecord::AccessToken', skip_if: ENV['ORM'] != 'activ
       access_token.revoke!(custom_time)
 
       expect(access_token.revoked_at).to eq(custom_time.utc)
+    end
+  end
+
+  describe 'token generation' do
+    it 'generates a new token before saving if token is blank' do
+      token = AccessToken.new(client: application, resource_owner: user)
+
+      expect(token.token).to be_blank
+
+      token.save
+
+      expect(token.token).not_to be_blank
+    end
+
+    it 'does not change token value on saving if token is present' do
+      token = AccessToken.new(client: application, resource_owner: user, token: 'abcdef')
+
+      expect(token.token).not_to be_blank
+
+      token.save
+
+      expect(token.token).to eq('abcdef')
+    end
+  end
+
+  describe 'expiration' do
+    it 'set to nil if configuration option set to nil' do
+      GrapeOAuth2.config.access_token_lifetime = nil
+
+      token = AccessToken.create(client: application, resource_owner: user)
+      expect(token.expires_at).to be_nil
+
+      GrapeOAuth2.config.access_token_lifetime = GrapeOAuth2::Configuration::DEFAULT_TOKEN_LIFETIME
+    end
+
+    it 'set to specific time if configuration option set to some value' do
+      current_time = Time.now.utc
+      GrapeOAuth2.config.access_token_lifetime = 3500
+
+      token = AccessToken.create(client: application, resource_owner: user)
+      expect(token.expires_at).not_to be_nil
+      expect(token.expires_at).to be_within(1).of(current_time + 3500)
+
+      GrapeOAuth2.config.access_token_lifetime = GrapeOAuth2::Configuration::DEFAULT_TOKEN_LIFETIME
     end
   end
 end

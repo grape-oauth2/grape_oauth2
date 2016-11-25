@@ -45,8 +45,8 @@ describe GrapeOAuth2::Configuration do
 
   context 'default config' do
     it 'setup config with default values' do
-      expect(config.token_lifetime).to eq(7200)
-      expect(config.code_lifetime).to eq(7200)
+      expect(config.access_token_lifetime).to eq(7200)
+      expect(config.authorization_code_lifetime).to eq(1800)
 
       expect(config.realm).to eq(GrapeOAuth2::Configuration::DEFAULT_REALM)
       expect(config.allowed_grant_types).to eq(%w(password client_credentials))

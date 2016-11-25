@@ -56,7 +56,7 @@ module GrapeOAuth2
         end
 
         def setup_expiration
-          self.expires_at = Time.now.utc + GrapeOAuth2.config.code_lifetime if expires_at.nil?
+          self.expires_at = Time.now.utc + GrapeOAuth2.config.authorization_code_lifetime if expires_at.nil?
         end
       end
     end

@@ -59,7 +59,7 @@ module GrapeOAuth2
         def to_bearer_token
           {
             access_token: token,
-            expires_in: expires_at && GrapeOAuth2.config.token_lifetime.to_i,
+            expires_in: expires_at && GrapeOAuth2.config.access_token_lifetime.to_i,
             refresh_token: refresh_token,
             scope: scopes
           }
@@ -73,7 +73,8 @@ module GrapeOAuth2
         end
 
         def setup_expiration
-          self.expires_at = Time.now.utc + GrapeOAuth2.config.token_lifetime if expires_at.nil?
+          expires_in = GrapeOAuth2.config.access_token_lifetime
+          self.expires_at = Time.now + expires_in if expires_at.nil? && !expires_in.nil?
         end
       end
     end

@@ -7,18 +7,18 @@ module GrapeOAuth2
     include ClassAccessors
 
     DEFAULT_TOKEN_LIFETIME = 7200 # in seconds
-    DEFAULT_CODE_LIFETIME = 7200
+    DEFAULT_CODE_LIFETIME = 1800
 
     DEFAULT_REALM = 'OAuth 2.0'.freeze
 
     SUPPORTED_GRANT_TYPES = %w(password client_credentials refresh_token).freeze
 
     attr_accessor :access_token_class_name, :access_grant_class_name,
-                  :client_class_name, :resource_owner_class_name, :token_generator_class_name
+                  :client_class_name, :resource_owner_class_name
 
-    attr_accessor :scopes_validator_class_name
+    attr_accessor :scopes_validator_class_name, :token_generator_class_name
 
-    attr_accessor :allowed_grant_types, :code_lifetime, :token_lifetime,
+    attr_accessor :allowed_grant_types, :authorization_code_lifetime, :access_token_lifetime,
                   :issue_refresh_token, :realm
 
     attr_accessor :token_authenticator, :on_refresh
@@ -57,8 +57,8 @@ module GrapeOAuth2
       initialize_classes
       initialize_authenticators
 
-      self.token_lifetime = DEFAULT_TOKEN_LIFETIME
-      self.code_lifetime = DEFAULT_CODE_LIFETIME
+      self.access_token_lifetime = DEFAULT_TOKEN_LIFETIME
+      self.authorization_code_lifetime = DEFAULT_CODE_LIFETIME
       self.allowed_grant_types = %w(password client_credentials)
 
       self.issue_refresh_token = false

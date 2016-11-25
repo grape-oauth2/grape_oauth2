@@ -105,8 +105,11 @@ or in some place, that will be processed at the application startup:
 
 ```ruby
 GrapeOAuth2.configure do |config|
-  # Access Tokens lifetime
-  config.token_lifetime = 7200 # in seconds (2.hours for Rails)
+  # Access Tokens lifetime (expires in)
+  config.access_token_lifetime = 7200 # in seconds (2.hours for Rails), `nil` if never expires
+  
+  # Authorization Code lifetime
+  # config.authorization_code_lifetime = 7200 # in seconds (2.hours for Rails)
 
   # Allowed OAuth2 Authorization Grants (default is %w(password client_credentials)
   config.allowed_grant_types = %w(password client_credentials refresh_token)
