@@ -1,6 +1,8 @@
 module Grape
   module OAuth2
     module ActiveRecord
+      # Grape::OAuth2 Access Token role mixin for ActiveRecord.
+      # Includes all the required API, associations, validations and callbacks.
       module AccessToken
         extend ActiveSupport::Concern
 

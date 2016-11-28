@@ -1,6 +1,8 @@
 module Grape
   module OAuth2
     module Mongoid
+      # Grape::OAuth2 Access Token role mixin for Mongoid ORM.
+      # Includes all the required API, associations, validations and callbacks.
       module AccessToken
         extend ActiveSupport::Concern
 

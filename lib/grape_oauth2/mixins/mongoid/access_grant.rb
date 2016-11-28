@@ -1,6 +1,8 @@
 module Grape
   module OAuth2
     module Mongoid
+      # Grape::OAuth2 Authorization Grant role mixin for Mongoid ORM.
+      # Includes all the required API, associations, validations and callbacks.
       module AccessGrant
         extend ActiveSupport::Concern
 

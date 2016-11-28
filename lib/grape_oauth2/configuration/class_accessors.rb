@@ -1,5 +1,6 @@
 module Grape
   module OAuth2
+    # Grape::OAuth2 accessors for configured classes.
     module ClassAccessors
       def access_token_class
         @_access_token_class ||= access_token_class_name.constantize

@@ -1,6 +1,8 @@
 module Grape
   module OAuth2
     module Strategies
+      # Client Credentials strategy class.
+      # Processes request and respond with Access Token.
       class ClientCredentials < Base
         class << self
           def process(request)

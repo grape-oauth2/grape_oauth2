@@ -1,6 +1,8 @@
 module Grape
   module OAuth2
     module Strategies
+      # Refresh Token strategy class.
+      # Processes request and respond with Access Token.
       class RefreshToken < Base
         class << self
           def process(request)

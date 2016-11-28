@@ -1,6 +1,8 @@
 module Grape
   module OAuth2
     module Sequel
+      # Grape::OAuth2 Access Token role mixin for Sequel toolkit.
+      # Includes all the required API, associations, validations and callbacks.
       module AccessToken
         extend ActiveSupport::Concern
 

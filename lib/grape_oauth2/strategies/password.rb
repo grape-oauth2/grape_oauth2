@@ -1,6 +1,8 @@
 module Grape
   module OAuth2
     module Strategies
+      # Resource Owner Password Credentials strategy class.
+      # Processes request and respond with Access Token.
       class Password < Base
         class << self
           def process(request)

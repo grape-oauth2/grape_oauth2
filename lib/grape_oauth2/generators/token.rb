@@ -1,5 +1,7 @@
 module Grape
   module OAuth2
+    # OAuth2 Token generator class.
+    # Processes the request by required Grant Type and builds the response.
     module Generators
       class Token < Base
         # Grant type => OAuth2 strategy class

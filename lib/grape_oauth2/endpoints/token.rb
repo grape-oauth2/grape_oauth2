@@ -1,6 +1,7 @@
 module Grape
   module OAuth2
     module Endpoints
+      # OAuth2 Grape token endpoint.
       class Token < ::Grape::API
         helpers Grape::OAuth2::Helpers::OAuthParams
 

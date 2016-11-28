@@ -1,6 +1,7 @@
 module Grape
   module OAuth2
     class Configuration
+      # Validates Grape::OAuth2 configuration.
       module Validation
         # Checks configuration to be set correctly
         # (required classes must be defined and implement specific set of API).
@@ -11,6 +12,8 @@ module Grape
 
         private
 
+        # API mapping.
+        # Classes, that represents OAuth2 roles, must have described methods.
         REQUIRED_CLASSES_API = {
           access_token_class: {
             class_methods: %i(authenticate create_for),
@@ -27,6 +30,7 @@ module Grape
           }
         }.freeze
 
+        # Validates that required classes defined.
         def check_required_classes!
           REQUIRED_CLASSES_API.keys.each do |klass|
             begin
@@ -37,6 +41,7 @@ module Grape
           end
         end
 
+        # Validates that required classes have all the API.
         def check_required_classes_api!
           REQUIRED_CLASSES_API.each do |klass, api_methods|
             check_class_methods(klass, api_methods[:class_methods])
@@ -44,6 +49,7 @@ module Grape
           end
         end
 
+        # Validates that required classes have required class methods.
         def check_class_methods(klass, required_methods)
           (required_methods || []).each do |method|
             method_exist = send(klass).respond_to?(method)
@@ -51,6 +57,7 @@ module Grape
           end
         end
 
+        # Validates that required classes have required instance methods.
         def check_instance_methods(klass, required_methods)
           (required_methods || []).each do |method|
             unless send(klass).method_defined?(method)

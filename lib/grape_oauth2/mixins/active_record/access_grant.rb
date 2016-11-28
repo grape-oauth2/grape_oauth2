@@ -1,6 +1,8 @@
 module Grape
   module OAuth2
     module ActiveRecord
+      # Grape::OAuth2 Authorization Grant role mixin for ActiveRecord.
+      # Includes all the required API, associations, validations and callbacks.
       module AccessGrant
         extend ActiveSupport::Concern
 

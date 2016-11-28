@@ -50,6 +50,7 @@ require 'grape_oauth2/endpoints/token'
 require 'grape_oauth2/endpoints/authorize'
 
 module Grape
+  # Main Grape::OAuth2 module.
   module OAuth2
     class << self
       def config
@@ -60,10 +61,12 @@ module Grape
         yield config
       end
 
+      # Validates Grape::OAuth2 configuration to be set correctly.
       def check_configuration!
         config.check!
       end
 
+      # Grape::OAuth2 defaulf middleware.
       def middleware
         [Rack::OAuth2::Server::Resource::Bearer, config.realm, config.token_authenticator]
       end
@@ -86,8 +89,8 @@ module Grape
 
       def endpoints_mapping
         {
-          token: Grape::OAuth2::Endpoints::Token,
-          authorize: Grape::OAuth2::Endpoints::Authorize
+          token: ::Grape::OAuth2::Endpoints::Token,
+          authorize: ::Grape::OAuth2::Endpoints::Authorize
         }
       end
 

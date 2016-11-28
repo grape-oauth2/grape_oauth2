@@ -1,6 +1,8 @@
 module Grape
   module OAuth2
     module Generators
+      # OAuth2 Authorization generator class.
+      # Processes the request and builds the response.
       class Authorization < Base
         class << self
           def generate_for(env, &_block)

@@ -1,6 +1,9 @@
 module Grape
   module OAuth2
     module Helpers
+      # Grape Helper object for OAuth2 requests params.
+      # Used fin default Grape::OAuth2 gem endpoints and can be used
+      # for custom one.
       module OAuthParams
         extend ::Grape::API::Helpers
 
