@@ -8,7 +8,9 @@ require 'grape_oauth2/configuration'
 require 'grape_oauth2/scopes'
 require 'grape_oauth2/unique_token'
 
-# Extract to separate gems!!!
+# NOTE: Extract to separate gems!!!
+# This gem should contains only the core functionality and all mixins
+# need to be moved to their own repos with their own tests.
 # Mixins
 if defined?(ActiveRecord::Base)
   require 'grape_oauth2/mixins/active_record/access_token'
@@ -24,7 +26,7 @@ elsif defined?(Mongoid::Document)
   require 'grape_oauth2/mixins/mongoid/client'
 end
 
-# Authorization Grants (Strategies)
+# Authorization Grants aka Flows (Strategies)
 require 'grape_oauth2/strategies/base'
 require 'grape_oauth2/strategies/authorization_code'
 require 'grape_oauth2/strategies/password'
@@ -36,7 +38,7 @@ require 'grape_oauth2/generators/base'
 require 'grape_oauth2/generators/token'
 require 'grape_oauth2/generators/authorization'
 
-# Helpers
+# Grape Helpers
 require 'grape_oauth2/helpers/access_token_helpers'
 require 'grape_oauth2/helpers/oauth_params'
 
@@ -45,18 +47,26 @@ require 'grape_oauth2/responses/base'
 require 'grape_oauth2/responses/authorization'
 require 'grape_oauth2/responses/token'
 
-# Endpoints
+# Grape Endpoints
 require 'grape_oauth2/endpoints/token'
 require 'grape_oauth2/endpoints/authorize'
 
+# Use Grape namespace for the gem.
 module Grape
   # Main Grape::OAuth2 module.
   module OAuth2
     class << self
+      # Grape::OAuth2 configuration.
+      #
+      # @return [Grape::OAuth2::Configuration]
+      #   configuration object
+      #
       def config
         @config ||= Grape::OAuth2::Configuration.new
       end
 
+      # Configures Grape::OAuth2.
+      # Yields Grape::OAuth2::Configuration instance to the block.
       def configure
         yield config
       end
@@ -66,11 +76,17 @@ module Grape
         config.check!
       end
 
-      # Grape::OAuth2 defaulf middleware.
+      # Grape::OAuth2 default middleware.
       def middleware
         [Rack::OAuth2::Server::Resource::Bearer, config.realm, config.token_authenticator]
       end
 
+      # Method for injecting Grape::OAuth2 endpoints and helpers
+      # into Grape API class. Automatically set required middleware,
+      # OAuth2 helpers and mounts all (or configured) endpoints.
+      #
+      # @param endpoints [Array<Symbol>, Array<String>] endpoints to add
+      #
       def api(*endpoints)
         inject_to_api do |api|
           api.use(*Grape::OAuth2.middleware)

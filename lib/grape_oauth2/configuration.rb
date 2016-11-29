@@ -1,5 +1,8 @@
 module Grape
   module OAuth2
+    # Grape::OAuth2 configuration class.
+    # Contains default or customized options that would be used
+    # in OAuth2 endpoints and helpers.
     class Configuration
       # Default Grape::OAuth2 configuration error class.
       Error = Class.new(StandardError)
@@ -20,17 +23,52 @@ module Grape
       # Currently supported (be the gem) OAuth2 grant types
       SUPPORTED_GRANT_TYPES = %w(password client_credentials refresh_token).freeze
 
-      # @attr [String] class names for classes that represents OAuth2 roles
+      # The names of the classes that represents OAuth2 roles
+      #
+      # @return [String] class name
+      #
       attr_accessor :access_token_class_name, :access_grant_class_name,
                     :client_class_name, :resource_owner_class_name
 
-      # @attr [String] class names for helper classes
-      attr_accessor :scopes_validator_class_name, :token_generator_class_name
+      # Class name for the OAuth2 helper class that validates requested scopes against Access Token scopes
+      #
+      # @return [String] scopes validator class name
+      #
+      attr_accessor :scopes_validator_class_name
 
-      attr_accessor :allowed_grant_types, :authorization_code_lifetime, :access_token_lifetime,
-                    :issue_refresh_token, :realm
+      # Class name for the OAuth2 helper class that generates unique token values
+      #
+      # @return [String] token generator class name
+      #
+      attr_accessor :token_generator_class_name
 
-      attr_accessor :token_authenticator, :on_refresh
+      #  OAuth2 grant types (flows) allowed to be processed
+      #
+      # @return [Array<String>] grant types
+      #
+      attr_accessor :allowed_grant_types
+
+      # Access Token and Authorization Code lifetime in seconds
+      attr_accessor :authorization_code_lifetime, :access_token_lifetime
+
+      # Specifies whether to generate a Refresh Token when creating an Access Token
+      #
+      # @return [Boolean] true if need to generate refresh token, false in other case
+      #
+      attr_accessor :issue_refresh_token
+
+      # Realm value
+      #
+      # @return [String] realm
+      #
+      attr_accessor :realm
+
+      # Access Token authenticator block option for customization
+      attr_accessor :token_authenticator
+
+      # Callback that would be invoked during processing of Refresh Token request for
+      # the original Access Token found by token value
+      attr_accessor :on_refresh
 
       def initialize
         reset!

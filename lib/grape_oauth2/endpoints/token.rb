@@ -1,5 +1,6 @@
 module Grape
   module OAuth2
+    # Grape::OAuth2 endpoints namespace
     module Endpoints
       # OAuth2 Grape token endpoint.
       class Token < ::Grape::API
@@ -26,7 +27,7 @@ module Grape
             end
 
             # Body
-            body token_response.access_token
+            body token_response.body
           end
 
           desc 'OAuth 2.0 Token Revocation'

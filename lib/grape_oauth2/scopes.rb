@@ -3,15 +3,22 @@ module Grape
     # OAuth2 helper for scopes validation
     # (between requested and presented in Access Token).
     class Scopes
-      # @attr [Array] scopes
-      #   array of scopes
+      # Array of requested scopes
+      #
+      # @return [Array<String>] scopes
+      #
       attr_reader :scopes
 
+      # Helper class initializer.
+      #
+      # @param scopes [Array, String, #to_a]
+      #   array, string of any object that responds to `to_a`
+      #
       def initialize(scopes)
         @scopes = to_array(scopes || [])
       end
 
-      # Check if requested scopes (passed and processed in initialization)
+      # Checks if requested scopes (passed and processed on initialization)
       # are presented in the Access Token.
       #
       # @param access_token [Object]
@@ -20,12 +27,21 @@ module Grape
       # @return [Boolean]
       #   true if requested scopes are empty or present in access token scopes
       #   and false in other cases
+      #
       def valid_for?(access_token)
         scopes.empty? || present_in?(access_token.scopes)
       end
 
       private
 
+      # Checks if scopes present in Access Token scopes.
+      #
+      # @param token_scopes [Array, String, #to_a]
+      #   array, string of any object that responds to `to_a`
+      #
+      # @return [Boolean]
+      #   true if requested scopes present in Access Token and false in other cases
+      #
       def present_in?(token_scopes)
         required_scopes = Set.new(to_array(scopes))
         authorized_scopes = Set.new(to_array(token_scopes))

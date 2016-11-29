@@ -5,6 +5,7 @@ module Grape
       # Processes request and respond with Access Token.
       class RefreshToken < Base
         class << self
+          # Processes Refresh Token request.
           def process(request)
             client = authenticate_client(request)
 
@@ -22,6 +23,12 @@ module Grape
 
           private
 
+          # Invokes custom callback on Access Token refresh.
+          # If callback is a proc, then call it with token.
+          # If access token responds to callback value (symbol for example), then call it from the token.
+          #
+          # @param access_token [Object] Access Token instance
+          #
           def run_on_refresh_callback(access_token)
             callback = config.on_refresh
 

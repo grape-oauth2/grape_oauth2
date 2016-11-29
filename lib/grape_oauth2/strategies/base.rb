@@ -1,5 +1,6 @@
 module Grape
   module OAuth2
+    # Grape::OAuth2 strategies namespace
     module Strategies
       # Base Grape::OAuth2 Strategies class .
       # Contains common functionality for all the descendants.
@@ -15,6 +16,7 @@ module Grape
             config.resource_owner_class.oauth_authenticate(client, request.username, request.password)
           end
 
+          # Short getter for Grape::OAuth2 configuration
           def config
             Grape::OAuth2.config
           end

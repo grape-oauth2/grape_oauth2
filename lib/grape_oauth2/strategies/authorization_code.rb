@@ -2,10 +2,11 @@ module Grape
   module OAuth2
     module Strategies
       # Auth Code strategy class.
-      # Processes request and respond with Token or Code
+      # Processes request and responds with Token or Code
       # (depend on requested response type).
       class AuthorizationCode < Base
         class << self
+          # Processes Authorization request.
           def process(request, response)
             client = authenticate_client(request)
             request.bad_request! if client.nil?

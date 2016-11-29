@@ -5,6 +5,10 @@ module Grape
       # Processes the request and builds the response.
       class Authorization < Base
         class << self
+          # Generates Authorization Response based on the request.
+          #
+          # @return [Grape::OAuth2::Responses::Authorization] response
+          #
           def generate_for(env, &_block)
             authorization = Rack::OAuth2::Server::Authorize.new do |request, response|
               if block_given?

@@ -1,8 +1,8 @@
 module Grape
   module OAuth2
-    # OAuth2 Token generator class.
-    # Processes the request by required Grant Type and builds the response.
     module Generators
+      # OAuth2 Token generator class.
+      # Processes the request by required Grant Type and builds the response.
       class Token < Base
         # Grant type => OAuth2 strategy class
         STRATEGY_CLASSES = {
@@ -12,6 +12,10 @@ module Grape
         }.freeze
 
         class << self
+          # Generates Token Response based on the request.
+          #
+          # @return [Grape::OAuth2::Responses::Token] response
+          #
           def generate_for(env, &_block)
             token = Rack::OAuth2::Server::Token.new do |request, response|
               request.unsupported_grant_type! unless allowed_grants.include?(request.grant_type.to_s)
@@ -28,12 +32,27 @@ module Grape
 
           protected
 
+          # Runs default Grape::OAuth2 functionality for Token endpoint.
+          # In common it authenticates client (or/and any other objects) and
+          # grants the Access Token or Auth Code.
+          #
+          # @param request [Rack::Request] request object
+          # @param response [Rack::Response] response object
+          #
           def execute_default(request, response)
-            strategy = initialize_strategy(request.grant_type) || request.invalid_grant!
+            strategy = find_strategy(request.grant_type) || request.invalid_grant!
             response.access_token = strategy.process(request)
           end
 
-          def initialize_strategy(grant_type)
+          # Returns Grape::OAuth2 strategy class by Grant Type.
+          #
+          # @param grant_type [Symbol]
+          #   grant type value
+          #
+          # @return [Password, ClientCredentials, RefreshToken]
+          #   strategy class
+          #
+          def find_strategy(grant_type)
             STRATEGY_CLASSES[grant_type]
           end
         end

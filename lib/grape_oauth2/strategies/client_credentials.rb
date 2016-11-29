@@ -5,6 +5,7 @@ module Grape
       # Processes request and respond with Access Token.
       class ClientCredentials < Base
         class << self
+          # Processes Client Credentials request.
           def process(request)
             client = authenticate_client(request)
             request.invalid_client! if client.nil?

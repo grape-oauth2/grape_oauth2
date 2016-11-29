@@ -27,7 +27,7 @@ module Twitter
             header key, value
           end
 
-          body token_response.access_token
+          body token_response.body
         end
       end
     end

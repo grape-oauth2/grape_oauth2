@@ -5,6 +5,7 @@ module Grape
       # Processes request and respond with Access Token.
       class Password < Base
         class << self
+          # Processes Password request.
           def process(request)
             client = authenticate_client(request) || request.invalid_client!
             resource_owner = authenticate_resource_owner(client, request)

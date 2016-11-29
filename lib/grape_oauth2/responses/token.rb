@@ -1,10 +1,9 @@
 module Grape
   module OAuth2
+    # Grape::OAuth2 responses namespace.
     module Responses
+      # Token response.
       class Token < Base
-        def access_token
-          @access_token ||= body
-        end
       end
     end
   end
