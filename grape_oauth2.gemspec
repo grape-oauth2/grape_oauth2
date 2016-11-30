@@ -19,9 +19,9 @@ Gem::Specification.new do |gem|
 
   gem.required_ruby_version = '>= 2.2.2'
 
-  gem.add_runtime_dependency 'grape', '>= 0.16'
-  gem.add_runtime_dependency 'rack-oauth2', '>= 1.3.0'
+  gem.add_runtime_dependency 'grape', '~> 0.16'
+  gem.add_runtime_dependency 'rack-oauth2', '~> 1.3.0', '>= 1.3.0'
 
-  gem.add_development_dependency 'rspec-rails', '~> 3.4.0'
-  gem.add_development_dependency 'database_cleaner', '~> 1.5.0'
+  gem.add_development_dependency 'rspec-rails', '~> 3.4.0', '>= 3.4.0'
+  gem.add_development_dependency 'database_cleaner', '~> 1.5.0', '>= 1.5.0'
 end
