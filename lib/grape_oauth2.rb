@@ -11,16 +11,21 @@ require 'grape_oauth2/unique_token'
 # NOTE: Extract to separate gems!!!
 # This gem should contains only the core functionality and all mixins
 # need to be moved to their own repos with their own tests.
+
 # Mixins
 if defined?(ActiveRecord::Base)
   require 'grape_oauth2/mixins/active_record/access_token'
   require 'grape_oauth2/mixins/active_record/access_grant'
   require 'grape_oauth2/mixins/active_record/client'
-elsif defined?(Sequel::Model)
+end
+
+if defined?(Sequel::Model)
   require 'grape_oauth2/mixins/sequel/access_token'
   require 'grape_oauth2/mixins/sequel/access_grant'
   require 'grape_oauth2/mixins/sequel/client'
-elsif defined?(Mongoid::Document)
+end
+
+if defined?(Mongoid::Document)
   require 'grape_oauth2/mixins/mongoid/access_token'
   require 'grape_oauth2/mixins/mongoid/access_grant'
   require 'grape_oauth2/mixins/mongoid/client'
