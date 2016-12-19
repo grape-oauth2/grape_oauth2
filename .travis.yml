@@ -13,13 +13,13 @@ matrix:
   allow_failures:
     - rvm: ruby-head
   include:
-  - rvm: 2.2.4
+  - rvm: 2.2.6
     gemfile: gemfiles/active_record.rb
     env: ORM=active_record
-  - rvm: 2.2.4
+  - rvm: 2.2.6
     gemfile: gemfiles/sequel.rb
     env: ORM=sequel
-  - rvm: 2.2.4
+  - rvm: 2.2.6
     gemfile: gemfiles/mongoid.rb
     env: ORM=mongoid
   - rvm: 2.3.3
