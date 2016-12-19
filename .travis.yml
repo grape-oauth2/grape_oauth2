@@ -10,8 +10,6 @@ before_install:
   - gem install bundler -v '~> 1.10'
 
 matrix:
-  allow_failures :
-    - rvm: ruby-head
   include:
     - rvm: jruby-9.1.6.0
       env: ORM=sequel JRUBY_OPTS="$JRUBY_OPTS --debug"
