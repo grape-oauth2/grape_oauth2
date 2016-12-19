@@ -20,7 +20,7 @@ module Grape
       # Default realm value
       DEFAULT_REALM = 'OAuth 2.0'.freeze
 
-      # Currently supported (be the gem) OAuth2 grant types
+      # Currently supported (by the gem) OAuth2 grant types
       SUPPORTED_GRANT_TYPES = %w(password client_credentials refresh_token).freeze
 
       # The names of the classes that represents OAuth2 roles

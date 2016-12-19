@@ -13,8 +13,6 @@
 This gem adds a flexible OAuth2 ([RFC 6749](http://www.rfc-editor.org/rfc/rfc6749.txt)) server authorization and
 endpoints protection to your [Grape](https://github.com/ruby-grape/grape) API project with any ORM / ODM / PORO.
 
-**Currently under development**.
-
 Implemented features (flows):
 
 - Resource Owner Password Credentials
@@ -27,7 +25,7 @@ Supported token types:
 
 * Bearer
 
-_In progress_:
+_In progress_ (check [Contributing](#contributing) section if yoy want to help with it):
 
 - Authorization Code Flow (partially implemented)
 - Access Grants
