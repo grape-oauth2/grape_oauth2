@@ -31,10 +31,10 @@ matrix:
   - rvm: 2.3.3
     gemfile: gemfiles/mongoid.rb
     env: ORM=mongoid
-  - rvm: 2.4.0
+  - rvm: 2.4.1
     gemfile: gemfiles/active_record.rb
     env: ORM=active_record
-  - rvm: 2.4.0
+  - rvm: 2.4.1
     gemfile: gemfiles/sequel.rb
     env: ORM=sequel
   - rvm: ruby-head

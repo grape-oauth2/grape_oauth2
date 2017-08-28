@@ -31,7 +31,7 @@ module Grape
         params :oauth_token_revocation_params do
           requires :token, type: String, desc: 'The token that the client wants to get revoked'
           optional :token_type_hint, type: String,
-                                     values: %w(access_token refresh_token),
+                                     values: %w[access_token refresh_token],
                                      default: 'access_token',
                                      desc: 'A hint about the type of the token submitted for revocation'
         end

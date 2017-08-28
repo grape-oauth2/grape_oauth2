@@ -28,7 +28,7 @@ describe Grape::OAuth2::Scopes do
     let(:scopes) { described_class.new([]) }
 
     it 'converts the String scopes to an Array' do
-      expect(scopes.send(:to_array, 'read write delete')).to eq(%w(read write delete))
+      expect(scopes.send(:to_array, 'read write delete')).to eq(%w[read write delete])
     end
 
     it 'converts the object that responds to `to_a` to an Array' do
@@ -39,8 +39,8 @@ describe Grape::OAuth2::Scopes do
     end
 
     it 'returns an Array of String values if Array was passed' do
-      expect(scopes.send(:to_array, %w(read write delete))).to eq(%w(read write delete))
-      expect(scopes.send(:to_array, %i(read write delete))).to eq(%w(read write delete))
+      expect(scopes.send(:to_array, %w(read write delete))).to eq(%w[read write delete])
+      expect(scopes.send(:to_array, %i(read write delete))).to eq(%w[read write delete])
     end
 
     it 'raises an error if scopes type is not supported' do

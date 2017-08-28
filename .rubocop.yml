@@ -5,7 +5,7 @@ AllCops:
     - 'spec/**/*'
   DisplayCopNames: true
 Rails:
-  Enabled: true
+  Enabled: false
 Documentation:
   Enabled: false
 Style/EndOfLine:

@@ -21,7 +21,7 @@ module Grape
 
           def validate
             super
-            validates_presence [:key, :secret]
+            validates_presence %i[key secret]
             validates_unique :key
           end
 

@@ -16,17 +16,17 @@ module Grape
         # Classes, that represents OAuth2 roles, must have described methods.
         REQUIRED_CLASSES_API = {
           access_token_class: {
-            class_methods: %i(authenticate create_for),
-            instance_methods: %i(expired? revoked? revoke! to_bearer_token)
+            class_methods: %i[authenticate create_for],
+            instance_methods: %i[expired? revoked? revoke! to_bearer_token]
           },
           client_class: {
-            class_methods: %i(authenticate)
+            class_methods: %i[authenticate]
           },
           token_generator: {
-            class_methods: %i(generate)
+            class_methods: %i[generate]
           },
           scopes_validator: {
-            instance_methods: %i(valid_for?)
+            instance_methods: %i[valid_for?]
           }
         }.freeze
 
