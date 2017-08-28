@@ -4,6 +4,7 @@ module Grape
     module Responses
       # Authorization response.
       class Authorization < Base
+        # [IMPORTANT]: need to be implemented!
       end
     end
   end
