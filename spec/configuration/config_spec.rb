@@ -49,7 +49,7 @@ describe Grape::OAuth2::Configuration do
       expect(config.authorization_code_lifetime).to eq(1800)
 
       expect(config.realm).to eq(Grape::OAuth2::Configuration::DEFAULT_REALM)
-      expect(config.allowed_grant_types).to eq(%w(password client_credentials))
+      expect(config.allowed_grant_types).to eq(%w[password client_credentials])
 
       expect(config.issue_refresh_token).to be_falsey
       expect(config.on_refresh).to eq(:nothing)
@@ -64,7 +64,7 @@ describe Grape::OAuth2::Configuration do
         @scopes = scopes
       end
 
-      def valid_for?(access_token)
+      def valid_for?(*)
         false
       end
     end

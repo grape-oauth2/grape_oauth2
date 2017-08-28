@@ -35,7 +35,7 @@ module Grape
 
           def validate
             super
-            validates_presence [:token, :client_id]
+            validates_presence %i[token client_id]
             validates_unique [:token]
           end
 
