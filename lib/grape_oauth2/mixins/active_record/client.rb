@@ -7,7 +7,7 @@ module Grape
         extend ActiveSupport::Concern
 
         included do
-          has_many :access_tokens, class_name: Grape::OAuth2.config.access_token_class_name, foreign_key: :client_id
+          has_many :access_tokens, class_name: Grape::OAuth2.config.access_token_class_name, foreign_key: :client_id, dependent: :delete_all
 
           validates :key, :secret, presence: true
           validates :key, uniqueness: true
