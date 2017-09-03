@@ -93,12 +93,12 @@ describe 'Grape::OAuth2::Mongoid::Client', skip_if: ENV['ORM'] != 'mongoid' do
     end
 
     it 'delete all the associated access tokens on destroy' do
-      user = User.create(name: 'John', password: '123123')
+      user = User.create(username: 'John', password: '123123')
       app = Application.create(name: 'app1', redirect_uri: 'https://google.com')
 
-      3.times { AccessToken.create(resource_ownder_id: user.id, client_id: app.id) }
+      3.times { AccessToken.create(resource_owner_id: user.id, client_id: app.id) }
 
-      expect { app.reload.destroy }.to change { app.reload.access_tokens.count }.from(3).to(0)
+      expect { app.reload.destroy }.to change { AccessToken.count }.from(3).to(0)
     end
   end
 end
