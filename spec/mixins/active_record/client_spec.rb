@@ -91,5 +91,14 @@ describe 'Grape::OAuth2::ActiveRecord::Client', skip_if: ENV['ORM'] != 'active_r
 
       expect(Application.authenticate(key, 'invalid-')).to be_nil
     end
+
+    it 'delete all the associated access tokens on destroy' do
+      user = User.create!(name: 'John', password: '123123')
+      app = Application.create!(name: 'app1', redirect_uri: 'https://google.com')
+
+      3.times { AccessToken.create(resource_ownder_id: user.id, client_id: app.id) }
+
+      expect { app.reload.destroy }.to change { app.reload.access_tokens.count }.from(3).to(0)
+    end
   end
 end
