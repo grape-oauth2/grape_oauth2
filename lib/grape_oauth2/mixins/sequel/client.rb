@@ -9,10 +9,13 @@ module Grape
         included do
           plugin :validation_helpers
           plugin :timestamps
+          plugin :association_dependencies
 
           set_allowed_columns :name, :redirect_uri
 
           one_to_many :access_tokens, class: Grape::OAuth2.config.access_token_class_name, key: :client_id
+
+          add_association_dependencies access_tokens: :delete
 
           def before_validation
             generate_keys if new?
