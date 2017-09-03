@@ -10,6 +10,9 @@ module Grape
           include ::Mongoid::Document
           include ::Mongoid::Timestamps
 
+          has_many :access_tokens, class_name: Grape::OAuth2.config.access_token_class_name,
+                                   foreign_key: :client_id, dependent: :delete
+
           field :name, type: String
           field :key, type: String
           field :secret, type: String
