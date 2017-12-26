@@ -13,8 +13,8 @@ module Grape
           field :resource_owner_id, type: BSON::ObjectId
           field :client_id, type: BSON::ObjectId
 
-          belongs_to :client, class_name: 'Application', foreign_key: :client_id, optional: true
-          belongs_to :resource_owner, class_name: 'User', foreign_key: :resource_owner_id, optional: true
+          belongs_to :client, class_name: Grape::OAuth2.config.client_class_name, foreign_key: :client_id, optional: true
+          belongs_to :resource_owner, class_name: Grape::OAuth2.config.resource_owner_class_name, foreign_key: :resource_owner_id, optional: true
 
           field :token, type: String
           field :refresh_token, type: String

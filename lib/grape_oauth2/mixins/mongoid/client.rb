@@ -25,9 +25,9 @@ module Grape
 
           def self.authenticate(key, secret = nil)
             if secret.nil?
-              Application.find_by(key: key)
+              find_by(key: key)
             else
-              Application.find_by(key: key, secret: secret)
+              find_by(key: key, secret: secret)
             end
           end
 
