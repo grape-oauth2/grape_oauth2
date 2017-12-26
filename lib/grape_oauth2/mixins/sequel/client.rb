@@ -11,6 +11,11 @@ module Grape
           plugin :timestamps
           plugin :association_dependencies
 
+          # Sequel 4.47 deprecated #set_allowed_columns
+          if (::Sequel::MAJOR >= 4 && ::Sequel::MINOR >= 47) || ::Sequel::MAJOR >= 5
+            plugin :whitelist_security
+          end
+
           set_allowed_columns :name, :redirect_uri
 
           one_to_many :access_tokens, class: Grape::OAuth2.config.access_token_class_name, key: :client_id

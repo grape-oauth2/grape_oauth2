@@ -1,4 +1,4 @@
-class User < ApplicationRecord
+class User < ::Sequel::Model
   set_dataset :users
   plugin :secure_password, include_validations: false
 
