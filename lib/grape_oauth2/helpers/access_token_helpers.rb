@@ -35,8 +35,6 @@ module Grape
           @_current_access_token ||= request.env[Rack::OAuth2::Server::Resource::ACCESS_TOKEN]
         end
 
-        private
-
         # Validate current access token not to be expired or revoked
         # and has all the requested scopes.
         #
