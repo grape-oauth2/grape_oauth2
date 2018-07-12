@@ -3,8 +3,8 @@
 </p>
 
 # Grape::OAuth2
+[![Gem Version](https://badge.fury.io/rb/grape_oauth2.svg)](http://badge.fury.io/rb/grape_oauth2)
 [![Build Status](https://travis-ci.org/nbulaj/grape_oauth2.svg?branch=master)](https://travis-ci.org/nbulaj/grape_oauth2)
-[![Dependency Status](https://gemnasium.com/nbulaj/grape_oauth2.svg)](https://gemnasium.com/nbulaj/grape_oauth2)
 [![Coverage Status](https://coveralls.io/repos/github/nbulaj/grape_oauth2/badge.svg)](https://coveralls.io/github/nbulaj/grape_oauth2)
 [![Code Climate](https://codeclimate.com/github/nbulaj/grape_oauth2/badges/gpa.svg)](https://codeclimate.com/github/nbulaj/grape_oauth2)
 [![Inline docs](http://inch-ci.org/github/nbulaj/grape_oauth2.svg?branch=master)](http://inch-ci.org/github/nbulaj/grape_oauth2)
