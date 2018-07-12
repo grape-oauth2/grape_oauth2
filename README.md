@@ -71,6 +71,12 @@ Yes, no Rails, ActiveRecord or any other libs or huge frameworks :+1:
 If you are using bundler, first add `'grape_oauth2'` to your Gemfile:
 
 ```ruby
+
+gem 'grape', '~> 1.0'
+gem 'grape_oauth2', '~> 0.2'
+
+# or
+
 gem 'grape_oauth2', git: 'https://github.com/nbulaj/grape_oauth2.git'
 ```
 
