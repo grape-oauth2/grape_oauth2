@@ -40,7 +40,7 @@ module Grape
 
         # Raw Rack body
         def raw_body
-          @rack_response[2].body
+          @rack_response[2]
         end
 
         # JSON-parsed body
